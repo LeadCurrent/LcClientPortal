@@ -56,8 +56,7 @@ namespace Web
 
         public bool ShowCreateCompanyButtons { get; set; }
 
-        public bool AddPaymentMethod { get; set; }
-
+     
 
         public bool ShowModelPopup { get; set; }
 

@@ -281,7 +281,7 @@
 
                 @foreach (var document in Model.Documents)
                 {
-                    if (document.CustomerId == null && document.VendorId == null && document.JobId == null && document.LeadId == null)
+                    if (document.CustomerId == null)
                     {
                         var editdocumentBtn = "editdocument_" + i;
                         var DocumentId = "Document" + i;

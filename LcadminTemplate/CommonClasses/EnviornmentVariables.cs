@@ -42,12 +42,12 @@ namespace CommonClasses
 
         public static string MicrosoftClientId()
         {
-                return "";
+            return "";
         }
 
         public static string MicrosoftClientSecret()
         {
-                return "";
+            return "";
         }
 
 
@@ -61,12 +61,12 @@ namespace CommonClasses
 
         public static string GoogleClientSecret()
         {
-                return "";
+            return "";
         }
 
         public static string GoogleApplicationName()
         {
-                return "";
+            return "";
         }
 
         public static bool SendNotifications()
@@ -98,22 +98,22 @@ namespace CommonClasses
 
         public static string StorageURLWithoutSlash()
         {
-                return "";
+            return "";
         }
 
         public static string StorageAccount()
         {
-           return "";
+            return "";
         }
 
         public static string StorageAccountName()
         {
-                return "leadcurrent";
+            return "leadcurrent";
         }
 
         public static string StorageAccountKey()
         {
-                return "";
+            return "";
         }
 
         public static string StorageURL()
@@ -129,7 +129,7 @@ namespace CommonClasses
 
                 return true;
             }
-        }    
+        }
         public static bool CompanyAdmin
         {
             get
@@ -142,30 +142,21 @@ namespace CommonClasses
         {
             get
             {
-                if (environment.Contains("Dev"))
-                    return false;
-                else
-                    return true;
+                return true;
             }
         }
         public static bool Email
         {
             get
             {
-                if (environment.Contains(""))
-                    return false;
-                else
-                    return true;
+                return true;
             }
         }
         public static bool Documents
         {
             get
             {
-                if (environment.Contains(""))
-                    return false;
-                else
-                    return true;
+                return true;
             }
         }
         public static bool CompanyProfile

@@ -42,11 +42,7 @@ namespace Data
         public string FilterName { get; set; }
         public string CurrentTab { get; set; }
         public string InvalidUser { get; set; }
-        public string ReportBase64String { get; set; }
-        [NotMapped]
-        public string InvalidOfferCode { get; set; }
-
-        public string SelectedPaymentOption { get; set; }
+       
         /* Bool */
         public bool UpdateSuccessful { get; set; }
         public bool SystemAdmin { get; set; }
@@ -56,18 +52,11 @@ namespace Data
         public bool ShowEditSupportContact { get; set; }
         public bool ShowPlan { get; set; }
         public bool ShowEnterprisePlan { get; set; }
-        public bool UpdateCCInfo { get; set; }
-        public bool UpdateACHInfo { get; set; }
-        public bool UpdateCloudliInfo { get; set; }
-        public bool HasBillingInforation { get; set; }
-        public bool PaymentUnsuccessful { get; set; }
-        public bool ShowUpdateBilling { get; set; }
+        
         public bool ShowAddNote { get; set; }
         public bool AddNewContact { get; set; }
         public bool PrimaryContact { get; set; }
-        public bool BillingContact { get; set; }
-        public bool SupportContact { get; set; }
-        public bool BillingDateUpdated { get; set; }
+       
         /* Int */
         public int EditContactId { get; set; }
         public int CompanyUserId { get; set; }
@@ -77,7 +66,6 @@ namespace Data
         public int SelectedBillingContactId { get; set; }
         public int SelectedSupportContactId { get; set; }
         public int FilterStatus { get; set; }
-        public int PlanQuantity { get; } = 1;
         public int CompanyCustomerId { get; set; }
         /* DDLs */
         public List<SelectListItem> StaffDDL

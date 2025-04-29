@@ -171,10 +171,6 @@ namespace DotNet5Template
                 o.ViewLocationFormats.Add("/Pages/SystemAdmin/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            services
-           .AddDataProtection()
-           .PersistKeysToAzureBlobStorage(CommonClasses.Environment.StorageAccount(), "logintokens", "logintokens");
-
 
         }
 

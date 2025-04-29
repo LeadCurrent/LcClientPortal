@@ -70,10 +70,6 @@ namespace Data
             return Customer;
         }
 
-        public async Task<Customer> GetCustomerByExternalCustomerId(int ExternalCustomerId, int CompanyId)
-        {
-            return await context.Customer.Where(x => x.ExternalCustomerId == ExternalCustomerId && x.CompanyId == CompanyId).FirstOrDefaultAsync();
-        }
         public async Task<Customer> GetCustomerByGUID(string Guid)
         {
             var Customer = await context.Customer

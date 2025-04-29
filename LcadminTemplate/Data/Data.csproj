@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EntityModelsAndLibraries\Call\**" />
+    <Compile Remove="EntityModelsAndLibraries\Feedback\**" />
+    <EmbeddedResource Remove="EntityModelsAndLibraries\Call\**" />
+    <EmbeddedResource Remove="EntityModelsAndLibraries\Feedback\**" />
+    <None Remove="EntityModelsAndLibraries\Call\**" />
+    <None Remove="EntityModelsAndLibraries\Feedback\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
@@ -33,9 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EntityModelsAndLibraries\Call\Enums\" />
     <Folder Include="EntityModelsAndLibraries\CompanyIntegration\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Feedback\Partials\Sections\" />
     <Folder Include="EntityModelsAndLibraries\Project\DataLibraries\" />
     <Folder Include="Migrations\" />
   </ItemGroup>

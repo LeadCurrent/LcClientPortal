@@ -8,11 +8,8 @@ namespace Data
     {
 
         /* Foreign Keys */
-        public int? JobId { get; set; }
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
-        public int? VendorId { get; set; }
-        public int? LeadId { get; set; }
         public int? CompanyId { get; set; }
         public Company Company { get; set; }
 

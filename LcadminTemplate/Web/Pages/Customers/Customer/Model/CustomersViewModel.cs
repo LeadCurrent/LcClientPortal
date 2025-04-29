@@ -18,11 +18,6 @@ namespace Web
         public int NewProductCategoryId { get; set; }
         public bool AjaxUpdate { get; set; }
         public bool MobileApp { get; set; }
-        public bool ViewAgreement { get; set; }
-        public bool CreateNewAgreegrementSection { get; set; }
-        public bool ShowCreateNewInvoice { get; set; }
-        public bool PaymentProfileFailed { get; set; }
-        public int UpdatePaymentProfileId { get; set; }
 
         /* Models */
         public Customer Customer { get; set; }
@@ -40,7 +35,6 @@ namespace Web
         public int EmailMessageId {  get; set; }
 
         /* String */
-        public string NewTaskComment { get; set; }
         public string SelectedCompanyName { get; set; }
         public string SelectedCityState { get; set; }
         public string SelectedContacted { get; set; }
@@ -51,37 +45,21 @@ namespace Web
         public string ConfirmPassword { get; set; }
         public string CurrentNotesTab { get; set; }
         public string AddNote { get; set; }
-        public string SelectedPaymentOption { get; set; }
-        public int SelectedAgreementType { get; set; }
         public int SelectedContactId { get; set; }
-        public string Signature { get; set; }
-        public string ReportBase64String { get; set; }
-        public int SelectedAgreement { get; set; }
-        public int SelectedVersion { get; set; }
 
 
         /* Bool */
         public bool UpdateSuccessful { get; set; }
         public bool ShowNewNote { get; set; }
-        public bool ShowEditNote { get; set; }
-        public bool CreateNewAgreegrement { get; set; }
-        public bool Unsigned { get; set; }
-   
+        public bool ShowEditNote { get; set; }   
         public bool ShowNewContact { get; set; }
         public bool ShowEditContact { get; set; }
         public bool ShowEditCustomer { get; set; }
-        public bool ShowCreateTask { get; set; }
-        public bool ShowEditTask { get; set; }
         public bool ShowCreateCompanyButtons { get; set; }
-        public bool ShowEditInvoice { get; set; }
-        public bool AddPaymentMethod { get; set; }
-        public bool UpdatePaymentMethod { get; set; }
-        public bool ShowAddCustomerSubscription { get; set; }
         public bool PasswordInvalid { get; set; }
         public bool Emails {  get; set; }
         public bool ShowEditDocument {  get; set; }
         public bool ShowNewDocument {  get; set; }
-        public bool ShowCreateAgreement {  get; set; }
 
         /* DateTime */
         public DateTime DateFrom { get; set; }
@@ -190,23 +168,5 @@ namespace Web
                 };
             }
         }
-
-
-        public List<SelectListItem> PaymentOptionsDDL
-        {
-            get
-            {
-                var DDL = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "Credit Card", Text = "Pay with Credit Card" },
-            new SelectListItem { Value = "Check", Text = "Pay with Check" },
-            new SelectListItem { Value = "Cash", Text = "Pay with Cash" }
-        };
-
-                return DDL;
-            }
-        }
-
-
     }
 }

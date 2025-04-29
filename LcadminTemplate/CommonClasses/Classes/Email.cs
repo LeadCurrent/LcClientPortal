@@ -24,10 +24,10 @@ namespace CommonClasses
         public string? MicrosoftRefreshToken { get; set; }
         public List<string>? ToEmailList { get; set; }
         public List<string>? CCEmailList { get; set; }
-        public Email()
-        {
-            client = new SendGridClient(Environment.SendGridAPIKey);
-        }
+        //public Email()
+        //{
+        //    client = new SendGridClient(Environment.SendGridAPIKey);
+        //}
         public async Task<bool> SendMail()
         {
             string testEmail = Environment.TestEmail;
