@@ -1,0 +1,29 @@
+﻿@using Data
+@model Web.TemplateVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Create New TemplateDisplay </div>
+<div class="form-1000 ">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/TemplateFields.cshtml");
+            }
+            <div class="buttons">
+                <button class="button" id="Valid" onclick="NonAjax('Create')">Create TemplateDisplay</button>
+                <button class="button" onclick="NonAjax('')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    ValidateForm();
+</script>

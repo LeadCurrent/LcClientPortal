@@ -1,0 +1,466 @@
+@model ContactsVM
+@using Web
+@using Data
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+@{
+    Layout = "~/Pages/Shared/FrontEndLayout.cshtml";
+}
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    var isCaptchaValid = false;
+
+    function onReCaptchaSuccess(token) {
+        document.getElementById('Total').value = token;
+        isCaptchaValid = true;
+        checkForm();
+    }
+    function onReCaptchaError() {
+        isCaptchaValid = false;
+        checkForm();
+    }
+    function checkForm() {
+        if (document.getElementById("SignupName").value.trim() !== '' &&
+            document.getElementById("SignupEmail").value.trim() !== '' &&
+            document.getElementById("SignupPhone").value.trim() !== '' &&
+            document.getElementById("Company_Name").value.trim() !== '' &&
+            isCaptchaValid) {
+
+
+            document.getElementById('sendRequest').style.display = 'block';
+        } else {
+
+            document.getElementById('sendRequest').style.display = 'none';
+        }
+    }
+    function submitForm() {
+        if (!isCaptchaValid) {
+            grecaptcha.execute();
+        } else {
+            document.getElementById('contactForm').submit();
+        }
+    }
+    document.querySelectorAll('.form-control').forEach(function (element) {
+        element.addEventListener('input', checkForm);
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        checkForm();
+    });
+</script>
+<main class="main">
+    <div class="page-banner text-white" style="background-image: url(../FrontEnd/images/banner-inner-2.jpg);">
+        <div class="container">
+            <div class="page-title">
+                <p data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">For A Simplified Workflow</p>
+                <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Competitive Solutions</h2>
+                <a href="" class="btn-primary" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">Start Free Trail</a>
+            </div>
+        </div>
+    </div>
+    <div class="sec-workflow-experience sec-gap" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <figcaption>
+                        <img src="~/FrontEnd/images/image-layer-3.jpg" alt="">
+                    </figcaption>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card-content">
+                        <h2>A Complete Solution For Your Operations</h2>
+                        <p>Included Features</p>
+                        <ul class="d-flex flex-wrap list-style-features">
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Workflow</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Communications</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Job Photos</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Scheduling</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Invoicing</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Divisions</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Quoting</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Reporting</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Audit Logs</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Packages</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Appointments</li>
+                            <li class="col-12 col-xl-4 col-lg-6"><i class="bi bi-check2-circle"></i>Integrations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-plans sec-gap">
+        <div class="sec-steps">
+            <div class="container">
+                <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                    <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                        <div class="bullet-sm">
+                            <hr>
+                        </div>
+                        <div class="px-2">
+                            3 steps
+                        </div>
+                        <div class="bullet-sm">
+                            <hr>
+                        </div>
+                    </div>
+                    <h2>Getting Started Is Easy</h2>
+                </div>
+                <div class="stepwrapper">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="ste-card text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                                <span class="step-number">
+                                    <span class="step-text">1</span>
+                                    <i><img src="~/FrontEnd/images/icon-user.svg" alt=""></i>
+                                </span>
+                                <div class="content-lower">
+                                    <h5>Sign Up</h5>
+                                    <p>start your FREE 14-Day Trial</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="ste-card text-center" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                                <span class="step-number">
+                                    <span class="step-text">2</span>
+                                    <i><img src="~/FrontEnd/images/icon-setup.svg" alt=""></i>
+                                </span>
+                                <div class="content-lower">
+                                    <h5>Set Up</h5>
+                                    <p>Follow Our step-By-step "get started" guide</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="ste-card text-center" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                                <span class="step-number">
+                                    <span class="step-text">3</span>
+                                    <i><img src="~/FrontEnd/images/icon-money.svg" alt=""></i>
+                                </span>
+                                <div class="content-lower">
+                                    <h5>Sell</h5>
+                                    <p>LeadCurrent keeps you organized while you focus on your customers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        plans
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+                <h2>Plans designed to support your workflow</h2>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="card-price-box t-hover" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>GC</h2>
+                            <p>Membership Plan</p>
+                            <span>$97</span>
+                            <p>/Per Month</p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features" style="min-height: 455px">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Manage Workflow</li>
+                                    <li><i class="bi bi-check2-circle"></i> Requests</li>
+                                    <li><i class="bi bi-check2-circle"></i> Unlimited Customers</li>
+                                    <li><i class="bi bi-check2-circle"></i> Products / Packages</li>
+                                    <li><i class="bi bi-check2-circle"></i> Quoting / Invoicing</li>
+                                    <li><i class="bi bi-check2-circle"></i> Mobile App</li>
+                                    <li><i class="bi bi-check2-circle"></i> QBO Sync</li>
+                                </ul>
+                                <a href="" class="btn-primary w-100">Start Now</a>
+                            </div>
+                        </div>
+                        <div class="card-price-footer text-center">
+                            <h5>1 - 3 Users Included</h5>
+                            <p>Additional users $25/mo each</p>
+                        </div>
+                    </div>
+                </div>
+@*                 <div class="col-lg-4">
+                    <div class="card-price-box t-hover" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>The Pro</h2>
+                            <p>Membership Plan</p>
+                            <span>$147</span>
+                            <p>/Per Month</p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Everything in GC Plan</li>
+                                    <li><i class="bi bi-check2-circle"></i> Scheduling</li>
+                                    <li><i class="bi bi-check2-circle"></i> Drive Time Origin</li>
+                                    <li><i class="bi bi-check2-circle"></i> Crews</li>
+                                    <li><i class="bi bi-check2-circle"></i> Groups</li>
+                                    <li><i class="bi bi-check2-circle"></i> Audit Logs</li>
+                                </ul>
+                                <a href="" class="btn-primary w-100">Start Now</a>
+                            </div>
+                        </div>
+                        <div class="card-price-footer text-center">
+                            <h5>1 - 5 Users Included</h5>
+                            <p>Additional users $25/mo each</p>
+                        </div>
+                    </div>
+                </div> *@
+                @*<div class="col-lg-5">
+                    <div class="card-price-box t-hover" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>The Elite</h2>
+                            <p>Membership Plan</p>
+                            <span>$297</span>
+                            <p>/Per Month</p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features" style="min-height: 455px">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Everything in GC</li>
+                                    <li><i class="bi bi-check2-circle"></i> Scheduling</li>
+                                    <li><i class="bi bi-check2-circle"></i> Drive Time Origin</li>
+                                    <li><i class="bi bi-check2-circle"></i> Recurring Jobs</li>
+                                    <li><i class="bi bi-check2-circle"></i> Time Tracking</li>
+                                    <li><i class="bi bi-check2-circle"></i> Crews</li>
+                                    <li><i class="bi bi-check2-circle"></i> Divisions</li>
+                                    <li><i class="bi bi-check2-circle"></i> Audit Logs</li>
+                                    <li><i class="bi bi-check2-circle"></i> AND MORE!</li>
+                                </ul>
+                                <a href="" class="btn-primary w-100">Start Now</a>
+                            </div>
+                        </div>
+                        <div class="card-price-footer text-center">
+                            <h5>1 - 15 Users Included</h5>
+                            <p>Additional users $25/mo each</p>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+
+        </div>
+    </div>
+    <div class="sec-free-trail" style="background-image: url(./images/parallax-bg.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="img-guarantee" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <img src="~/FrontEnd/images/guarantee.png" alt="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="content-innerbox" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <h2>14 day free trial</h2>
+                        <p>no risk, no contracts, no commitments, not even a credit card is needed to get started</p>
+                        <a href="" class="btn-primary">Start Free Trail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-contact-us sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        Contact Us
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+                <h2 class="mb-3">Need More Information?</h2>
+                <p>Were always looking to connect with those in the service industry. If you have additional questions dont hesitate to contact us so we can get your questions answered.</p>
+            </div>
+            @using (Html.BeginForm("Contact", "Pricing"))
+            {
+                <div class="row">
+                    <div class="col-lg-7">
+                        <figcaption data-aos="fade-right" data-aos-duration="1500" data-aos-once="true">
+                            <img src="~/FrontEnd/images/img-contact.jpg" alt="">
+                        </figcaption>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card-contact h-100" data-aos="fade-left" data-aos-duration="1500" data-aos-once="true">
+                            @if (Model.RobotFailed || Model.ContactSent)
+                            {
+                                <label id="Contact"></label>
+                            }
+                            @if (!Model.ContactSent)
+                            {
+                                @Html.HiddenFor(m => m.Total)
+                                <h2 class="text-center">Contact Us</h2>
+                                <div class="form-group input-single">
+                                    <label>Full Name</label>
+                                    @Html.EditorFor(m => m.SignupName, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupName", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Email </label>
+                                    @Html.EditorFor(m => m.SignupEmail, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupEmail", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Phone</label>
+                                    @Html.EditorFor(m => m.SignupPhone, new { htmlattributes = new { @class = "form-control", id = "SignupPhone", onkeyup = "formatphone('SignupPhone');checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Company</label>
+                                    @Html.EditorFor(m => m.Company.Name, new { htmlattributes = new { @class = "form-control requiredfield", id = "Company_Name", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Message</label>
+                                    @Html.TextAreaFor(m => m.Message, new { @class = "form-control requiredfield", id = "Message", onkeyup = "checkForm();" })
+                                </div>
+                                <!-- reCAPTCHA widget -->
+                                <div class="form-group" style="align-items:start">
+                                    <div class="g-recaptcha" data-sitekey="@configuration["GoogleRecaptchaSettings:SiteKey"]" data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaError"></div>
+                                </div>
+                                @*        <button id="sendRequest" class="btn-primary w-100" style="display:none;" type="button" onclick="NonAjax('Create')">Send Contact Request</button> *@
+                                <button id="sendRequest" style="display:none;" class="btn-primary w-100" onclick="NonAjax('Create')">Send Contact Request</button>
+                                @if (Model.RobotFailed)
+                                {
+                                    <label><b>You did not answer the question correctly.<br /> If you are human, please try again</b></label>
+                                }
+@*                                 <button class="btn-primary w-100" onclick="NonAjax('Create')">Send Contact Request</button>
+ *@                            }
+                            else
+                            {
+                                <div style="padding-top:100px">
+                                    <h2 id="ContactSent" class="mb-3">Thank You!</h2>
+                                    <p>We will get in touch with you as soon as possible!</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="sec-faq sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <h2>Frequently Asked Question</h2>
+            </div>
+            <div class="sec-accordion" id="accordionExample-2" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingOne1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne1" aria-expanded="false">
+                            Is there a Free Trial?
+                        </button>
+                    </div>
+                    <div id="collapseOne1" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                YES! Everyone gets a 14 Day Free Trail.  Just select the plan you want and enter your billing information before your free trial ends to enjoy uninterrupted access.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingTwo2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo2" aria-expanded="false">
+                            Are there any contracts?
+                        </button>
+                    </div>
+                    <div id="collapseTwo2" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Never! ProWorkflow is a pay as you go service so you can cancel your subscription at any time.  You will keep access until the end of your billing cycle.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingThree3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree3" aria-expanded="false">
+                            Can I change my Plan?
+                        </button>
+                    </div>
+                    <div id="collapseThree3" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes, You can change you plan at anytime.  However, if you are downgrading your plan you will lose any features associated with the higher plan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingFour4">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour4" aria-expanded="false">
+                            Does ProWorkflow Sync with QuickBooks?
+                        </button>
+                    </div>
+                    <div id="collapseFour4" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes, ProWorkflow can sync wih your QuickBooks Online account.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingFive5">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFive5" aria-expanded="false">
+                            Do you have an App?
+                        </button>
+                    </div>
+                    <div id="collapseFive5" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes! Not only is ProWorkflow designed to me mobile responsive we have also created an App to better support users who primarily are working from mobile devices.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingSix6">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSix6" aria-expanded="false">
+                            Will ProWorkflow work on my cell phone/tablet?
+                        </button>
+                    </div>
+                    <div id="collapseSix6" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Even if you are not using the ProWorkflow app we have made sure ProWorkflow is fully functional with mobile responsive pages to make sure you can get work done no matter the device you are using.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    if (document.getElementById("Contact") != null) {
+        window.location.hash = "Contact";
+    }
+    ValidateForm();
+</script>

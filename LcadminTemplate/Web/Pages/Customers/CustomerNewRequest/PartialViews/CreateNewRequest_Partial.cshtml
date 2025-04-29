@@ -1,0 +1,193 @@
+﻿@using Data
+@using Web
+@model Web.CustomerRequestVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+
+<div class="pagetitle">Create New Customer </div>
+<script>
+    function ValidateCreateCustomer() {
+        var Valid = false;
+        var companyElement = document.getElementById('CompanyId');
+        var customerElement = document.getElementById('CustomerId');
+
+        if (companyElement && customerElement) {
+            if (companyElement.value != '0' && customerElement.value != '0') {
+                Valid = true;
+            }
+        }
+
+        if (Valid) {
+            document.getElementById('showcreateCustomer').style.display = "inline";
+        } else {
+            document.getElementById('showcreateCustomer').style.display = "none";
+        }
+    }
+
+    ValidateCreateCustomer();
+</script>
+
+
+<div class="form-800">
+    @if (Model.UpdateSuccessful)
+    {
+          <div class="white-bg">
+            <div class="input-form">
+        <div class="text-center" style="padding-top:10px; color:green">
+            Thank you for submitting a New Request.@Model.Company.Name has received your request and will be begin processing it shortly
+        </div>
+        </div>
+        </div>
+    }
+    @if (!Model.ShowCustomerInfo && !Model.UpdateSuccessful)
+    {
+        <div class="white-bg">
+            <div class="input-form">               
+                <table>
+                    @if (Model.Companys.Count > 1)
+                    {
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Company:
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(m => m.CompanyId, Model.CompanyDDL, new { id = "CompanyId", onchange = "ValidateCreateCustomer();document.getElementById('selectcompany').click();" })
+                                    <button class="button" style="display:none" id="selectcompany" onclick="Ajax('select company')">selectcompany</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(x => x.CompanyId)
+                    }
+                    @if (Model.Customers!=null && Model.Customers.Count > 1)
+                    {
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Account:
+                            </div>
+                            <div>
+                                @Html.DropDownListFor(m => m.CustomerId, Model.CustomerDDL, new { id = "CustomerId", onchange = "ValidateCreateCustomer()" })
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                    <tr>
+                        <td>
+                            <div class="text-center">
+                                <button class="button" id="showcreateCustomer" style="display:none" onclick="Ajax('Create New Customer')">Create New Customer</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    }
+    else if (Model.ShowCustomerInfo && !Model.UpdateSuccessful)
+    {
+        @Html.HiddenFor(x => x.CompanyId)
+        @Html.HiddenFor(x => x.CustomerId)
+        <div class="white-bg">
+            <div class="sectionheader">Customer Information</div>
+            <div class="input-form">
+               
+                <table>
+                    <tr>
+                        <td >
+                            <div >
+                                <b class="formlabel">
+                                    Account Name:
+                                </b>                             
+                                <span>
+                                   &nbsp;&nbsp; @Model.Customer.Name
+                                </span>
+                            </div>
+                            
+                        </td>
+                    
+                    </tr>
+                    <tr>
+                        <td>
+                            <div >
+                                <b class="formlabel">
+                                    Address:
+                                </b>                             
+                                <span>
+                                    &nbsp;&nbsp;  @Model.Customer.FullAddress
+                                </span>
+                            </div>
+                           
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <b class="formlabel">   Phone:</b>
+                                <span>
+                                    &nbsp;&nbsp;  @Model.Customer.PhoneNumber
+                                </span>
+                            </div>
+                           
+                        </td>
+                     
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <b class="formlabel">    Email:</b>
+                                <span>
+                                    &nbsp;&nbsp;@Model.Customer.Email
+                                </span>
+                            </div>
+                            
+                        </td>
+                       
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="white-bg">
+            <div class="sectionheader">Service</div>
+            <div class=" input-form">
+                <table class="w-100">
+
+                    <tr>
+                        <td>
+                            <div class="text-center">
+                                <button class="button" id="Valid" onclick="Ajax('Create Job')">Create Request</button>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    <script>
+                        ValidateForm();
+                    </script>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+
+
+
+
+

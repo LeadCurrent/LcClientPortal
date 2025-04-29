@@ -1,0 +1,131 @@
+﻿@using Data
+@using Web
+@model Web.CustomersViewModel
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle"> Customers</div>
+<div>
+    <div class="filters">
+        <div class="row width1000 maxwidth" style="margin:auto;">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 filter">
+
+                    <div class="filter-label">Customer Name:</div>
+                    <div>
+                    @Html.EditorFor(model => model.SelectedCompanyName, new { htmlattributes = new { @class = "width550", autocomplete = "off", placeholder = "Enter Customer Name" } })
+
+                    </div>
+
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 filter" ">
+                <button class="filterbutton" id="btnfilter" onclick="NonAjax('Apply Filters')">Search</button>
+                <button class="filterbutton" onclick="NonAjax('Clear Filters')">Clear Filters</button>
+            </div>
+        </div >
+      
+
+    </div>
+
+
+
+    <div class="form-1400">
+
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Add New Customer</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>
+                        Customer
+                    </th>
+                    
+                    <th>
+                        Last Note
+                    </th>
+                    <th>
+                        Open Actions
+                    </th>
+                </tr>
+                @foreach (var Customer in Model.Customers)
+                {
+                    <tr class="mobileportrait-mobilewide">
+                        <td>
+                            <div>
+                            @if (Customer.Name != null)
+                            {
+                                    <b class="secondary-text">Customer:</b>
+
+                                @Html.ActionLink(@Customer.Name, "Edit", "Customer", new { CustomerId = Customer.Id })
+                            }
+                            else
+                            {
+                                    <b class="secondary-text">Customer:</b>
+
+                                @Html.ActionLink("No Name", "Edit", "Customer", new { CustomerId = Customer.Id })
+                            }
+                               
+                            </div>
+                          
+                            <div>
+                                @if (Customer.CustomerNotes.Any())
+                                {
+                                    <b class="secondary-text">Last Note:</b>@Customer.CustomerNotes.OrderByDescending(x => x.CreateDate).FirstOrDefault().Note
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="desktop">
+                        <td>
+                        @if (Customer.Name != null)
+                        {
+                               
+
+                            @Html.ActionLink(@Customer.Name, "Edit", "Customer", new { CustomerId = Customer.Id })
+                        }
+                        else
+                        {
+                        
+
+                            @Html.ActionLink("No Name", "Edit", "Customer", new { CustomerId = Customer.Id })
+                        }
+                        </td>
+                     
+                        <td>
+                            @if (Customer.CustomerNotes.Any())
+                            {
+                                @Customer.CustomerNotes.LastOrDefault().Note
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    highlightcurrentpage("nav_Customers-lead");
+</script>
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            liveSearch: true,
+            showSubtext: true
+        });
+    });
+</script>
+<script>
+
+    var activeItemsArray = [];
+            @if (Model.Customers != null)
+            {
+                @foreach (var d in Model.Customers)
+                {
+                    @:activeItemsArray.push("@d.Name");
+                }
+            }
+
+        AutoCompleteSuggestions($('#SelectedCompanyName'), activeItemsArray);
+</script>

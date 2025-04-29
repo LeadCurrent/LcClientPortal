@@ -1,0 +1,11 @@
+﻿@using Data
+@{
+    Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("Error", "Error", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{await Html.RenderPartialAsync("Error_Partial.cshtml");}
+    </div>
+}

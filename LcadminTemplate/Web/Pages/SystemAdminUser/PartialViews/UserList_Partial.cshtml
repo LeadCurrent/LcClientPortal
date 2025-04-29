@@ -1,0 +1,103 @@
+﻿@using Data
+@using Web
+@model Web.UserVM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.StringParam)
+@Html.HiddenFor(m => m.BlockPostBack)
+
+<div class="pagetitle">SystemAdmin - Users</div>
+<div class="filters">
+    <div class="row width1000" style="margin:auto;">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <div class="filter-label">Name:</div>
+            <div>
+                @Html.EditorFor(model => model.FilterName, new { htmlattributes = new { @class = "width270", autocomplete = "off", placeholder = "Enter User Name" } })
+
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <div class="filter-label">Status:</div>
+
+            @Html.DropDownListFor(model => model.FilterStatus, StatusDDL(), new { onchange = "ClickButton('filter');" })
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 filter">
+            <button id="btnfilter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply Filters</button>
+            <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear Filters</button>
+        </div>
+
+    </div>
+</div>
+
+
+    <div class="buttons">
+        <button class="button" onclick="NonAjax('Create')">Add New User</button>
+    </div>
+    
+<div class="form-800">
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="roundheader">
+                <th>
+                    Name
+                </th>
+                <th>
+                   Company
+                </th>
+                <th>
+                    Roles
+                </th>
+                <th>
+                    Status
+                </th>
+                <th class="buttoncolumn">
+
+                </th>
+            </tr>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>
+                        @user.FullName
+                    </td>
+                    <td>
+                        @user.CompanyName
+                    </td>
+                    <td>
+                        @if (user.Admin)
+                        {
+                            <div>Admin</div>
+                        }
+                        @if (user.SystemAdmin)
+                        {
+                            <div>System Admin</div>
+                        }
+                    </td>
+                    <td>
+                        @user.Status
+                    </td>
+                    <td>
+                        <button class="gridbutton" onclick="NonAjaxWithStringParam('Edit','@user.Id');">Edit</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+
+    var activeItemsArray = [];
+    @if (Model.Users != null)
+    {
+        @foreach (var d in Model.Users)
+        {
+            @:activeItemsArray.push("@d.UserName");
+        }
+    }
+
+    AutoCompleteSuggestions($('#FilterName'), activeItemsArray);
+</script>

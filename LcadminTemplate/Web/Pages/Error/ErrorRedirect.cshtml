@@ -1,0 +1,12 @@
+﻿@model Web.ErrorVM
+
+
+@{
+    
+}
+<script>
+    var redirecturl = "@CommonClasses.Environment.url()";
+    redirecturl += "Error?ExceptionLogId=";
+    redirecturl += @Model.ExceptionLog.Id;
+    window.location.href = redirecturl;
+</script>

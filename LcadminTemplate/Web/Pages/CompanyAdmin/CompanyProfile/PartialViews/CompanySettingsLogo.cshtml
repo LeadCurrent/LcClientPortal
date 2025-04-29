@@ -1,0 +1,116 @@
+﻿@model CompanyProfileVM
+@using Data
+@using Web
+
+@Html.HiddenFor(model => Model.Company.Logo)
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+@{
+    var capturelogo = "";
+    var showlogo = "none";
+    if (Model.Company.Logo != null)
+    {
+        capturelogo = "none";
+        showlogo = "";
+    }
+}
+
+<div id="div_capturelogo" style="display:@capturelogo">
+    <div class="buttonlink" style="width:125px; padding-bottom:10px;">
+        <a onclick="take_picture_logo();">Upload Logo</a>
+    </div>
+
+    <div style="display:none">
+        <input type="file" id="input_logo" accept="image/*" capture="camera" value="Take Picture">
+    </div>
+    <div>
+        <canvas style="display:none; width:200px" id="canvas_logo"></canvas>
+    </div>
+</div>
+
+<div id="div_showlogo" style="display:@showlogo">
+    <div>
+        <img height="75px;" src=@Model.Company.Logo />
+    </div>
+    <div class="gridbutton mt-10">
+        <a onclick="retake_picture_logo();">Upload New Logo</a>
+    </div>
+    <br /><br />
+</div>
+
+<script>
+
+    function save_logo() {
+        if (document.getElementById('canvas_logo').style.display == "inline") {
+            canvas = document.getElementById("canvas_logo");
+            document.getElementById('Logo').value = canvas.toDataURL("image/png");
+        }
+
+    }
+
+    function take_picture_logo() {
+        document.getElementById('input_logo').click();
+        document.getElementById('canvas_logo').style.display = "inline";
+
+    }
+
+    function retake_picture_logo() {
+        document.getElementById('div_capturelogo').style.display = "inline";
+        document.getElementById('div_showlogo').style.display = "none";
+        take_picture_logo();
+    }
+
+    //var input = document.querySelector('input[type=file]'); // see Example 4
+    var input = document.getElementById('input_logo'); // see Example 4
+    input.onchange = function () {
+        var file = input.files[0];
+        //upload(file);
+        drawOnCanvas(file);   // see Example 6
+        //displayAsImage(file); // see Example 7
+    };
+
+    function upload(file) {
+        var form = new FormData(),
+            xhr = new XMLHttpRequest();
+
+        form.append('image', file);
+        xhr.open('post', 'server.php', true);
+        xhr.send(form);
+    }
+
+    function drawOnCanvas(file) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var dataURL = e.target.result,
+                //c = document.querySelector('canvas'), // see Example 4
+                c = document.getElementById('canvas_logo'), // see Example 4
+                ctx = c.getContext('2d'),
+                img = new Image();
+
+
+            img.onload = function () {
+                ratio = 1000 / img.width;
+                c.width = img.width * ratio;
+                c.height = img.height * ratio;
+                ctx.drawImage(img, 0, 0, img.width * ratio, img.height * ratio);
+            };
+
+            img.src = dataURL;
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    function displayAsImage(file) {
+        var imgURL = URL.createObjectURL(file),
+            img = document.createElement('img');
+
+        img.onload = function () {
+            URL.revokeObjectURL(imgURL);
+        };
+
+        img.src = imgURL;
+        document.body.appendChild(img);
+    }
+</script>

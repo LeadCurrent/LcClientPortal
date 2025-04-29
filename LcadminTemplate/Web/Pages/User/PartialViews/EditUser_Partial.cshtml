@@ -1,0 +1,120 @@
+﻿@model Web.UserVM
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(model => model.User.Id)
+@Html.HiddenFor(model => model.CompanyUser.UserId)
+@Html.HiddenFor(model => model.CompanyUser.Id)
+@Html.HiddenFor(model => model.IsSystemAdmin)
+@Html.HiddenFor(m => m.User.userLogin)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Edit User</div>
+<div class="form-800" id="form">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/UserFields.cshtml");
+            }
+            @if (!Model.ShowHistory && Model.ShowEdit)
+            {
+                <div class="buttons">
+                    <button id="Valid" class="button" onclick="Ajax('Save Changes')">Save Changes</button>
+                    
+                    <button class="button" onclick="NonAjax('Change Password')">Change Password</button>
+                    <button class="button-white" onclick="NonAjax('Cancel Edit');">Cancel</button>
+                    <button class="filterbutton" onclick="NonAjaxWithConfirmation('Delete User','Are you sure you want to remove this User?');">Delete</button>
+                    @if (Model.IsSystemAdmin && Model.CompanyUser.Status == Data.GeneralEnums.Status.Inactive)
+                    {
+                        <button class="button-white" onclick="NonAjaxWithConfirmation('Delete User', 'Are you sure you want to Delete this Customer')">Delete User</button>
+                    }
+            </div>
+            }
+
+        </div>
+    </div>
+
+    @if(Model.CompanyUser.Status == Data.GeneralEnums.Status.Active)
+    {
+        <div>
+            <div class="white-bg">
+                <div class="sectionheader">Assigned Role</div>
+                <div class="input-form">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Add Role:
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(m => m.SelectedRole, Model.RoleDDL, new { onchange = "ClickButton('btnAddRole')" })
+                                </div>
+                                <div class="buttons">
+                                    <button id="btnAddRole" style="display: none" onclick="Ajax('Update Role')">Assign</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                @if (Model.CompanyUser.CompanyUserRoles.Any())
+                {
+                    <div>
+                        <div>
+                            <table class="tablestyle" style="width: 100%">
+                                <tr>
+                                    <td colspan="100" style="padding:0px">
+                                        <div class="sectiontitle center">Assigned Staff</div>
+                                    </td>
+                                </tr>
+                                @foreach (var role in Model.CompanyUser.CompanyUserRoles)
+                                {
+                                    <tr class="mobileportrait-mobilewide">
+                                        <td>
+                                            <div>@role.Role.RoleName</div>
+                                            <div class="buttons">
+                                                <button class="gridbutton" onclick="AjaxWithParam('Remove Role', @role.Id)">Remove</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="desktop">
+                                        <td style="border-radius:10px !important;">
+                                            <div class="row m-0 justify-content-between" style="max-width: 100%">
+                                                <div>@role.Role.RoleName</div>
+                                                <div>
+                                                    <button class="gridbutton" onclick="AjaxWithParam('Remove Role', @role.Id)">Remove</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="input-form">
+                        <div class="text-center" style="color: red;">
+                            <b><i>No Role Assigned.</i></b>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+
+    @{
+        await Html.RenderPartialAsync("Sections/EmailAccounts.cshtml");
+    }
+    @{
+        await Html.RenderPartialAsync("Sections/UserPhoneNumbers.cshtml");
+    }
+</div>
+<script>
+    ValidateForm();
+</script>
+

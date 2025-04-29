@@ -1,0 +1,44 @@
+/*common css start*/
+@charset "utf-8";
+
+:root {
+    /*Background*/
+    --BackgroundColor: #DDDFE0;
+    /*Side Navigation*/
+    --SideNavBackgroundColor: #000;
+    --SideNavTextColor: #666;
+    --SideNavSelectedItemBackgroundColor: #A71931;
+    --SideNavSelectedItemTextColor: #A71931;
+    --SideNavBottomBorderColor: #FFFFFF;
+    --SideNavSubMenuBackgroundColor: #525252;
+    /*Buttons*/
+    --ButtonBackgroundColor: #A71931;
+    --ButtonTextColor: #FFF;
+    --ButtonHoverTextColor: #A71931;
+    --WhiteButtonBorderColor: #AAA;
+    /*Tables*/
+    --TableHeaderBackgroundColor: #000;
+    --TableHeaderTextColor: #FFF;
+    --InnerFormTableHeaderBackgroundColor: #000;
+    --InnerFormTableHeaderTextColor: #FFF;
+    --TableOddRow: #FAFAFA;
+    --TableEvenRow: #FFFFFFF;
+    --SelectedRow: #b6d0e8;
+    /*Headers*/
+    --PageTitleColor: #A71931;
+    --SectionHeaderBackGround: #FFF;
+    --SectionHeaderTextColor: #A71931;
+    --SectionHeaderBorderColor: #FFF;
+    /*Text*/
+    --secondarycolor: #DD0426;
+    --ErrorText: #d32f2f;
+    --SuccessText: #2e7d32;
+    --FormLabelColor: #000;
+    /*Tabs*/
+    --ActiveTabBackGroundColor: #A71931;
+    --ActiveTabTextColor: #FFF;
+    --ActiveTabBorderColor: #A71931;
+    --InactiveTabBackGroundColor: #FFF;
+    --InactiveTabTextColor: #000;
+    --InactiveTabBorderColor: #FFF;
+}

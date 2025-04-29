@@ -1,0 +1,48 @@
+﻿@model CompanyRolesVM
+@using Web
+@using Data
+
+        
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Company.Id)
+@Html.HiddenFor(m => m.CompanyId    )
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+<div class="pagetitle">Create New User Role </div>
+<div class="form-800">
+    <div class="white-bg">
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Role Title:
+                            <span id="RoleName_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.RoleName, new { @class = "requiredfield maxwidth", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="buttons">
+            <div class="validation-message" id="Invalid">
+                <i>Fill in all required fields</i>
+            </div>
+            <div>
+                <button class="button" id="Valid" onclick="NonAjax('Create')">Create Role</button>
+                <button class="button-white" onclick="NonAjax('Cancel')">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    ValidateForm();
+</script>

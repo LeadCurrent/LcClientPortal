@@ -1,0 +1,155 @@
+﻿@model Web.CustomersViewModel
+@using Data;
+@Html.HiddenFor(x => x.CurrentNotesTab)
+
+
+
+
+
+<div class="white-bg">
+    <div class="d-flex justify-content-between sectionheader mt-3">
+        <span class="mt-1">Notes</span>
+        @if (!Model.ShowNewNote && !Model.ShowEditNote)
+        {
+            <button class="button" style="margin: 0 !important" onclick="AjaxPartialUpdate('Show Add Note','CustomerNotes')">Add Note</button>
+        }
+    </div>
+    @if (Model.Customer.CustomerNotes != null && Model.Customer.CustomerNotes.Any())
+    {
+        <div class="p-10">
+            <table class="bottomborder" style="width:100%">
+                @foreach (var note in Model.Customer.CustomerNotes)
+                {
+                    <tr style="border-top: 1px solid #AAA; border-left: 1px solid #AAA; border-right: 1px solid #AAA;">
+                        <td style="max-width:100%">
+                            <div style="padding-bottom:5px; text-align:left">
+                                @Html.Raw(note.Note)
+                            </div>
+                        </td>
+                        <td style="width:200px">
+                            <div style="font-size:10px">
+                                Created By @note.CreatedBy
+                            </div>
+                            <div style="font-size:10px">
+                                Created On @Data.DateTimeFunctions.FormatedDateTime(note.CreateDate)
+                            </div>
+                        </td>
+                        <td style="width:175px">
+                            <div class="paddingttop-5">
+                                <button class="gridbutton" onclick="AjaxPartialUpdateWithParam('Show Edit Note',@note.Id,'CustomerNotes')">Edit</button>
+                                <button class="gridbutton" onclick="AjaxPartialUpdateWithParamAndConfirmation('Remove Note',@note.Id,'CustomerNotes','Are you sure you want to remove this note?')">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+
+
+
+
+
+    @if (Model.ShowNewNote || Model.ShowEditNote)
+    {
+        @if (Model.ShowEditNote)
+        {
+            @Html.HiddenFor(x => x.CustomerNote.Id)
+            @Html.HiddenFor(x => x.CustomerNote.CustomerId)
+        }
+        <div class="input-form">
+
+            <div class="formlabel">Add New Note:</div>
+            <div>
+                @Html.TextAreaFor(m => m.CustomerNote.Note, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+            </div>
+            <div class="buttons">
+                @if (Model.ShowEditNote)
+                {
+                    <button class="button" onclick="AjaxPartialUpdate('Update Note','CustomerNotes')">Update Note</button>
+                }
+                @if (Model.ShowNewNote)
+                {
+                    <button class="button" onclick="AjaxPartialUpdate('Add Note','CustomerNotes')">Create Note</button>
+                }
+                <button class="button-white" onclick="AjaxPartialUpdate('Cancel Note','CustomerNotes')">Cancel</button>
+            </div>
+
+
+        </div>
+    }
+    else
+    {
+        <div class="buttons">
+        </div>
+    }
+</div>
+<div class="white-bg">
+    <div class="d-flex justify-content-between sectionheader mt-3">
+        <span>Documents</span>
+        @if (!Model.ShowNewDocument && !Model.ShowEditDocument)
+        {
+            <button class="button" onclick="AjaxPartialUpdate('Show Add Document', 'CustomerNotes')" style="margin: 0 !important">Upload Document</button>
+        }
+    </div>
+    @if (Model.Customer.CustomerDocuments != null && Model.Customer.CustomerDocuments.Any())
+    {
+        <div class="p-10">
+            <table class="bottomborder" style="width:100%">
+                @foreach (var document in Model.Customer.CustomerDocuments)
+                {
+                    <tr style="border-top: 1px solid #AAA; border-left: 1px solid #AAA; border-right: 1px solid #AAA;">
+                        <td style="max-width:100%">
+                            <div style="padding-bottom:5px; text-align:left">
+                                <a href="@document.FilePath">@document.DocumentName</a>
+                            </div>
+                        </td>
+                        <td style="width:200px">
+                            <div style="font-size:10px">
+                                Created By @document.CreatedBy
+                            </div>
+                            <div style="font-size:10px">
+                                Created On @Data.DateTimeFunctions.FormatedDateTime(document.CreateDate)
+                            </div>
+                        </td>
+                        <td style="width:175px">
+                            <div class="paddingttop-5" style="float:inline-end">
+                                <button class="gridbutton" onclick="AjaxPartialUpdateWithParamAndConfirmation('Remove Document',@document.Id,'CustomerNotes','Are you sure you want to remove this Document?')">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+    @if (Model.ShowNewDocument || Model.ShowEditDocument)
+    {
+        <div class="input-form">
+
+            <div class="form-outline" style="margin: 15px">
+                <table>
+                    <tr style="justify-content:flex-start">
+                        <td>
+                            <div class="upload" style="color:black !important; margin-bottom: 10px">
+                                <input id="" type="file" name="uploadfile" style="color:black !important" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="buttons">
+                    @if (Model.ShowEditDocument)
+                    {
+                        <button class="button" onclick="AjaxPartialUpdate('Update Document','CustomerNotes')">Update Document</button>
+                    }
+                    @if (Model.ShowNewDocument)
+                    {
+                        <button class="button" onclick="AjaxPartialUpdate('Add Document', 'CustomerNotes')">Upload Document</button>
+                    }
+                    <button class="button-white" onclick="AjaxPartialUpdate('Cancel Document','CustomerNotes')">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>

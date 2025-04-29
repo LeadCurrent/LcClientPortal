@@ -1,0 +1,21 @@
+﻿@using Data
+@using Web
+@model Web.CustomerServiceVM
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/CustomerLayout.cshtml";
+}
+@using (Html.BeginForm("ViewInvoice", "CustomerService", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/CustomerService_Partial.cshtml");
+        }
+    </div>
+}
+<script>
+    highlightcurrentpage('nav_MyAccount');
+</script>

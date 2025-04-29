@@ -1,0 +1,748 @@
+﻿@using Data
+@using static Data.DocumentEnums
+@model Web.DocumentVM
+
+<style>
+    .previewModal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .previewModal-content {
+        background-color: #fefefe;
+        margin: 3% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
+    /* Popup container */
+    .stat-popup {
+        position: relative;
+        display: inline-block;
+    }
+
+        /* The actual popup (appears on top) */
+        .stat-popup .stat-popuptext {
+            visibility: hidden;
+            max-width: 350px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -80px;
+            font-weight: 100;
+            font-size: 12px;
+        }
+
+            /* Popup arrow */
+            .stat-popup .stat-popuptext::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #555 transparent transparent transparent;
+            }
+
+        /* Toggle this class when clicking on the popup container (hide and show the popup) */
+        .stat-popup .show {
+            visibility: visible;
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 1s
+        }
+</style>
+
+<style>
+    .asterisk-hover {
+        cursor: pointer;
+    }
+
+    .info-box {
+        display: none;
+        position: absolute;
+        top: -50px;
+        left: 0;
+        background-color: black;
+        color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 12px;
+        width: 150px;
+        z-index: 10;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .asterisk-hover:hover .info-box {
+        display: block;
+    }
+
+
+</style>
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.BlockPostBack)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+@if (Model.CompanyFolder == null)
+{
+    <div class="pagetitle">Documents</div>
+}
+
+<div class="filters">
+    <div class="row width300 maxwidth" style="margin:auto;">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filter">
+            <div class="filter-label">Name:</div>
+            <div>
+                @Html.EditorFor(model => model.FilterName)
+            </div>
+        </div>
+    </div>
+    <div class="buttons">
+        <button id="btnfilter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply&nbsp;Filters</button>
+        <button id="filter" class="filterbutton" onclick="Ajax('Recently Modified Documents')">Recently&nbsp;Modified</button>
+        <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear&nbsp;Filters</button>
+    </div>
+</div>
+
+<div class="form-800">
+    <div class="buttons">
+        <button class="button" onclick="NonAjax('Create Folder')">Create Folder</button>
+        <button class="button" onclick="NonAjax('Create Document')">Create Document</button>
+    </div>
+    <div class="white-bg">
+        @if (Model.GetAllFoldersName != null && Model.GetAllFoldersName.Any())
+        {
+            <div class="sectionheader">
+                <button class="buttonaslink" onclick="NonAjax('Go To Document List')">Documents</button>
+                @foreach (var item in Model.GetAllFoldersName)
+                {
+                    <span>></span>
+                    if (item == Model.GetAllFoldersName.Last())
+                    {
+                        <span>@item.Name</span>
+                    }
+                    else
+                    {
+                        <button class="buttonaslink" onclick="NonAjaxWithParam('View Folder', @item.Id)">@item.Name</button>
+                    }
+                }
+            </div>
+        }
+        else
+        {
+            <div class="sectionheader">Documents</div>
+        }
+
+        <table class="tablestyle">
+            <tr class="desktop">
+                <th style="width: 10%"></th>
+                <th style="width: 40%">
+                    @if (Model.SortBy == "SortNameAscending")
+                    {
+                        <button class="buttonaslink p-0" onclick="Ajax('SortNameDescending')">Name</button>
+                    }
+                    else
+                    {
+                        <button class="buttonaslink p-0" onclick="Ajax('SortNameAscending')">Name</button>
+                    }
+                </th>
+                <th style="width: 35%">
+                    @if (Model.SortBy == "SortModifiedAscending")
+                    {
+                        <button class="buttonaslink p-0" onclick="Ajax('SortModifiedDescending')">Modified</button>
+                    }
+                    else
+                    {
+                        <button class="buttonaslink p-0" onclick="Ajax('SortModifiedAscending')">Modified</button>
+                    }
+                </th>
+                @if (!Model.IsViewOnly || Model.IsAdmin)
+                {
+                    <th style="width: 10%">Thumbnail</th>
+                    <th style="width: 5%"></th>
+                }
+                else
+                {
+                    <th style="width: 15%">Thumbnail</th>
+                }
+            </tr>
+            @{
+                var i = 0;
+                var j = 0;
+                var k = 0;
+            }
+            @if (Model.ParentFolders.Any() || Model.Documents.Any())
+            {
+                @foreach (var folder in Model.ParentFolders)
+                {
+                    var editfolderBtn = "editfolder_" + i;
+                    var FolderId = "Folder" + j;
+                    <tr class="mobileportrait-mobilewide">
+                        <td>
+                            <div onclick="ClickButton('@FolderId')><img src="~/images/documenticons/folder.png" height="20"></div>
+                            <div onclick="ClickButton('@FolderId')"><b>Name: </b>@folder.Name</div>
+                            <div onclick="ClickButton('@FolderId')"><b>Modified: </b>@folder.UpdateDate</div>
+                            @if (!Model.IsViewOnly || Model.IsAdmin)
+                            {
+                                <div class="center m-2">
+                                    <button class="gridbutton" onclick="NonAjaxWithParam('Edit Folder', @folder.Id)">Edit</button>
+                                </div>
+                            }
+                        </td>
+                        <button class="gridbutton" style="display:none" id="@FolderId" onclick="UnBlockPostNonAjaxWithParam('View Folder', @folder.Id)">View</button>
+                    </tr>
+                    <tr class="desktop" style="cursor:pointer">
+                        <td onclick="ClickButton('@FolderId')">
+                            <img src="~/images/documenticons/folder.png" height="20">
+                            @if (folder.RestrictAccess)
+                            {
+                                <span style="font-size: 20px; position: relative;" class="asterisk-hover">
+                                    *
+                                    <div class="info-box">
+                                        <p>
+                                            <strong>Restricted Access</strong>
+                                            @{
+                                                var roleNames = folder.FolderAccesses.Select(access => access.Role.RoleName).ToList();
+                                                for (int r = 0; r < roleNames.Count; r++)
+                                                {
+                                                    @roleNames[r]
+
+                                                    <br />
+                                                }
+                                            }
+                                        </p>
+                                    </div>
+                                </span>
+                            }
+
+                        </td>
+                        <td onclick="ClickButton('@FolderId')">@folder.Name</td>
+                        <td onclick="ClickButton('@FolderId')">@folder.UpdateDate</td>
+                        <td></td>
+                        @if (!Model.IsViewOnly || Model.IsAdmin)
+                        {
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <button class="dropdown-item" type="button" onclick="EditFolder(@i)">Edit</button>
+                                    </div>
+                                </div>
+                                <div style="display:none">
+                                    <button class="gridbutton" id="@editfolderBtn" onclick="NonAjaxWithParam('Edit Folder', @folder.Id)">Edit</button>
+                                </div>
+                            </td>
+                        }
+                        <button class="gridbutton" style="display:none" id="@FolderId" onclick="UnBlockPostNonAjaxWithParam('View Folder', @folder.Id)">View</button>
+                    </tr>
+                    i++;
+                    j++;
+                }
+
+                @foreach (var document in Model.Documents)
+                {
+                    if (document.CustomerId == null && document.VendorId == null && document.JobId == null && document.LeadId == null)
+                    {
+                        var editdocumentBtn = "editdocument_" + i;
+                        var DocumentId = "Document" + i;
+                        var OriginalImageId = "originalImage" + i;
+                        var CompressedImageId = "compressedImage" + i;
+                        var fullUrl = (document.LinkURL != null) ? "https://" + document.LinkURL : string.Empty;
+
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                @if (document.FileName != null)
+                                {
+                                    @if (document.FileName.Contains(".txt"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/text.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".xlsx"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/excel.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".docx") || document.FileName.Contains(".doc"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/text.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".pdf"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/pdf.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".png") ||
+                                    document.FileName.Contains(".jpg") ||
+                                    document.FileName.Contains(".jpeg") ||
+                                    document.FileName.Contains(".mp4"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/image.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".mp4")||
+                                    document.FileName.Contains("youtube.com") ||
+                                    document.FileName.Contains("youtu.be"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/video.png" height="20"></div>
+                                    }
+                                    else if (document.FileName.Contains(".zip"))
+                                    {
+                                        <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/zip.png" height="20"></div>
+                                    }
+                                }
+                                else if (document.LinkURL != null)
+                                {
+                                    <div onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/link icon.png" height="20"></div>
+                                }
+
+                                <div onclick="ClickButton('@DocumentId')"><b>Name: </b>@document.DocumentName</div>
+                                <div onclick="ClickButton('@DocumentId')"><b>Modified: </b>@document.UpdateDate</div>
+
+                                <div onclick="ClickButton('@DocumentId')">
+                                    <img class="originalImage" src="@document.FilePath" alt="Original Image" style="display:none;" />
+                                    <img class="compressedImage" />
+                                </div>
+                                @if (!Model.IsViewOnly || Model.IsAdmin)
+                                {
+                                    <div class="center m-2">
+                                        <button class="gridbutton" onclick="UnBlockPostNonAjaxWithParam('Edit Document', @document.Id)">Edit</button>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr class="desktop" style="cursor:pointer">
+                            @if (document.FileName != null)
+                            {
+                                @if (document.FileName.Contains(".txt"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/text.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".xlsx"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/excel.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".docx") || document.FileName.Contains(".doc"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/word.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".ppt") || document.FileName.Contains(".pptx"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/powerpoint.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".pdf"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/pdf.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".png") ||
+                                document.FileName.Contains(".jpg") ||
+                                document.FileName.Contains(".jpeg"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/image.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".mp4") ||
+                                    document.FileName.Contains("YouTube"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/video.png" height="20"></td>
+                                }
+                                else if (document.FileName.Contains(".zip"))
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/zip.png" height="20"></td>
+                                }
+                                else
+                                {
+                                    <td onclick="ClickButton('@DocumentId')"><img src="~/images/documenticons/Link icon.png" height="20"></td>
+                                }
+                            }
+
+                            <td onclick="ClickButton('@DocumentId')">@document.DocumentName</td>
+                            <td onclick="ClickButton('@DocumentId')">@document.UpdateDate</td>
+
+                            <td onclick="ClickButton('@DocumentId')">
+                                @if (document.FilePath != null)
+                                {
+                                    <img class="originalImage" src="@document.FilePath" alt="Original Image" style="display:none;" />
+                                    <img class="compressedImage" />
+                                }
+                            </td>
+                            @if (!Model.IsViewOnly || Model.IsAdmin)
+                            {
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <button class="dropdown-item" type="button" onclick="EditDocument(@i)">Edit</button>
+                                            @if (document.DocumentFileType == DocumentFileType.Link)
+                                            {
+                                                <button class="dropdown-item" type="button" onclick="window.open('@fullUrl', '_blank')">Preview</button>
+                                            }
+                                            else if (document.DocumentFileType == DocumentFileType.Image)
+                                            {
+                                                <button class="dropdown-item" type="button" onclick="previewAttachments('@document.FileName', @document.Id)">Preview</button>
+                                                <button class="dropdown-item" type="button" onclick="compressAndDownload('@document.FilePath', '@document.FileName')">Download for Email</button>
+                                                <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download Original</button>
+                                            }
+                                            else if (document.DocumentFileType == DocumentFileType.Document)
+                                            {
+                                                <button class="dropdown-item" type="button" onclick="previewAttachments('@document.FileName', @document.Id)">Preview</button>
+                                                <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download</button>
+                                            }
+                                            else if (document.DocumentFileType == DocumentFileType.Video)
+                                            {
+                                                @if (document.FilePath != null)
+                                                {
+                                                    if (document.FilePath != null && document.FilePath.Contains("youtube.com") || document.FilePath.Contains("youtu.be"))
+                                                    {
+                                                        <button class="dropdown-item" type="button"
+                                                                onclick="previewAttachments('@document.FilePath', @document.Id)">
+                                                            Preview YouTube Video
+                                                        </button>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <button class="dropdown-item" type="button"
+                                                            onclick="previewAttachments('@document.FileName', @document.Id)">
+                                                        Preview Document
+                                                    </button>
+                                                }
+                                                <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download</button>
+                                            }
+                                        </div>
+                                    </div>
+
+
+                                    <div style="display:none">
+                                        <button class="gridbutton" id="@editdocumentBtn" onclick="UnBlockPostNonAjaxWithParam('Edit Document', @document.Id)">Edit</button>
+                                        <button class="gridbutton" style="display:none" id="@DocumentId"
+                                                onclick="
+                                                @if (document.DocumentFileType == DocumentFileType.Video) {
+                                                    @if (document.FilePath != null)
+                                                        {
+                                                            if ( document.FilePath.Contains("youtube.com") || document.FilePath.Contains("youtu.be"))
+                                                                {
+                                                    @:previewAttachments('@document.FilePath', @document.Id);
+                                                            }   
+                                                            else{
+                                                     @:previewAttachments('@document.FilePath', @document.Id);
+                                                }
+                                                }
+                                                
+                                                }
+                                                else if (document.DocumentFileType != DocumentFileType.Link) {
+                                                    @:previewAttachments('@document.FileName', @document.Id);
+                                                }
+                                                else
+                                                {
+                                                    @: window.open('@fullUrl', '_blank');
+                                                    @: BlockPost();
+                                                }">
+                                        </button>
+                                    </div>
+
+                                </td>
+                            }
+                        </tr>
+                        i++;
+                        k++;
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="border-radius: 0 0 10px 10px !important;">
+                        <div class="center">
+                            <b>
+                                No Folder/Document Present
+                            </b>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </table>
+        <div id="previewModal" class="previewModal" style="display:none;">
+            <div class="previewModal-content" id="previewModalContent">
+                <span class="close" onclick="closePreviewModal()">&times;</span>
+                <img id="previewImage" style="width: 100%; height: auto; display: none;" alt="Preview Image">
+                <iframe id="previewIframe" style="display:none;" width="100%" height="800px"></iframe>
+                <video id="previewVideo" controls style="display:none; min-width: 100%;">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function EditFolder(id) {
+        var btnId = "editfolder_" + id;
+        $('#' + btnId).click();
+    }
+
+    function EditDocument(id) {
+        var btnId = "editdocument_" + id;
+        $('#' + btnId).click();
+    }
+</script>
+
+<script>
+    function closePreviewModal() {
+        var imgElement = document.getElementById('previewImage');
+        var iframeElement = document.getElementById('previewIframe');
+
+        imgElement.src = '';
+        iframeElement.src = '';
+        document.getElementById('previewModal').style.display = "none";
+    }
+
+    // code for previewing document
+    function previewAttachments(filename, DocumentId) {
+        
+        event.preventDefault();
+
+        var fileExtension = filename.split('.').pop().toLowerCase();
+
+        // Check if it's a YouTube link
+        var isYouTubeLink = filename.includes("youtube.com") || filename.includes("youtu.be");
+
+        $.ajax({
+            url: '@Url.Action("PreviewAttachment", "Document")',
+            type: 'GET',
+            data: {
+                filename: filename,
+                DocumentId: DocumentId
+            },
+            success: function (response) {
+                if (response.fileUrl || isYouTubeLink) {
+                    console.log("File URL: " + response.fileUrl);
+
+                    var imgElement = document.getElementById('previewImage');
+                    var iframeElement = document.getElementById('previewIframe');
+                    var videoElement = document.getElementById('previewVideo');
+
+                    imgElement.style.display = "none";
+                    iframeElement.style.display = "none";
+                    videoElement.style.display = "none";
+
+                    if (isYouTubeLink) {
+                        // Handle YouTube video preview
+                        var youtubeId = extractYouTubeId(filename);
+                        if (youtubeId) {
+                            iframeElement.src = "https://www.youtube.com/embed/" + youtubeId;
+                            iframeElement.style.display = "block";
+                            adjustIframeWidth(iframeElement);
+                        } else {
+                            alert("Invalid YouTube link.");
+                            return;
+                        }
+                    } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(fileExtension)) {
+                        imgElement.src = response.fileUrl;
+                        imgElement.style.display = "block";
+                    } else if (fileExtension === "pdf") {
+                        var encodedUrl = encodeURIComponent(response.fileUrl);
+                        console.log("Encoded URL for PDF Viewer: " + encodedUrl);
+
+                        iframeElement.src = "https://docs.google.com/gview?url=" + encodedUrl + "&embedded=true";
+                        iframeElement.style.display = "block";
+                        adjustIframeWidth(iframeElement);
+                    } else if (["docx", "doc", "pptx", "xlsx", "txt", "ppt"].includes(fileExtension)) {
+                        iframeElement.src = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(response.fileUrl);
+                        iframeElement.style.display = "block";
+                        adjustIframeWidth(iframeElement);
+                    } else if (["mp4", "webm", "ogg"].includes(fileExtension)) {
+                        videoElement.src = response.fileUrl;
+                        videoElement.style.display = "block";
+                    } else {
+                        alert("File type not supported for preview.");
+                        return;
+                    }
+
+                    document.getElementById('previewModal').style.display = "block";
+                } else {
+                    alert("Failed to load the document.");
+                }
+            },
+            error: function () {
+                alert("An error occurred while trying to preview the document.");
+            }
+        });
+    }
+
+    // Helper function to extract YouTube video ID
+    function extractYouTubeId(url) {
+        debugger
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\/v\/)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+
+    function adjustIframeWidth(iframeElement) {
+        iframeElement.style.width = "100%";
+        var windowWidth = window.innerWidth;
+
+        if (windowWidth < 768) {
+            iframeElement.style.width = "90%";
+        } else if (windowWidth < 1200) {
+            iframeElement.style.width = "95%";
+        } else {
+            iframeElement.style.width = "100%";
+        }
+    }
+
+
+    function CompressToLowest() {
+        
+        const images = document.querySelectorAll('img.originalImage');
+
+        images.forEach(function (originalImage) {
+            originalImage.crossOrigin = "anonymous";
+
+            originalImage.onload = function () {
+                const canvas = document.createElement('canvas');
+                const thumbnailWidth = 100;
+                const thumbnailHeight = 100;
+                let width = originalImage.width;
+                let height = originalImage.height;
+
+                if (width > height) {
+                    height = Math.round((height *= thumbnailWidth / width));
+                    width = thumbnailWidth;
+                } else {
+                    width = Math.round((width *= thumbnailHeight / height));
+                    height = thumbnailHeight;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(originalImage, 0, 0, width, height);
+
+                try {
+                    const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.9);
+                    const compressedImage = originalImage.closest('td, div').querySelector('img.compressedImage');
+                    compressedImage.src = thumbnailUrl;
+                    originalImage.style.display = 'none';
+                } catch (error) {
+                    console.error('Error generating thumbnail:', error);
+                }
+            };
+
+            if (originalImage.complete) {
+                originalImage.onload();
+            }
+        });
+    };
+</script>
+
+<script>
+    // Compress download for email images
+    function compressAndDownload(filePath, fileName) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = filePath;
+
+        img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(function (blob) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+            }, 'image/jpeg', 0.5);
+        };
+    }
+</script>
+
+<script>
+    function showPopup(id) {
+        var popup = document.getElementById(id);
+        popup.classList.add("show");
+    }
+
+    function hideAllPopups() {
+        var popups = document.querySelectorAll('.stat-popuptext');
+        Array.from(popups).map(x => x.classList.remove("show"));
+    }
+
+</script>
+
+<script>
+    function showuploading() {
+        document.getElementById('buttons').style.display = 'none';
+        document.getElementById('uploading').style.display = 'inline';
+    }
+</script>
+<script>
+    CompressToLowest();
+</script>
+<script>
+
+    var activeItemsArray = [];
+    @if (Model.Documents != null)
+    {
+        @foreach (var d in Model.Documents)
+        {
+            @:activeItemsArray.push("@d.DocumentName");
+        }
+    }
+
+    @if (Model.ParentFolders != null)
+    {
+        @foreach (var folder in Model.ParentFolders)
+        {
+            @:activeItemsArray.push("@folder.Name");
+        }
+    }
+
+    AutoCompleteSuggestions($('#FilterName'), activeItemsArray);
+</script>

@@ -1,0 +1,11 @@
+@model ContactsVM
+@using Web
+@using Data
+@{
+    Layout = "~/Pages/Shared/FrontEndLayout.cshtml";
+}
+<div id="partialview">
+    @{
+        await Html.RenderPartialAsync("Contact_Partial.cshtml");
+    }
+</div>

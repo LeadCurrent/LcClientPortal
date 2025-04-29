@@ -1,0 +1,101 @@
+﻿@model Web.ContactUsVM
+@using Data
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Company.Id)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Contact Us </div>
+<div class="filters">
+    <div class="row width800" style="margin:auto">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <div class="filter-label">Company Name:</div>
+            <div>
+                @Html.EditorFor(model => model.FilterName, new { @class = "filterfield" })
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <div class="filter-label">Status:</div>
+            <div>
+                @Html.DropDownListFor(model => model.FilterStatus, StatusDDL(), new { onchange = "ClickButton('filter');" })
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <button id="filter" class="filterbutton" onclick="Ajax('Apply Filters')">  Search</button>
+
+            <button class="filterbutton" onclick="Ajax('Clear Filters')">
+                Clear&nbsp;Filters
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="form-800">
+
+    <div class="white-bg">
+        <div class="sectionheader">Companies</div>
+        <table class="tablestyle">
+            <tr class="desktop">
+
+                <th>
+                    Company
+                </th>
+
+
+                <th style="width:15%">
+
+                </th>
+
+            </tr>
+            @if (Model.Companys != null)
+            {
+
+
+                @foreach (var company in Model.Companys)
+                {
+
+                    <tr class="mobileportrait-mobilewide">
+                        <td>
+
+
+                            <div>
+                                <b>Company:</b>
+                                @company.Name
+
+                            </div>
+
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@company.Id)">View</button>
+                        </td>
+                    </tr>
+                    <tr class="desktop">
+
+                        <td>
+
+                            @company.Name
+
+                        </td>
+
+                        <td>
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@company.Id)">View</button>
+
+                        </td>
+                    </tr>
+
+
+                }
+            }
+        </table>
+    </div>
+
+</div>
+
+

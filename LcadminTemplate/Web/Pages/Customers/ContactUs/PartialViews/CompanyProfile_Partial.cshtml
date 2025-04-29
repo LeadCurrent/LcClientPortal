@@ -1,0 +1,82 @@
+﻿@model ContactUsVM
+@using Data
+@using Web
+<link href="~/css/pwcustomstyles.css" rel="stylesheet" />
+@{
+    var title = "Company Profile";
+    var formclass = "form-800";
+    
+}
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Company.Id)
+<div id="popupbackground" class="popup-background" style="display:none;"></div>
+
+    <div class="pagetitle">@title</div>
+
+
+<div class="@formclass">
+    
+   
+    <div class="white-bg">
+        <div class="sectionheader mt-0 mobilewide-desktop">Company Information</div>
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Company:
+                        </div>
+                        <div class="m-2">
+                            <div>
+                                @Model.Company.Name
+                            </div>
+                            <div class="formlabel">
+                                Company Address:
+                            </div>
+                            <div>
+                                @Model.Company.Address
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Logo:
+                        </div>
+                        <div>
+                            @if (Model.Company.Logo != null)
+                            {
+                                <img height="75" src=@Model.Company.Logo />
+                            }
+                        </div>
+                    </td>
+                </tr>
+               
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Email:
+                        </div>
+                        <div>
+                            @Model.Company.Email
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Phone:
+                        </div>
+                        <div>
+                            @Model.Company.Phone
+                        </div>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+  
+
+</div>
+
+

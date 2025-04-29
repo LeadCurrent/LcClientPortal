@@ -1,0 +1,57 @@
+﻿@using Data
+@model Web.DocumentVM
+
+<script>
+    function showuploading() {
+        document.getElementById('buttons').style.display = 'none';
+        document.getElementById('uploading').style.display = 'inline';
+    }
+</script>
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Document.CompanyId)
+@Html.HiddenFor(m => m.CompanyFolder.ParentFolderId)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Create Document</div>
+
+<div class="form-800">
+    <div class="white-bg">
+
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/DocumentFields.cshtml");
+            }
+
+            <div class="center mt-3" id="buttons">
+                <div id="uploading" style="display:none; font-weight:bold; font-size:10px">
+                    Uploading file...
+                </div>
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+                <button class="button valid" id="Valid" onclick="javascript:showuploading(); NonAjax('Create')">Add Document</button>
+                @if (Model.CompanyFolder != null)
+                {
+                    <button class="filterbutton mt-1" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button class="filterbutton mt-1" onclick="NonAjax('')">Cancel</button>
+
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    ValidateForm();
+</script>

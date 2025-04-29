@@ -1,0 +1,15 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+<table>
+    <tr>
+        <td>
+            <div class="formlabel">
+                Name:
+                <span id="Template_Name_Invalid" class="required">*</span>
+            </div>
+            @Html.EditorFor(m => m.Template.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+        </td>
+    </tr>
+</table>
+

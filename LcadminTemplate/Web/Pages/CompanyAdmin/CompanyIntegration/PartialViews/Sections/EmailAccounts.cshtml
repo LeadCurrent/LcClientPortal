@@ -1,0 +1,327 @@
+﻿@model CompanyIntegrationVM
+@using Data
+@using Web
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.RemoveId)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.CompanyId)
+@Html.HiddenFor(m => m.Company.Id)
+<script>
+        function toggleAccessSection() {
+        var checkbox = document.getElementById("allStaffAccessCheckbox");
+        var section = document.getElementById("accessSection");
+        section.style.display = checkbox.checked ? "none" : "table-row-group";
+    }
+        function toggleUserList(event) {
+        event.preventDefault(); // Prevent default button behavior
+        var userListRow = document.getElementById('userList');
+        userListRow.style.display = userListRow.style.display === 'none' ? 'table-row' : 'none';
+    }
+</script>
+<script>
+    function newBackgroundColor(color) {
+        document.getElementById('CompanyEmailAccount_CalendarColor').value = color;
+    }
+</script>
+<div class="white-bg">
+    <div class="sectionheader mt-0">Email</div>
+ 
+    @if (Model.ShowAddStartSyncDate)
+    {
+        <div class="white-bg">
+            <div class="center mr-2">
+                @Html.CheckBoxFor(x => x.AllStaffAccess)Provide access to all staff
+            </div>
+            <div class="sectionheader mt-0">Add a Start Sync Date</div>
+            <div style="display:flex;justify-content:center;">
+                <table>
+                    <tr>
+                        <td>
+                            <div>
+                                @Html.EditorFor(m => m.LastSyncDate, new { htmlAttributes = new { @onchange = "document.getElementById('ConnectAccount').style.display = 'inline'" } })
+                                <div class="buttons">
+                                    @if (Model.ConnectGmailAccount)
+                                    {
+                                        <button id="ConnectAccount" class="button" style="display:none" onclick="NonAjax('Connect to my gmail account')">Connect Gmail Account</button>
+                                    }
+                                    else if (Model.ConnectMicrosoftAccount)
+                                    {
+                                        <button id="ConnectAccount" class="button" style="display:none" onclick="NonAjax('Connect to my microsoft account')">Connect Office 365 Account</button>
+                                    }
+                                    <button class="gridbutton" onclick="Ajax('Cancel Add other Account')">Cancel</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="buttons">
+                <button class="button" onclick="Ajax('Show Add StartSyncDate Microsoft')">Connect Office 365 Account</button>
+                <button class="button" onclick="Ajax('Show Add StartSyncDate Google')">Connect Gmail Account</button>
+            @* <button class="button" onclick="Ajax('Show Other Account Fields')">Connect Other Account</button> *@
+        </div>
+    }
+    @if (Model.EditEmailAccount)
+    {
+        @Html.HiddenFor(m => m.CompanyEmailAccount.Id)
+        <div class="white-bg">
+            <div class="sectionheader mt-0">Email</div>
+            <div style="display:flex; justify-content:center;">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="formlabel">Display Name:</div>
+                       
+                            </div>
+                        </td>
+                        <td>
+                            @if (Model.CompanyEmailAccount.EmailType != CompanyEnums.EmailType.Other)
+                            {
+                                <div class="formvalue mx-5">
+                                    @Model.CompanyEmailAccount.Name
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="formvalue">
+                                    @Html.TextBoxFor(m => m.CompanyEmailAccount.Name)
+                                </div>
+                            }
+</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="formlabel">Email :</div>
+                             
+                            </div>
+                        </td>
+                        <td>
+                            @if (Model.CompanyEmailAccount.EmailType != CompanyEnums.EmailType.Other)
+                            {
+                                <div class="formvalue mx-5">
+                                    @Model.CompanyEmailAccount.Email
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="formvalue mx-5">
+                                    @Html.TextBoxFor(m => m.CompanyEmailAccount.Email)
+                                </div>
+                            }
+                        </td>
+                    </tr>
+
+                    <tbody id="accessSection" style="@(Model.CompanyEmailAccount.AllStaffAccess ? "display:none;" : "display:table-row-group;")">
+                        <tr>
+                            <td class="d-flex">
+                                <div class="formlabel">Access :</div>
+                            
+                            </td>
+                            <td>
+                                @if (Model.CompanyUserEmails != null && Model.CompanyUserEmails.Any())
+                                {
+                                    foreach (var email in Model.CompanyUserEmails)
+                                    {
+                                        <div class="d-flex align-items-center mx-5">
+                                            <span>@email.CompanyUser.User.FullName</span>
+                                            <button id="" class="gridbutton mx-2" onclick="AjaxWithParam('Remove Access',@email.Id)">Remove</button>
+                                        </div>
+                                    }
+                                }
+                            </td>
+                          
+                        </tr>
+
+
+                        <tr id="userList" style="display:none;">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @Html.DropDownListFor(x => x.CompanyUserId, Model.CompanyUserDDL, new { @class = "", onchange = "ClickButton('AddAccess')" })
+                                    <button id="AddAccess" style="display:none" class="gridbutton ms-2" onclick="Ajax('Add Access')">Add User</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <button id="addUserButton" class="gridbutton" onclick="toggleUserList(event)">Add User</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    @if (Model.CompanyEmailAccount.EmailType != CompanyEnums.EmailType.Other)
+                    {
+                        <tr>
+                            <td colspan="100%" style="width: 100%;">
+                                <div class="">
+                                    @Html.CheckBoxFor(x => x.CompanyEmailAccount.AllStaffAccess, new { id = "allStaffAccessCheckbox", onchange = "toggleAccessSection()" })
+                                    <label for="allStaffAccessCheckbox">Provide access to all staff</label>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="">
+                                    <div class="formlabel" style="min-width: 105px;">Sync Date :</div>
+                                
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    @Html.EditorFor(m => m.CompanyEmailAccount.LastSyncDate, new { htmlAttributes = new { } })
+                                </div>
+                            </td>
+                        </tr>  
+                        <tr>
+                            <td>
+                                <div class="">
+                                    <div class="formlabel" style="min-width: 105px;"> Calendar Color: :</div>
+                                
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <input name="backgroundcolorpicker" value="@Model.CompanyEmailAccount.CalendarColor" id="backgroundcolor" type="color" onchange="newBackgroundColor(backgroundcolorpicker.value);">
+                                    @Html.HiddenFor(Model => Model.CompanyEmailAccount.CalendarColor)
+                                </div>
+                            </td>
+                        </tr>
+                               
+
+                        <tr>
+                            <td colspan="100%" style="width: 100%;">
+                                <div class="buttons">
+                                    <button id="" class="button" onclick="AjaxWithParam('Update Email Account',@Model.CompanyEmailAccount.Id)">Update Email Account</button>
+                                    <button class="gridbutton" onclick="Ajax('Cancel Add other Account')">Cancel</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                <div class="buttons">
+                                    <button id="" class="button" onclick="AjaxWithParam('Update Email Account',@Model.CompanyEmailAccount.Id)">Update Email Account</button>
+                                    <button class="gridbutton" onclick="Ajax('Cancel Add other Account')">Cancel</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+    }
+    @if (Model.CompanyEmailAccounts.Any())
+    {
+        <div>
+            <table class="tablestyle border-bottom" style="width:100%">
+                <tr class="desktop">
+                    <th>
+                        Email Type
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Access
+                    </th>
+                    <th style="">
+
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var CompanyEmailAccount in Model.CompanyEmailAccounts)
+                {
+                    <tr class="mobileportrait-mobilewide">
+                        <td>
+                            @if (CompanyEmailAccount.IsDefault)
+                            {
+                                <div style="font-size:15px;"><b>Default Email</b></div>
+                            }
+                            <div>
+                                <b class="secondary-text">Email Type: </b>@CompanyEmailAccount.EmailType
+                            </div>
+                            <div>
+                                <b class="secondary-text">Name: </b>@CompanyEmailAccount.Name
+                            </div>
+                            <div>
+                                <b class="secondary-text">Email Account </b>@CompanyEmailAccount.Email
+                            </div>
+                            <div>
+                                <b class="secondary-text">Email Account :  </b>@CompanyEmailAccount.Email
+                            </div>
+                            <div>
+                                <b class="secondary-text">Access : </b>
+                                @if (CompanyEmailAccount.AllStaffAccess)
+                                {
+                                    <span>All Staff </span>
+                                }
+                            </div>
+                            <div class="btn-group m-1">
+                                <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-left">
+                                    @if (!CompanyEmailAccount.IsDefault)
+                                    {
+                                        <button class="dropdown-item" onclick="NonAjaxWithParam('Set Default Email',@CompanyEmailAccount.Id)">Set as Default</button>
+                                    }
+                                    <button class="dropdown-item" onclick="NonAjaxWithParamAndConfirmation('Remove Email Account',@CompanyEmailAccount.Id,'Are you sure you want to delete this email account')">Remove</button>
+                                    <button class="dropdown-item" onclick="NonAjaxWithParam('Reconnect Account',@CompanyEmailAccount.Id)">Reconnect</button>
+                                    <button class="dropdown-item" onclick="AjaxWithParam('Edit Email Account',@CompanyEmailAccount.Id)">Edit</button>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="desktop">
+                        <td>@CompanyEmailAccount.EmailType</td>
+                        <td>@CompanyEmailAccount.Name</td>
+                        <td>@CompanyEmailAccount.Email</td>
+                        <td>
+                            @if (CompanyEmailAccount.AllStaffAccess)
+                            {
+                                <span>All Staff </span>
+                            }
+                        </td>
+                        <td>
+                        <td>
+                            <div class="btn-group m-1">
+                                <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-left">
+                                    @if (!CompanyEmailAccount.IsDefault)
+                                    {
+                                        <button class="dropdown-item" onclick="NonAjaxWithParam('Set Default Email',@CompanyEmailAccount.Id)">Set as Default</button>
+                                    }
+                                    <button class="dropdown-item" onclick="NonAjaxWithParamAndConfirmation('Remove Email Account',@CompanyEmailAccount.Id,'Are you sure you want to delete this email account')">Remove</button>
+                                    <button class="dropdown-item" onclick="NonAjaxWithParam('Reconnect Account',@CompanyEmailAccount.Id)">Reconnect</button>
+                                    <button class="dropdown-item" onclick="AjaxWithParam('Edit Email Account',@CompanyEmailAccount.Id)">Edit</button>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>
+

@@ -1,0 +1,147 @@
+﻿@using Data
+@using Web
+@model Web.TemplateWithTabsVM
+@using static Web.GeneralEnumDDLs
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Tab Template</div>
+<div class="form-1000">
+    @{
+        await Html.RenderPartialAsync("Sections/Tabs.cshtml");
+    }
+    @if (Model.Edit)
+    {
+        @Html.HiddenFor(x => x.Template.Id)
+        @Html.HiddenFor(x => x.Template.Status)
+        @Html.HiddenFor(x => x.Template.Number)
+        @Html.HiddenFor(x => x.Template.Currency)
+        @Html.HiddenFor(x => x.Template.Date)
+        <div class="sectionheader mt-0">Edit Template</div>
+        <div class="white-bg">
+            <div class="input-form">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Name:
+                                <span id="Template_Name_Invalid" class="required">*</span>
+                            </div>
+                            @Html.EditorFor(m => m.Template.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                        </td>
+                        <td>
+                            <div class="formlabel">
+                                Dropdown:
+                                <span id="Template_Dropdown_Invalid" class="required">*</span>
+                            </div>
+                            @Html.DropDownListFor(m => m.Template.Dropdown, SampleDDL(), new { @class = "requireddropdown", onchange = "ValidateForm();" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="formlabel formRadioGroup">
+                                Radio Select:
+                                <span id="Template_RadioSelect_Invalid" class="required">*</span>
+                                <div class="">
+                                    <div class="radioGroup">
+                                        <span>
+                                            @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item1, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 1<br>
+                                        </span>
+                                        <span>
+                                            @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item2, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 2<br>
+                                        </span>
+                                        <span>
+                                            @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item3, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 3
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="formlabel">
+                                @Html.CheckBoxFor(m => m.Template.CheckBox, new { onclick = "ValidateTemplate();" })  Checkbox
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+
+                <div class="buttons">
+                    <button id="Valid" class="button" onclick="Ajax('Save Changes')">Save Changes</button>
+                    <button class="button" onclick="Ajax('')">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <script>ValidateForm();</script>
+
+    }
+    else
+    {
+      
+        <table class="tablestyle">
+            <tr class="mobilewide-desktop">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Checkbox
+                </th>
+                <th>
+                    Dropdown
+                </th>
+                <th>
+                    Radio Select
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var Template in Model.Templates)
+            {
+                <tr>
+                    <td class="mobilewide-desktop">
+                        @Template.Name
+                    </td>
+                    <td class="mobilewide-desktop">
+                        @Template.CheckBox
+                    </td>
+                    <td class="mobilewide-desktop">
+                        @TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                    </td>
+                    <td class="mobilewide-desktop">
+                        @TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                    </td>
+                    <td class="mobilewide-desktop">
+                        <button class="gridbutton" onclick="AjaxWithParam('Edit',@Template.Id)">Edit</button>
+                    </td>
+                    <td class="mobileportrait">
+                        <div>
+                            <b>Name: </b>@Template.Name
+                        </div>
+                        <div>
+                            <b>CheckBox: </b>@Template.CheckBox
+                        </div>
+                        <div>
+                            <b>Dropdown: </b>@TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                        </div>
+                        <div>
+                            <b>Radio Select: </b>@TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                        </div>
+                        <div class="center">
+                            <button class="gridbutton" onclick="AjaxWithParam('Edit',@Template.Id)">Edit</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+</div>
+

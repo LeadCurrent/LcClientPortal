@@ -1,0 +1,280 @@
+@inject Microsoft.AspNetCore.Identity.SignInManager<Data.User> signInManager
+@{
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LeadCurrent</title>
+    <meta name="msapplication-TileColor">
+    <meta name="theme-color">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes">
+
+    @* <script src="https://kit.fontawesome.com/02d622bf56.js" crossorigin="anonymous"></script> *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+    <link rel="stylesheet" href="~/css/colors.css?v=04102025" />
+    <link rel="apple-touch-icon" href="/images/tr-apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/images/tr-favicon.png">
+    <link rel="shortcut icon" type="image/images/ico" href="/startup-icon.png">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/apple-touch-icon.png.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link href="/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="/iphonexr_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/iphonexsmax_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/ipadpro3_splash.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link rel="stylesheet" href="~/css/styles.css?v=03212025" />
+    <script type="text/javascript" src="~/js/JavaScriptFunctions.js?v=12032024"></script>
+    @* <script type="text/javascript" src="~/js/ServiceWorker.js"></script> *@
+    <link href="~/css/styles.css" rel="stylesheet" />
+
+    <style>
+        .inactivetab:hover {
+            color: var(--InactiveTabTextColor) !important;
+            text-decoration: none !important;
+        }
+    </style>
+</head>
+<body class="body" id="body">
+    <div class="wrapper" id="wrapper">
+        <div class="widedesktop">
+            <div class="top_navbar">
+                <div class="hamburger">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="top_menu">
+                    <div class="logo">
+                        <img id="logo" src="/images/LCLogo.png" alt="Logo" height="40">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar overflow-auto">
+            <div class="desktop">
+                <div class="top_navbar">
+                    <div class="top_menu">
+                        <div class="logo center" style="padding-top:5px;">
+                            <img id="logo" src="/images/LCLogo.png" alt="Logo" height="40">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            @if (signInManager.IsSignedIn(User))
+            {
+                <ul style="border-top:solid 1px #EEE">
+                    @if (CommonClasses.Environment.Customers && (User.Claims.Where(c => c.Type.Contains("Customers")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Customer" id="nav_customers">
+                                <span class="title">Customers</span>
+                            </a>
+                        </li>
+                    }
+                    @if (CommonClasses.Environment.Documents && (User.Claims.Where(c => c.Type.Contains("Documents")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Document" id="nav_Documents">
+                                <span class="title">Documents</span>
+                            </a>
+                        </li>
+                    }
+
+                    @if ((CommonClasses.Environment.CompanyProfile || CommonClasses.Environment.Users)
+                   && (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
+                   || User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
+                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null
+                   || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Company").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">Company Admin</span>
+                                </span>
+                                <span class="arrow-func"></span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    @if (CommonClasses.Environment.CompanyProfile &&
+                                   (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
+                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                    {
+                                        <li>
+                                            <a href="~/CompanyProfile" id="nav_CompanyProfile">
+                                                <span class="title">Profile</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a href="~/CompanyIntegration" id="nav_CompanyIntegration">
+                                            <span class="title">Integration</span>
+                                        </a>
+                                    </li>
+                                    @if (CommonClasses.Environment.CompanyProfile &&
+                                   (User.Claims.Where(c => c.Type.Contains("CompanyRoles")).FirstOrDefault() != null
+                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                    {
+                                        <li>
+                                            <a href="~/CompanyRoles" id="nav_CompanyRoles">
+                                                <span class="title">Roles</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (CommonClasses.Environment.CompanyProfile &&
+                                   (User.Claims.Where(c => c.Type.Contains("CompanyAccount")).FirstOrDefault() != null
+                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                    {
+                                        <li>
+                                            <a href="~/CompanyAccount" id="nav_CompanyAccount">
+                                                <span class="title">Account</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (CommonClasses.Environment.Users
+                                   && (User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
+                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                    {
+                                        <li>
+                                            <a href="~/user" id="nav_User">
+                                                <span class="title">Users</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                    }
+
+                    @if (CommonClasses.Environment.Templates
+                   && (User.Claims.Where(c => c.Type.Contains("Templates")).FirstOrDefault() != null
+                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null))
+                    {
+                        <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">Templates</span>
+                                </span>
+                                <span class="arrow-func"></span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a href="~/template" id="nav_Template">
+                                            <span class="title">Basic Template</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/TemplateInlineEdit" id="nav_TemplateInlineEdit">
+                                            <span class="title">Inline Edit Template</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/TemplateWithTabs/Tab1" id="nav_TemplateWithTabs">
+                                            <span class="title">Tab Template</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+
+                    @if (User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null)
+                    {
+                        <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">System Admin</span>
+                                </span>
+                                <span class="arrow-func"></span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a href="~/Company" id="nav_Companies">
+                                            <span class="title">Companies</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/SystemAdminUser" id="nav_SystemAdminUser">
+                                            <span class="title">System Admins</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                @using (Html.BeginForm("Logout", "Account"))
+                {
+                    <div class="logout" style="padding-bottom:30px;">
+                        <div>
+                            Logged in as
+                            @User.Identity.Name
+                        </div>
+
+                        @if (User.Claims.Where(c => c.Type.Contains("CompanyName")).FirstOrDefault() != null)
+                        {
+                            <div>
+                                @User.Claims.Where(c => c.Type.Contains("CompanyName")).FirstOrDefault().Value
+                            </div>
+                        }
+
+                        @Html.ActionLink("Log Out", "Logout", "Account")
+                    </div>
+                }
+            }
+        </div>
+        <div class="main-Content">
+            @RenderBody()
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $(".hamburger").click(function () {
+                $(".wrapper").toggleClass("collapseSideBar");
+            });
+            $(".sidebar ul li a").click(function () {
+                $(".sidebar ul li a").removeClass("active");
+                $(this).addClass("active");
+            });
+            $(".sidebar-dropdown > a").click(function () {
+                $(".sidebar-submenu").slideUp(250);
+                if ($(this).parent().hasClass("active")) {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this).parent().removeClass("active");
+                } else {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this).next(".sidebar-submenu").slideDown(250);
+                    $(this).parent().addClass("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+<script src="~/js/Ajax.js"></script>

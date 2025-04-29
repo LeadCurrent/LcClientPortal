@@ -1,0 +1,48 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">TemplatePluralDisplay</div>
+<div class="form-1000">
+    @*Filters Start*@
+    <div class="white-bg">
+        <div class="filters">
+            <div class="row row-sec" style="text-align:left">
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 filter">
+                    <div class="filter-label">Name:</div>
+                    <div>
+                        @Html.EditorFor(model => model.FilterName)
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-6 filter">
+                    <button id="filter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply Filters</button>
+                    <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Filters End*@
+    <div class="buttons">
+        <button class="button" onclick="NonAjax('Create New')">Create New TemplateDisplay</button>
+    </div>
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="desktop">
+                @*TableHeaders*@
+            </tr>
+            @foreach (var Template in Model.Templates)
+            {
+                @*TableFields*@
+            }
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,28 @@
+﻿@using Data
+@using Web
+@model Web.CustomersViewModel
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+<div class="pagetitle">Create New Customer </div>
+<div class="container-sec">
+    <div class="form-800">
+        @using (Html.BeginForm("Create", "Customer"))
+        {
+            <div>
+                @{
+                    Model.ShowCreateCompanyButtons = true;
+                    await Html.RenderPartialAsync("PartialViews/Sections/CustomerDetails.cshtml");
+                }
+
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    highlightcurrentpage('nav_customers');
+</script>

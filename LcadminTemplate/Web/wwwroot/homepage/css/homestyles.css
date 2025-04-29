@@ -1,0 +1,27 @@
+﻿.grid-container {
+    display: grid;
+    grid-template-columns: 1fr; /* Side nav is hidden on mobile */
+    grid-template-rows: 65px 1fr 50px;
+    grid-template-areas: 'header' 'main' 'footer';
+    height: 100vh;
+}
+/* Give every child element its grid name */
+
+.header {
+    grid-area: header;
+    background-color: white;
+    align-content: center;
+}
+
+.main {
+    grid-area: main;
+    height:100%
+}
+
+.footer {
+    grid-area: footer;
+    ma background-color: #648ca6;
+}
+
+
+

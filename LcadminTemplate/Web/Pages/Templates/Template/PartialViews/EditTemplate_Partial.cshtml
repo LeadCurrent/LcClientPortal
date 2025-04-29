@@ -1,0 +1,35 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.BlockPostBack)
+@Html.HiddenFor(m => m.Template.Id)
+@Html.HiddenFor(m => m.Template.CreateDate)
+@Html.HiddenFor(m => m.Template.CreatedBy)
+
+<div id="popupbackground" class="modal-popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Edit Template </div>
+<div class="form-1000">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/TemplateFields.cshtml");
+            }
+
+            <div class="buttons">
+                <button class="button" id="Valid" onclick="Ajax('Update')">Update Template</button>
+                <button class="button" onclick="NonAjax('Cancel')">Go Back</button>
+                <button class="button" onclick="NonAjaxWithConfirmation('Remove','Are you sure you want to remove this TemplateDisplay?');">Remove TemplateDisplay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    ValidateForm();
+</script>

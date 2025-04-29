@@ -1,0 +1,60 @@
+﻿@model Web.ErrorVM
+
+<div class="pagetitle">Error</div>
+<div class="form-800">
+    <div class="white-bg">
+        <div class="input-form">
+            <div>
+                @if (Model.Submitted)
+                {
+                    <div>
+                        <b>Thank you for submitting your feedback.  We will fix the error as soon as possible!</b>
+                    </div>
+                }
+                else if (CommonClasses.Environment.environment.Contains("Dev") || Model.ShowTechnicalDetails)
+                {
+                    <div>
+
+                        An unexpected error has occurred.  <br /><br />
+                        <b>Message: </b>@Model.ExceptionLog.Message <br><br>
+                        <b>Exception:</b>@Model.ExceptionLog.InnerException
+
+                        <button class="button" onclick="Ajax('Go Back')">Go Back</button>
+                    </div>
+
+                }
+                else
+                {
+                    @Html.HiddenFor(m => m.ExceptionLog.Id)
+                    @Html.HiddenFor(m => m.AjaxUpdate)
+                    @Html.HiddenFor(m => m.Param)
+                    @Html.HiddenFor(m => m.Action)
+                    <div class="mb-10">
+                        <b>An unexpected error has occurred.</b>
+                    </div>
+                    <div class="mb-10">
+                        We have captured details of the error but if you can explain what you were doing when the error occurred that will help us fix the issue.
+                    </div>
+                    <div>
+                        <b>What page were you on?</b>
+                    </div>
+                    <div class="mb-10">
+                        @Html.EditorFor(m => m.ExceptionLog.Page)
+                    </div>
+                    <div>
+                        <b>What were you doing when the error occurred?</b>
+                    </div>
+                    <div>
+                        @Html.TextAreaFor(m => m.ExceptionLog.Notes)
+                    </div>
+                   
+                    <div style="float:right">
+                    <button class="buttonaslink" onclick="Ajax('ShowTechnicalDetails')">Show Technical Details</button>
+                    </div>
+                    <button class="button" onclick="Ajax('Submit')">Submit Feedback</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

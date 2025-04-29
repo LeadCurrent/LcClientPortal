@@ -1,0 +1,112 @@
+﻿@using Data
+@model Web.DocumentVM
+
+<style>
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: " > ";
+        color: #6c757d; /* Adjust color as needed */
+
+        .breadcrum
+
+    {
+        padding: 0;
+    }
+
+    }
+</style>
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.CompanyFolder.CompanyId)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+@if (Model.CompanyFolder != null && Model.CompanyFolder.Id > 0)
+{
+    <div class="pagetitle">Documents</div>
+}
+
+@if (Model.CompanyFolder != null && Model.CompanyFolder.Id != 0 && !Model.ShowCreateOrUpdate)
+{
+    await Html.RenderPartialAsync("DocumentList_Partial.cshtml");
+}
+
+@if (Model.CompanyFolder != null && Model.CompanyFolder.Id > 0 && !Model.ShowCreateOrUpdate)
+{
+    @Html.HiddenFor(x => x.CompanyFolder.Id)
+}
+<div class="form-800">
+    @Html.HiddenFor(x => x.CompanyFolder.ParentFolderId)
+    @if (Model.CompanyFolder != null && Model.ShowCreateOrUpdate)
+    {
+        <div class="white-bg">
+            <div class="input-form">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Name:
+                                <span id="CompanyFolder_Name_Invalid" class="required">*</span>
+                            </div>
+                            <div>
+                                @Html.TextBoxFor(m => m.CompanyFolder.Name, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                            </div>
+                        </td>
+                    </tr>
+                    @if (Model.CompanyFolder.Id > 0)
+                    {
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(m => m.CompanyFolder.AllUserAccess, new { onchange = "document.getElementById('HideRoleAccess').click()" }) All users can Access this folder
+                                <button class="button" style="display:none" id="HideRoleAccess" onclick="NonAjax('Hide Role Access')"></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(m => m.CompanyFolder.RestrictAccess, new { onchange = "document.getElementById('ShowRoleAccess').click()" }) Restrict access to this folder
+                                <button class="button" style="display:none" id="ShowRoleAccess" onclick="NonAjax('Show Role Access')"></button>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        @if (Model.CompanyFolder.Id == 0)
+                        {
+                            <td>
+                                <div class="buttons">
+                                    <button class="button" id="Valid" onclick="NonAjax('Create Folder')">Create Folder</button>
+                                    <button class="filterbutton" onclick="NonAjax('Cancel')">Cancel</button>
+                                </div>
+                            </td>
+                        }
+                        @if (Model.CompanyFolder.Id > 0)
+                        {
+                            @Html.HiddenFor(m => m.CompanyFolder.Id)
+                            <td>
+                                <div class="buttons">
+                                    <button class="button" onclick="NonAjaxWithParam('Update Folder', @Model.CompanyFolder.Id)">Update Folder</button>
+                                    <button class="filterbutton" onclick="NonAjax('Cancel')">Cancel</button>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    }
+
+    <div id="FolderRole">
+        @{
+            await Html.RenderPartialAsync("Sections/FolderRole.cshtml");
+        }
+    </div>
+
+</div>
+<script>
+    ValidateForm();
+</script>
+
+

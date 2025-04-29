@@ -1,0 +1,43 @@
+﻿@model CustomersViewModel
+@using Data
+@using Web
+
+
+@Html.HiddenFor(m => m.CurrentTab)
+@Html.HiddenFor(m => m.Param)
+
+
+<script>
+    function ChangeTab(TabName) {
+        document.getElementById('CurrentTab').value = TabName;
+        document.getElementById('btnchangetab').click();
+    }
+</script>
+
+
+<div class="tabbar">
+    @if (Model.CurrentTab == "Customer Profile")
+    {
+        <span class="activetab onethird">Customer Profile</span>
+    }
+    else
+    {
+        <a>@Html.ActionLink("Customer Profile", "Edit", "Customer", new { CustomerId = Model.Customer.Id }, new { @class = "inactivetab" })</a>
+    }
+      @if (CommonClasses.Environment.Email)
+    {
+        @if (Model.CurrentTab == "Email")
+        {
+            <span class="activetab">Email</span>
+        }
+        else
+        {
+            <a>@Html.ActionLink("Email", "Email", "Customer", new { CustomerId = Model.Customer.Id }, new { @class = "inactivetab onethird" })</a>
+        }
+    }
+   
+
+</div>
+
+
+

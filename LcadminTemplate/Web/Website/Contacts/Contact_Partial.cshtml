@@ -1,0 +1,191 @@
+@model ContactsVM
+@using Web
+@using Data
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<main class="main">
+        <div class="page-banner text-white" style="background-image: url(../FrontEnd/images/banner-inner-3.jpg);">
+            <div class="container">
+                <div class="page-title">
+                    <p data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">Contact us</p>
+                    <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Have Questions?</h2>
+                    <a href="~/signup" class="btn-primary" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">Start Free Trail</a>
+                </div>
+            </div>
+        </div>
+        <div class="sec-contact-us sec-gap">
+            <div class="container">
+                <div class="block-header text-center">
+                    <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                        <div class="bullet-sm">
+                            <hr>
+                        </div>
+                        <div class="px-2">Contact</div>
+                        <div class="bullet-sm">
+                            <hr>
+                        </div>
+                    </div>
+                    @if (Model.ContactSent)
+                    {
+                        <h2>Thank You!</h2>
+                        <div class="mt-3">
+                            <h5>
+                                Thanks for submitting your contact information! We'll get in touch with you as soon as possible.
+                            </h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <h2>Need More Information?</h2>
+                        <div class="mt-3">
+                            <h5>
+                                Please provide your contact information and we'll get in touch with you as soon as possible.
+                            </h5>
+                        </div>
+                    }
+                </div>
+                @if (!Model.ContactSent)
+                {
+                    @using (Html.BeginForm("Contact", "Contacts", FormMethod.Post, new { id = "contactForm" }))
+                    {
+                        @Html.HiddenFor(m => m.AjaxUpdate)
+                        @Html.HiddenFor(m => m.Param)
+                        @Html.HiddenFor(m => m.Action)
+                        @Html.HiddenFor(m => m.User.Id)
+                        @Html.HiddenFor(m => m.Company.Id)
+                        @Html.HiddenFor(m => m.Total)
+
+                        <div class="row mb-lg-5 pb-5">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-6">
+                                <div class="card-contact h-100" data-aos="fade-left" data-aos-duration="1500" data-aos-once="true">
+                                    @if (Model.RobotFailed)
+                                    {
+                                        <label><b>You did not answer the question correctly.<br /> If you are human, please try again</b></label>
+                                    }
+                                    <div class="form-group input-single">
+                                        <label>Full Name</label>
+                                        @Html.EditorFor(m => m.SignupName, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupName" } })
+                                    </div>
+                                    <div class="form-group input-single">
+                                        <label>Email </label>
+                                        @Html.EditorFor(m => m.SignupEmail, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupEmail" } })
+                                    </div>
+                                    <div class="form-group input-single">
+                                        <label>Phone</label>
+                                        @Html.EditorFor(m => m.SignupPhone, new { htmlattributes = new { @class = "form-control", id = "SignupPhone", onkeyup = "formatphone('SignupPhone'); " } })
+                                    </div>
+                                    <div class="form-group input-single">
+                                        <label>Company</label>
+                                        @Html.EditorFor(m => m.Company.Name, new { htmlattributes = new { @class = "form-control requiredfield", id = "Company_Name" } })
+                                    </div>
+                                    <div class="form-group input-single">
+                                        <label>Message</label>
+                                        @Html.TextAreaFor(m => m.Message, new { @class = "form-control requiredfield", id = "Message" })
+                                    </div>
+                                    <!-- reCAPTCHA widget -->
+                                    <div class="form-group" style="align-items:start">
+                                        <div class="g-recaptcha" data-sitekey="@configuration["GoogleRecaptchaSettings:SiteKey"]" data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaError"></div>
+                                    </div>
+                             @*        <button id="sendRequest" class="btn-primary w-100" style="display:none;" type="button" onclick="NonAjax('Create')">Send Contact Request</button> *@
+                                <button id="sendRequest" style="display:none;" class="btn-primary w-100" onclick="NonAjax('Create')">Send Contact Request</button>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+                    }
+                    <div class="contact-lead-text" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                    <p>By clicking "Send Contact Request", you agree to LeadCurrent Terms of Use and Privacy Policy. You consent to receive phone calls and SMS messages from Pro-Workflow to provide updates on your order and/or for marketing purposes. Message frequency depends on your activity. You may opt-out by texting "STOP". Message and data rates may apply.</p>
+                    <p>Disclaimer: By providing my contact information to Lead Current, I acknowledge and give my explicit consent to be contacted via SMS and receive emails for various purposes, which may include marketing and promotional content. Message and data rates may apply. Reply STOP to opt-out.</p>
+                    <p>For more information please refer to <a href="~/privacy">LeadCurrent's privacy policy</a>.</p>
+                    </div>
+                    <div class="row justify-content-center">
+                        @*                     <div class="col-lg-4">
+                    <div class="card-widget t-hover" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                    <a href="tel:(000) 000-0000" class="d-flex align-items-center">
+                    <span class="ic">
+                    <i class="bi bi-telephone-fill"></i>
+                    </span>
+                    <span class="text-right">
+                    <h6>Call us on_</h6>
+                    <p class="m-0">(000) 000-0000</p>
+                    </span>
+                    </a>
+                    </div>
+                    </div> *@
+                        <div class="col-lg-4">
+                            <div class="card-widget t-hover" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                                <a href="mailto:support@leadcurrent.com" class="d-flex align-items-center">
+                                    <span class="ic">
+                                        <i class="bi bi-envelope-fill"></i>
+                                    </span>
+                                    <span class="text-right">
+                                        <h6>Email ID</h6>
+                                        <p class="m-0">support@leadcurrent.com</p>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card-widget t-hover" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                                <a href="javascript:vodi(0)" class="d-flex align-items-center">
+                                    <span class="ic">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                    </span>
+                                    <span class="text-right">
+                                        <h6>Location</h6>
+                                        <p class="m-0">Katy, Texas</p>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </main>
+    <script>
+        var isCaptchaValid = false;
+
+        function onReCaptchaSuccess(token) {
+            document.getElementById('Total').value = token;
+            isCaptchaValid = true;
+            checkForm(); 
+        }
+        function onReCaptchaError() {
+            isCaptchaValid = false;
+            checkForm(); 
+        }
+        function checkForm() {
+            if (document.getElementById("SignupName").value.trim() !== '' &&
+                document.getElementById("SignupEmail").value.trim() !== '' &&
+                document.getElementById("SignupPhone").value.trim() !== '' &&
+                document.getElementById("Company_Name").value.trim() !== '' &&
+                isCaptchaValid) {
+
+               
+                document.getElementById('sendRequest').style.display = 'block';
+            } else {
+                
+                document.getElementById('sendRequest').style.display = 'none';
+            }
+        }
+        function submitForm() {
+            if (!isCaptchaValid) {
+                grecaptcha.execute();
+            } else {
+                document.getElementById('contactForm').submit();
+            }
+        }      
+        document.querySelectorAll('.form-control').forEach(function (element) {
+            element.addEventListener('input', checkForm);
+        });               
+        document.addEventListener('DOMContentLoaded', function () {
+            checkForm();
+        });
+    </script>
+

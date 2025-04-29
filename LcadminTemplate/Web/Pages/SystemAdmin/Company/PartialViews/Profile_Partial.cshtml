@@ -1,0 +1,409 @@
+﻿@model Data.CompanyViewModel
+@using Data;
+@using static Data.GeneralEnums;
+@using static Web.GeneralEnumDDLs
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Company.Id)
+@Html.HiddenFor(m => m.Company.CreateDate)
+@Html.HiddenFor(m => m.Company.CreatedBy)
+@Html.HiddenFor(m => m.SystemAdmin)
+@Html.HiddenFor(m => m.CurrentTab)
+
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Company Profile</div>
+<div class="form-1000 ">
+
+    @{
+        await Html.RenderPartialAsync("Sections/Tabs.cshtml");
+    }
+
+    <div class="white-bg">
+        <div class="sectionheader mt-0">
+            Company Details
+        </div>
+        <div class="input-form">
+            @if (!Model.ShowEditCompanyDetails)
+            {
+                <table>
+                    <tr>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Company Name:
+                            </div>
+                        </td>
+                        <td>
+                            @Model.Company.Name
+                        </td>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Logo:
+                            </div>
+                        </td>
+                        <td>
+                            @if (Model.Company.Logo != null)
+                            {
+                                <img height="75" src=@Model.Company.Logo />
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Address:
+                            </div>
+                        </td>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Email:
+                            </div>
+                        </td>
+                        <td>
+                            @Model.Company.Email
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Phone:
+                            </div>
+                        </td>
+                        <td>
+                            @Model.Company.Phone
+                        </td>
+                        <td style="max-width:125px">
+                            <div class="inlineformlabel">
+                                Status:
+                            </div>
+                        </td>
+                        <td>
+                            @Model.Company.Status
+                        </td>
+                    </tr>
+
+                </table>
+                <div class="buttons">
+                    @if (!Model.Company.Selected)
+                    {
+                        <button class="button" onclick="NonAjax('Switch Company')">Select Company</button>
+                    }
+                    <button class="button" onclick="Ajax('EditCompanyDetails')">Edit Company</button>
+                    <button class="button" onclick="NonAjaxWithConfirmation('Clone Company','Confirm you want to clone this company to create a new company')">Clone Company</button>
+
+                    @if (Model.UpdateSuccessful)
+                    {
+                        <div style="padding-top:10px; color:green">
+                            Company was updated successfully
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <table>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Company Name:
+                                <span id="Company_Name_Invalid" class="required">*</span>
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.Company.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Company Address:
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.Company.Address)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="formlabel">
+                                Company Email:
+                                <span id="Company_Email_Invalid" class="required">*</span>
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.Company.Email, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-2">
+                            <div class="formlabel">
+                                City:
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.Company.City)
+                            </div>
+                        </td>
+                        <td class="col-2">
+                            <div class="formlabel">
+                                State:
+                            </div>
+                            <div>
+                                @Html.DropDownListFor(m => m.Company.State, StateDDL())
+                            </div>
+                        </td>
+                        <td class="col-2">
+                            <div class="formlabel">
+                                Zip:
+                            </div>
+                            <div>
+                                @Html.TextBoxFor(m => m.Company.ZipCode)
+                            </div>
+                        </td>
+                        <td class="col-6">
+                            <div class="formlabel">
+                                Company Phone:
+                            </div>
+                            <div>
+                                @Html.TextBoxFor(m => m.Company.Phone, new { onkeyup = "formatphone('Company_Phone');" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        @if (Model.Company.Id != 0)
+                        {
+
+                            <td>
+                                <div class="formlabel">
+                                    Status:
+                                </div>
+
+                                <div class="formvalue">
+                                    @if (Model.SystemAdmin)
+                                    {
+                                        @Html.DropDownListFor(m => m.Company.Status, StatusDDL())
+                                    }
+                                    else if (Model.Company.Status == Status.Active)
+                                    {
+                                        <span>Active</span>
+                                        @Html.HiddenFor(m => m.Company.Status)
+                                    }
+                                    else
+                                    {
+                                        <span>Inactive</span>
+                                        @Html.HiddenFor(m => m.Company.Status)
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                            <td class="col-6">
+                                <div class="formlabel">
+                                    API Key:
+                                </div>
+                                <div>
+                                        @Html.TextBoxFor(m => m.Company.APIKey)
+                                </div>
+                            </td>
+                            </td>
+                        }
+                    </tr>
+                </table>
+                <div class="buttons">
+                    <div class="validation-message" id="Invalid">
+                        <i>Fill in all required fields</i>
+                    </div>
+                    <button class="button valid" onclick="AjaxWithConfirmation('Update','Updating Company Details will update the Company Profile for the Customer too. Are you sure you want to continue?')">Save</button>
+                    <button class="filterbutton" onclick="Ajax('Cancel')">Cancel</button>
+
+
+                </div>
+                <script>ValidateForm();</script>
+            }
+
+        </div>
+    </div>
+
+    <div class="white-bg">
+        <div class="d-flex justify-content-between sectionheader mt-3">
+            <span class="mt-1">Account Contacts</span>
+            @if (!Model.AddNewContact && Model.EditContactId == 0)
+            {
+                <button class="button" style="margin: 0 !important" onclick="Ajax('Add New Contact')">Add New Contact</button>
+            }
+        </div>
+        <table class="tablestyle bottomborder">
+            <tr class="desktop">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Contact Info
+                </th>
+                <th>
+                    Roles
+                </th>
+                <th></th>
+            </tr>
+            @for (int i = 0; i < Model.Company.CompanyContacts.Count(); i++)
+            {
+               
+                var Contact = Model.Company.CompanyContacts[i];
+                <tr class="mobileportrait-mobilewide">
+                    <td colspan="4">
+                        <div>
+                            <b>Name:</b> @Contact.CompanyUser.User.FullName<br />
+                            <b>Email:</b> @Contact.CompanyUser.User.Email<br />
+                            <b>Phone:</b> @Contact.CompanyUser.User.Phone<br />
+                            <b>Roles:</b>
+                            @if (Contact.PrimaryContact)
+                            {
+                                <div>Primary Contact</div>
+                            }
+                            @if (Model.EditContactId == Contact.Id)
+                            {
+                                <button class="gridbutton" onclick="AjaxWithParam('Update Contact',@Contact.Id)">Update Contact</button>
+                                <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                            }
+                            else
+                            {
+                                <button class="gridbutton" onclick="AjaxWithParam('Show Edit Contact',@Contact.Id)">Edit Contact</button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        <div>@Contact.CompanyUser.User.FullName</div>
+                    </td>
+                    <td>
+                        <div>@Contact.CompanyUser.User.Email</div>
+                        <div>@Contact.CompanyUser.User.Phone</div>
+                    </td>
+                    <td>
+                        @if (Model.CompanyContact != null && Model.CompanyContact.Id == Contact.Id)
+                        {
+                            @Html.HiddenFor(x => x.CompanyContact.Id)
+                            @Html.HiddenFor(x => x.CompanyContact.CompanyId)
+                            @Html.HiddenFor(x => x.CompanyContact.CompanyUserId)
+
+                            <div>
+                                @Html.CheckBoxFor(x => x.CompanyContact.PrimaryContact) Primary Contact
+                            </div>
+                        }
+                        else
+                        {
+                            @if (Contact.PrimaryContact)
+                            {
+                                <div>Primary Contact</div>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @if (Model.CompanyContact != null && Model.CompanyContact.Id == Contact.Id)
+                        {
+                            <button class="gridbutton" onclick="AjaxWithParam('Update Contact',@Contact.Id)">Update Contact</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                        }
+                        else if (Model.CompanyContact == null)
+                        {
+                            <button class="gridbutton" onclick="AjaxWithParam('Show Edit Contact',@Contact.Id)">Edit Contact</button>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (Model.AddNewContact)
+            {
+                <tr>
+                    <td colspan="4" class="mobileportrait-mobilewide">
+                        <div>
+                            <div class="formlabel">Staff Member</div>
+                            @Html.DropDownListFor(m => m.CompanyContact.CompanyUserId, Model.StaffDDL, "Select Staff Member", new { @class = "dropdown" })
+                        </div>
+                        <div>
+                            <div>
+                                @Html.CheckBoxFor(x => x.CompanyContact.PrimaryContact) Primary Contact
+                            </div>
+                        </div>
+                        <div>
+                            <button class="gridbutton" onclick="Ajax('Create Contact')">Create Contact</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        <div class="formlabel">Staff Member</div>
+                        @Html.DropDownListFor(m => m.CompanyUserId, Model.StaffDDL)
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.CheckBoxFor(x => x.CompanyContact.PrimaryContact) Primary Contact
+                        </div>
+                    </td>
+                    <td>
+                        <button class="gridbutton" onclick="Ajax('Create Contact')">Create Contact</button>
+                        <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                    </td>
+                </tr>
+            }
+
+        </table>
+  
+    </div>
+
+    <div class="white-bg">
+        <div class="d-flex justify-content-between sectionheader mt-3">
+            <span class="mt-1">Company Notes</span>
+            @if (!Model.ShowAddNote)
+            {
+                <button class="button" style="margin: 0 !important" onclick="Ajax('Show Add Note')">Add Note</button>
+            }
+        </div>
+        <div class="input-form">
+            @if (Model.ShowAddNote)
+            {
+                <div>
+                    <div class="formlabel">Company Note:</div>
+                </div>
+                <div>
+                    @Html.TextAreaFor(m => m.AddNote)
+                </div>
+                <div class="buttons">
+                    <button class="button" onclick="Ajax('Add Note')">Add Note</button>
+                    <button class="button-white" onclick="Ajax('Cancel')">Cancel</button>
+                </div>
+            }      
+        </div>
+        @if (Model.CompanyNotes != null)
+        {
+            @foreach (var note in Model.CompanyNotes.ToList())
+            {
+                <div style="margin-left:10px; margin-right:10px; margin-bottom:10px;">
+                    <table class="tablestyle innerformtable">
+                        <tr>
+                            <th>
+                                <span>Created By </span> @note.CreatedBy <span> on </span> @CommonClasses.StringFormating.FormatDateTime(note.CreateDate)
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    @note.Note
+                                    <button class="gridbutton" style="float:right" onclick="AjaxWithParam('Remove Note',@note.Id)">Remove</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+<script>
+    ValidateForm();
+</script>

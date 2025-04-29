@@ -1,0 +1,22 @@
+﻿@model ContactUsVM
+@using Data
+@using Web
+
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/CustomerLayout.cshtml";
+}
+
+@using (Html.BeginForm("Profile", "ContactUs", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{await Html.RenderPartialAsync("PartialViews/CompanyProfile_Partial.cshtml");}
+    </div>
+}
+
+<script>
+    highlightcurrentpage('nav_ContactUs');
+</script>
+

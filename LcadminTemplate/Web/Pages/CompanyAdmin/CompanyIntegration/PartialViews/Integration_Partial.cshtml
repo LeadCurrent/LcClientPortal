@@ -1,0 +1,127 @@
+﻿@model CompanyIntegrationVM
+
+@using Data
+@using Web
+
+@{
+    var title = "Company Integrations";
+    var formclass = "form-800";
+    if (Model.MobileApp)
+        formclass = "form-800 p-0";
+}
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.RemoveId)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.CompanyId)
+@Html.HiddenFor(m => m.Company.Id)
+<div id="popupbackground" class="popup-background" style="display:none;"></div>
+
+
+<div class="pagetitle">@title</div>
+
+
+<div class="@formclass">
+
+    @if (Model.ShowAddOtherAccount)
+    {
+        <div class="white-bg">
+            <div class="sectionheader mt-0">Connect To Other Account</div>
+            <div style="display:flex;justify-content:center;">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Name:
+                            </div>
+                            <div>
+                                @Html.TextBoxFor(m => m.OtherAccountName)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Email :
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.OtherAccountEmail)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button" onclick="Ajax('Connect to my other account')">Submit</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel Add other Account')">Cancel</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            @{
+                await Html.RenderPartialAsync("Sections/EmailAccounts.cshtml");
+            }
+        </div>
+    }
+
+    @if (Model.ShowAddPhoneNumber)
+    {
+        <div class="white-bg">
+            <div class="sectionheader mt-0">Connect To Phone Number</div>
+            <div style="display:flex;justify-content:center;">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="center mr-2">
+                                @Html.CheckBoxFor(x => x.AllStaffAccess)Provide access to all staff
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Name :
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.ContactName)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Phone Number :
+                            </div>
+                            <div>
+                                @Html.EditorFor(m => m.PhoneNumber, new { htmlattributes = new { onkeyup = "formatphone('PhoneNumber')" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button" onclick="Ajax('Connect to Phone Number')">Submit</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel Add other Account')">Cancel</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            @{
+                await Html.RenderPartialAsync("Sections/Company_PhoneNumber.cshtml");
+            }
+        </div>
+    }
+    
+</div>
+
+
+
+

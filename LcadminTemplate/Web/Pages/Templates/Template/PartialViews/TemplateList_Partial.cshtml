@@ -1,0 +1,210 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.BlockPostBack)
+<div id="EditTemplatePopup">
+    @{
+        await Html.RenderPartialAsync("Sections/ModalPopup.cshtml");
+    }
+</div>
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Template List</div>
+
+
+<div class="filters">
+    <div class="row width700" style="margin:auto;">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-6 filter">
+            <div class="filter-label">Name:</div>
+            <div>
+                @Html.EditorFor(model => model.FilterName, new { htmlattributes = new { @class = "width550", autocomplete = "off", placeholder = "Enter Template Name" } })
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2 filter">
+            <div class="filter-label">Status:</div>
+            <div>
+                @Html.DropDownListFor(model => model.TemplateStatus, StatusDDL(), new { onchange = "ClickButton('filter');" })
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2 filter">
+            <button id="filter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply&nbsp;Filters</button>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2 filter">
+            <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear&nbsp;Filters</button>
+        </div>
+    </div>
+</div>
+
+<div class="form-1200">
+    <div class="buttons">
+        <button class="button mt-0" onclick="NonAjax('Create New')">Create New Templates</button>
+    </div>
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="desktop">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Number
+                </th>
+                <th>
+                    Currency
+                </th>
+                <th>
+                    Dropdown
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Time
+                </th>
+                <th>
+                    Radio Select
+                </th>
+                <th>
+                    Checkbox
+                </th>
+                <th>
+                    Phone
+                </th>
+                <th class="buttoncolumn">
+
+                </th>
+            </tr>
+            @foreach (var Template in Model.Templates)
+            {
+                var editBtn = "edit_" + Template.Id;
+                var popUpBtn = "popUp_" + Template.Id;
+
+                <tr class="mobileportrait-mobilewide">
+                    <td>
+                        <div>
+                            <b>Name: </b> @Template.Name
+                        </div>
+                        <div>
+                            <b>Number: </b>@Template.Number
+                        </div>
+                        <div>
+                            <b>Currency: </b>$@Template.Currency
+                        </div>
+                        <div>
+                            <b>Dropdown: </b>@TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                        </div>
+                        <div>
+                            <b>Date: </b> @CommonClasses.StringFormating.FormatDate((DateTime)Template.Date)
+                        </div>
+                        <div>
+                            <b>Time: </b>@Template.TimeDisplay
+                        </div>
+                        <div>
+                            <b>Radio Select: </b>@TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                        </div>
+                        <div>
+                            <b>CheckBox: </b>@Template.CheckBox
+                        </div>
+                        <div>
+                            <b>Phone: </b>@Template.Phone
+                        </div>
+                        <div>
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@Template.Id)">Edit</button>
+                        </div>
+                        <div class="buttons">
+                            <div class="btn-group">
+                                <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button" onclick="Edit(@Template.Id)">Edit</button>
+                                    <button class="dropdown-item" type="button" onclick="EditWithPopUp(@Template.Id)">Edit&nbsp;With&nbsp;PopUp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        @Template.Name
+                    </td>
+                    <td>
+                        @Template.Number
+                    </td>
+                    <td>
+                        $@Template.Currency
+                    </td>
+                    <td>
+                        @TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                    </td>
+                    <td>
+                        @CommonClasses.StringFormating.FormatDate((DateTime)Template.Date)
+                    </td>
+                    <td>
+                        @Template.TimeDisplay
+                    </td>
+                    <td>
+                        @Template.CheckBox
+                    </td>
+                    <td>
+                        @TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                    </td>
+                    <td>
+                        @Template.Phone
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <button class="dropdown-item" type="button" onclick="Edit(@Template.Id)">Edit</button>
+                                <button class="dropdown-item" type="button" onclick="EditWithPopUp(@Template.Id)">Edit&nbsp;With&nbsp;PopUp</button>
+                            </div>
+                        </div>
+                        <div style="display:none">
+                            <button class="gridbutton" id="@editBtn" onclick="NonAjaxWithParam('Edit',@Template.Id)">Edit</button>
+                            <button class="gridbutton" id="@popUpBtn" onclick="AjaxPartialUpdateWithParam('Show Edit With PopUp',@Template.Id,'EditTemplatePopup')">Edit&nbsp;With&nbsp;PopUp</button>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+
+    function Edit(id) {
+        var btnId = "edit_" + id;
+        $('#' + btnId).click();
+    }
+
+    function EditWithPopUp(id) {
+        var btnId = "popUp_" + id;
+        $('#' + btnId).click();
+    }
+
+</script>
+<script>
+    var activeItemsArray = [];
+@if (Model.Templates != null)
+{
+    @foreach (var d in Model.Templates)
+    {
+        @:activeItemsArray.push("@d.Name");
+    }
+}
+
+        AutoCompleteSuggestions($('#FilterName'), activeItemsArray);
+</script>
+
+

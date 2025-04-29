@@ -1,0 +1,35 @@
+﻿@model Web.UserVM
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(model => model.User.Id)
+<div class="pagetitle">Create User</div>
+<div class="form-800">
+    <div class="white-bg">
+        <div class="input-form">
+            @if (Model.CreateSuccessful)
+            {
+                <script>
+                    document.getElementById('GoBack').click();
+                </script>
+            }
+
+            @{
+                await Html.RenderPartialAsync("Sections/UserFields.cshtml");
+            }
+            @if (Model.ErrorMessage != null)
+            {
+                <div class="validation-message">
+                    @Model.ErrorMessage
+                </div>
+            }
+            <div class="buttons">
+                <button id="Valid" class="button" onclick="Ajax('Create')">Create User</button>
+                <button class="button" id="GoBack" onclick="NonAjax('Cancel')">Go Back</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    ValidateForm();
+</script>

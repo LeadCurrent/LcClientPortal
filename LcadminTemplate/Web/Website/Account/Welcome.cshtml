@@ -1,0 +1,70 @@
+﻿@model Web.UserVM
+
+@{
+    Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/styles.css" />
+<link rel="stylesheet" href="~/css/colors.css" />
+
+<div class="pagetitle">Welcome!</div>
+<div class="container-sec">
+    <div class="form-450">
+        <div class="white-bg mb-20">
+
+            <div class="sectionheader">Set a password for your account</div>
+            <div class="input-form">
+                @using (Html.BeginForm("ChangePassword", "Account"))
+                {
+                    @Html.HiddenFor(model => model.Id)
+                    <div>
+                        <table>
+                            <tr style="height: 40px">
+                                <td class="formlabel col-4">
+                                    UserName:
+                                </td>
+                                <td class="col-8 mt-1">
+                                    @Html.DisplayFor(m => m.UserName)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formlabel col-4">
+                                    Password:
+                                    <span id="Password_Invalid" class="required">*</span>
+                                </td>
+                                <td class="col-8">
+                                    @Html.PasswordFor(m => m.Password, new { @class="requiredpassword", onkeyup = "ValidateForm();" })
+                                    <span style="font-size:12px;">6+ characters, 1+ letter, 1+ number</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formlabel col-4">
+                                    Re-Type:
+                                    <span id="ConfirmPassword_Invalid" class="required">*</span>
+                                </td>
+                                <td class="col-8">
+                                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class="requiredconfirmpassword", onkeyup = "ValidateForm();" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="buttons">
+                        
+                        <div class="validation-message" id="PasswordsDoNotMatch">
+                            <i>Passwords do not match</i>
+                        </div>
+                        <div class="validation-message" id="Invalid">
+                            <i>Fill in all required fields</i>
+                        </div>
+
+                        <button class="button" id="Valid" name="ChangePassword" value="Change Password">Set Password</button>
+                        <button class="filterbutton m-0">Cancel</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    ValidateForm();
+</script>

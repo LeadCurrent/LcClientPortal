@@ -1,0 +1,13 @@
+﻿@using Data
+@using Web
+@model Web.CustomerServiceVM
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.Customer.Id)
+@Html.HiddenFor(m => m.Customer.CompanyId)
+<div class="pagetitle">@Model.Customer.Name </div>
+@{
+    await Html.RenderPartialAsync("Sections/Tabs.cshtml");
+}

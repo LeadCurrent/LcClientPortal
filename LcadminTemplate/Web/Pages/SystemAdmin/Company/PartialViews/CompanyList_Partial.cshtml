@@ -1,0 +1,229 @@
+﻿@model Data.CompanyViewModel
+@using Data;
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">Companies </div>
+<div class="filters">
+    <div class="row width900 maxwidth" style="margin:auto;">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+                <div class="filter-label">Company Name:</div>
+                <div>
+                @Html.EditorFor(model => model.FilterName, new { htmlattributes = new { @class = "width270", autocomplete = "off", placeholder = "Enter Company Name" } })
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+                <div class="filter-label">Status:</div>
+                <div>
+                @Html.DropDownListFor(model => model.FilterStatus, Model.StatusDDL, new { @class = "filterfield" })
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+                <button id="btnfilter" class="filterbutton"
+                        onclick="Ajax('Apply Filters')">
+                    Search
+                </button>
+                <button class="filterbutton" onclick="Ajax('Clear Filters')">
+                    Clear&nbsp;Filters
+                </button>
+            </div>
+    </div>
+</div>
+<div class="form-1000">
+
+    <div class="center">
+        <button class="button mt-0" onclick="NonAjax('Create')">Create New Company</button>
+    </div>
+
+
+    <div class="white-bg">
+      
+        <table class="tablestyle">
+            <tr class="desktop roundheader">
+                <th class="text-center" style="width: 10%;">
+
+                </th>
+                <th style="width:40%;">
+                    Company Name
+                </th>
+                <th style="width:15%;">
+                    Plan
+                </th>
+                <th style="width:15%;">
+                    Created Date
+                </th>
+                <th style="width: 15%; text-align: center">
+                    Status
+                </th>
+                <th class="text-center" style="width: 10%;">
+
+                </th>
+            </tr>
+            @foreach (var Company in Model.Companys.ToList())
+            {
+                var rowclass = "";
+                if (Company.Selected)
+                    rowclass = "selectedrow";
+
+                <tr class="mobileportrait-mobilewide @rowclass">
+                    <td>
+                        <div>
+                            <b class="secondary-text">Company Name:</b>
+                            @if (Company.Name == null)
+                            {
+                                <span>No Name</span>
+                            }
+                            else
+                            {
+                                <span style="font-weight: 500; font-size: 15px">@Company.Name</span>
+                            }
+                        </div>
+                        <div>
+                            <b class="secondary-text">Created Date:</b>
+                            <span style="font-weight: 500; font-size: 15px">@CommonClasses.StringFormating.FormatDate(Company.CreateDate)</span>
+                        </div>
+                        <div>
+                            <b class="secondary-text">Status:</b>
+                            <span style="font-weight: 500; font-size: 15px">@Company.Status</span>
+                        </div>
+
+                        <div class="buttons">
+                            @if (!Company.Selected)
+                            {
+                                <button class="gridbutton" onclick="NonAjaxWithParam('Select Company',@Company.Id)">Select</button>
+                            }
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@Company.Id)">View</button>
+                        </div>
+                    </td>
+                    </tr>
+                <tr class="desktop @rowclass">
+                    <td>
+                        @if (!Company.Selected)
+                        {
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Select Company',@Company.Id)">Select</button>
+                        }
+                        else
+                        {
+                            <b>Selected</b>
+                        }
+                    </td>
+
+                    <td>
+                        @if (Company.Name == null)
+                        {
+                            <span>No Name</span>
+                        }
+                        else
+                        {
+                            <span style="font-weight: 500; font-size: 15px">@Company.Name</span>
+                        }
+                    </td>
+
+                    <td>
+                        @CommonClasses.StringFormating.FormatDate(Company.CreateDate)
+                    </td>
+
+                    <td>
+                        <span style="font-weight: 500; font-size: 15px">@Company.Status</span>
+                    </td>
+                    <td>
+                        <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@Company.Id)">View</button>
+                    </td>
+
+                </tr>
+            }
+        </table>
+
+        @*<div class="mobileportrait-mobilewide">
+        <table class="tablestyle" style="width:100%">
+        <tr>
+        <th>
+        Companys
+        </th>
+        </tr>
+        @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Active).ToList())
+        {
+        @if (Company.Selected)
+        {
+        <tr style="background-color: #ffdec9;">
+        <td>
+        <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
+
+        </td>
+        </tr>
+        }
+        else
+        {
+        <tr>
+        <td>
+        <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
+
+        </td>
+        </tr>
+        }
+        }
+        </table>
+        </div>*@
+    </div>
+
+    @*@if (Model.Companys.Where(t => t.Status == Status.Inactive).Count() > 0)
+    {
+    <div class="white-bg">
+    <div class="sectiontitle" style="padding-top:20px; padding-bottom:10px">
+    Inactive Companys
+    </div>
+    <div class="desktop">
+    <table class="tablestyle" style="width:100%">
+    <tr>
+    <th>
+    Name
+    </th>
+
+    </tr>
+    @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Inactive).ToList())
+    {
+    <tr>
+    <td>
+    @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })
+    </td>
+    </tr>
+    }
+    </table>
+    </div>
+    <div class="mobileportrait-mobilewide">
+    <table class="tablestyle" style="width:100%">
+    <tr>
+    <th>
+    Companies
+    </th>
+    </tr>
+    @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Inactive).ToList())
+    {
+    <tr>
+    <td>
+    <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
+    </td>
+    </tr>
+    }
+    </table>
+    </div>
+    </div>
+    }*@
+
+</div>
+<script>
+
+    var activeItemsArray = [];
+    @if (Model.Companys != null)
+    {
+        @foreach (var d in Model.Companys)
+        {
+            @:activeItemsArray.push("@d.Name");
+        }
+    }
+
+        AutoCompleteSuggestions($('#FilterName'), activeItemsArray);
+</script>

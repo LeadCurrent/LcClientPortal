@@ -1,0 +1,15 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/DotNet5Template
+/.vs
+/Data/bin/Debug/net5.0
+/Data/obj
+/Web/bin/Debug/net5.0
+/Web/obj
+Data/bin/
+Web/bin/
+/CommonClasses/bin/Release/net8.0
+/CommonClasses/obj
+CommonClasses/bin/

@@ -1,0 +1,271 @@
+﻿@using Data
+@using Web
+@model Web.Template2VM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.EditTemplateId)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Inline Edit Template </div>
+
+<div class="filters">
+    <div class="row width800" style="margin:auto;">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 filter">
+            <div class="filter-label">Name:</div>
+            <div>
+                @Html.EditorFor(model => model.FilterName)
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2 filter">
+            <div class="filter-label">Status:</div>
+            <div>
+                @Html.DropDownListFor(model => model.TemplateStatus, StatusDDL(), new { onchange = "ClickButton('filter');" })
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2 filter">
+            <div class="filter-label">Dropdown:</div>
+            <div>
+                @Html.DropDownListFor(model => model.FilterDropdown, SampleDDL())
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2 filter">
+            <button id="filter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply&nbsp;Filters</button>
+            @* <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear Filters</button> *@
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2 filter">
+            @* <button id="filter" class="filterbutton" onclick="Ajax('Apply Filters')">Apply Filters</button> *@
+            <button class="filterbutton" onclick="Ajax('Clear Filters')">Clear&nbsp;Filters</button>
+        </div>
+    </div>
+</div>
+
+<div class="form-1200">
+    
+    <div class="buttons">
+        <button class="button" onclick="Ajax('Create New')">Create New Template</button>
+    </div>
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="desktop">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Number
+                </th>
+                <th>
+                    Currency
+                </th>
+                <th>
+                    Checkbox
+                </th>
+                <th>
+                    Dropdown
+                </th>
+                <th>
+                    Radio
+                </th>
+                <th style="width:170px">
+
+                </th>
+            </tr>
+            @if (Model.ShowCreateNew)
+            {
+                <tr>
+                    <td class="desktop">
+                        @Html.EditorFor(m => m.Template.Name, new { htmlattributes = new { @class = "requiredfield width200", onkeyup = "ValidateForm();" } })
+                        <span id="Template_Name_Invalid" class="required">*</span>
+                    </td>
+                    <td class="desktop">
+                        @Html.HiddenFor(x=>x.Template.Date)
+                        <input class="requiredfield width200"
+                           id="Date"
+                           type="date"
+                           value="@CommonClasses.StringFormating.DatePicker(Model.Template.Date)"
+                           onchange="document.getElementById('Template_Date').value = document.getElementById('Date').value; ValidateForm();">
+                        <span id="Date_Invalid" class="required">*</span>
+                    </td>
+                    <td class="desktop">
+                        @Html.EditorFor(m => m.Template.Number, new { htmlattributes = new { @class = "requirednumeric number", onclick = "if (this.value == '0') this.value = '';", onkeyup = "ValidateForm();" } })
+                        <span id="Template_Number_Invalid" class="required">*</span>
+                    </td>
+                    <td class="desktop">
+                        <div class="currency-input edit-currency">
+                            <span class="currency-sign">$</span>
+                            @Html.EditorFor(m => m.Template.Currency, new { htmlattributes = new { @class = "requireddecimal number", onclick = "if (this.value == '0.00') this.value = '';", onkeyup = "ValidateForm();" } })
+                            <span id="Template_Currency_Invalid" class="required">*</span>
+                        </div>
+                    </td>
+                    <td class="desktop">
+                        @Html.CheckBoxFor(m=>m.Template.CheckBox, new { onclick = "ValidateTemplate();" })  Checkbox
+                    </td>
+                    <td class="desktop">
+                        @Html.DropDownListFor(m => m.Template.Dropdown, SampleDDL(), new { @class="requireddropdown width200", onchange = "ValidateForm();" })
+                        <span id="Template_Dropdown_Invalid" class="required">*</span>
+                    </td>
+                    <td class="desktop">
+                        <div class="radioGroup">
+                            <span>
+                                @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item1, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 1<br>
+                            </span>
+                            <span>
+                                @Html.RadioButtonFor(x=>x.Template.RadioSelect,TemplateEnums.SampleDropdown.Item2, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 2<br>
+                            </span>
+                            <span>
+                                @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item3, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 3
+                            </span>
+                        </div>
+                        <span id="Template_RadioSelect_Invalid" class="required">*</span>
+                    </td>
+                    <td>
+                        <div class="validation-message" id="Invalid">
+                            <i>Fill in all required fields</i>
+                        </div>
+                        <button id="Valid" class="gridbutton" onclick="Ajax('Create')">Save</button>
+                        <button class="gridbutton" onclick="Ajax('')">Cancel</button>
+
+                        <script>
+                            ValidateForm();
+                        </script>
+                    </td>
+                </tr>
+            }
+            @foreach (var Template in Model.Templates)
+            {
+                @if (Model.EditTemplateId == Template.Id)
+                {
+                    <tr>
+                        <td class="desktop">
+                            @Html.EditorFor(m => m.Template.Name, new { htmlattributes = new { @class = "requiredfield width200", onkeyup = "ValidateForm();" } })
+                            <span id="Template_Name_Invalid" class="required">*</span>
+                        </td>
+                        <td class="desktop">
+                            @Html.HiddenFor(x=>x.Template.Date)
+                            <input class="requiredfield width200"
+                           id="Date"
+                           type="date"
+                           value="@CommonClasses.StringFormating.DatePicker(Model.Template.Date)"
+                           onchange="document.getElementById('Template_Date').value = document.getElementById('Date').value; ValidateForm();">
+                            <span id="Date_Invalid" class="required">*</span>
+                        </td>
+                        <td class="desktop">
+                            @Html.EditorFor(m => m.Template.Number, new { htmlattributes = new { @class = "requirednumeric number", onclick = "if (this.value == '0') this.value = '';", onkeyup = "ValidateForm();" } })
+                            <span id="Template_Number_Invalid" class="required">*</span>
+                        </td>
+                        <td class="desktop">
+                            <div class="currency-input edit-currency">
+                                <span class="currency-sign">$</span>
+                                @Html.EditorFor(m => m.Template.Currency, new { htmlattributes = new { @class = "requireddecimal number", onclick = "if (this.value == '0.00') this.value = '';", onkeyup = "ValidateForm();" } })
+                                <span id="Template_Currency_Invalid" class="required">*</span>
+                            </div>
+                        </td>
+                        <td class="desktop">
+                            @Html.CheckBoxFor(m=>m.Template.CheckBox, new { onclick = "ValidateTemplate();" })  Checkbox
+                        </td>
+                        <td class="desktop">
+                            @Html.DropDownListFor(m => m.Template.Dropdown, SampleDDL(), new { @class="requireddropdown width200", onchange = "ValidateForm();" })
+                            <span id="Template_Dropdown_Invalid" class="required">*</span>
+                        </td>
+                        <td class="desktop">
+                            <div class="radioGroup">
+                                <span>
+                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item1, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 1<br>
+                                </span>
+                                <span>
+                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item2, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 2<br>
+                                </span>
+                                <span>
+                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item3, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 3
+                                </span>
+                            </div>
+                            <span id="Template_RadioSelect_Invalid" class="required">*</span>
+                        </td>
+                        <td>
+                            @Html.HiddenFor(m=>m.Template.Id)
+                            <div class="error-message pt-10" id="Invalid">
+                                <i>Fill in all required fields</i>
+                            </div>
+                            <button id="Valid" class="gridbutton" onclick="Ajax('Save Changes')">Save</button>
+                            <button class="gridbutton" onclick="Ajax('')">Cancel</button>
+
+                            <script>
+                                ValidateForm();
+                            </script>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td class="desktop">
+                            @Template.Name
+                        </td>
+                        <td class="desktop">
+                            @if (Template.Date != null)
+                            {
+                                @CommonClasses.StringFormating.FormatDate((DateTime)Template.Date)
+                            }
+                        </td>
+                        <td class="desktop">
+                            @Template.Number
+                        </td>
+                        <td class="desktop">
+                            $@Template.Currency
+                        </td>
+                        <td class="desktop">
+                            @Template.CheckBox
+                        </td>
+                        <td class="desktop">
+                            @TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                        </td>
+                        <td class="desktop">
+                            @TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                        </td>
+                        <td class="desktop">
+                            <button class="gridbutton" onclick="AjaxWithParam('Edit',@Template.Id)">Edit</button>
+                            <button class="gridbutton" onclick="AjaxWithParamAndConfirmation('Delete',@Template.Id,'Are you sure you want to delete this Template?')">Delete</button>
+                        </td>
+                        <td class="mobileportrait-mobilewide">
+                            <div>
+                                <b>Name: </b> @Template.Name
+                            </div>
+                            <div>
+                                <b>Date: </b>
+                                @if (Template.Date != null)
+                                {
+                                    @CommonClasses.StringFormating.FormatDate((DateTime)Template.Date)
+                                }
+                            </div>
+                            <div>
+                                <b>Number: </b>@Template.Number
+                            </div>
+                            <div>
+                                <b>Currency: </b>$@Template.Currency
+                            </div>
+                            <div>
+                                <b>CheckBox: </b>@Template.CheckBox
+                            </div>
+                            <div>
+                                <b>Dropdown: </b>@TemplateEnums.SampleDropdownDesc(Template.Dropdown)
+                            </div>
+                            <div>
+                                <b>Radio: </b>@TemplateEnums.SampleDropdownDesc(Template.RadioSelect)
+                            </div>
+                            <button class="button mb-0 mt-0" onclick="AjaxWithParam('Edit',@Template.Id)">Edit</button>
+                            <button class="button mb-0 mt-0" onclick="AjaxWithParamAndConfirmation('Delete',@Template.Id,'Are you sure you want to delete this Template?')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+

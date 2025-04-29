@@ -1,0 +1,232 @@
+﻿@model Web.CustomersViewModel
+@using Data;
+@using static Web.GeneralEnumDDLs
+@using static Data.GeneralEnums
+<div class="white-bg">
+    <div class="sectionheader">Customer Details</div>
+
+    @Html.HiddenFor(x => x.Customer.LeadId)
+    @Html.HiddenFor(m => m.AjaxUpdate)
+    @Html.HiddenFor(m => m.Param)
+    @Html.HiddenFor(m => m.Action)
+    @if (Model.ShowEditCustomer)
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Customer Name:
+                            <span id="Customer_Name_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Customer.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Address:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Customer.Address)
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Email:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Customer.Email, new { onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+
+                    <td class="col-2">
+                        <div class="formlabel">
+                            City:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Customer.City)
+                        </div>
+                    </td>
+                    <td class="col-2">
+                        <div class="formlabel">
+                            State:
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(m => m.Customer.State, StateDDL())
+                        </div>
+                    </td>
+                    <td class="col-2">
+                        <div class="formlabel">
+                            ZipCode:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Customer.ZipCode)
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Phone:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Customer.PhoneNumber, new { onkeyup = "formatphone('Customer_PhoneNumber');" })
+                        </div>
+                    </td>
+                    <td>
+                        @if (!CommonClasses.Environment.environment.Contains("LongRange"))
+                        {
+                            <div class="formlabel">
+                                Website:
+                            </div>
+                            <div>
+                                @Html.TextBoxFor(m => m.Customer.Website, new { onkeyup = "ValidateForm();" })
+                            </div>
+                        }
+                    </td>
+
+                </tr>
+
+
+                @if (Model.Customer.Id > 0)
+                {
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Status:
+                            </div>
+                            <div>
+                                @Html.DropDownListFor(m => m.Customer.Status, StatusDDL())
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+
+
+
+            </table>
+            <div class="center">
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+            </div>
+            <div class="center">
+                @if (Model.Customer.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="AjaxPartialUpdate('Create','CustomerDetails')">Create Customer</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Update Customer','CustomerDetails')">Save Changes</button>
+                    @* <button class="button" onclick="NonAjaxWithConfirmation('Delete Customer','Are you sure you want to Delete this Customer?');">Delete</button> *@
+                    <button class="button" onclick="NonAjaxWithConfirmation('Delete Contacts', 'Are you sure you want to Delete this Customer')">Delete</button>
+                    <button class="button-white" onclick="AjaxPartialUpdate('Cancel Edit','CustomerDetails');">Cancel</button>
+                }
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Customer Name:
+
+                        </div>
+                        <div>
+                            @Model.Customer.Name
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Address:
+                        </div>
+                        <div>
+                            @Model.Customer.FullAddress
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Email:
+                        </div>
+                        <div>
+                            @Model.Customer.Email
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Phone:
+                        </div>
+                        <div>
+                            @Model.Customer.PhoneNumber
+                        </div>
+                    </td>
+
+                </tr>
+                @if (!CommonClasses.Environment.environment.Contains("LongRange"))
+                {
+                    <tr>
+                      
+                        <td>
+
+                            <div class="formlabel">
+                                Website:
+                            </div>
+                            <div>
+                                @Model.Customer.Website
+                            </div>
+
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+
+                @if (Model.Customer.Id > 0)
+                {
+                    <tr>
+                        <td>
+                            <div class="formlabel">
+                                Status:
+                            </div>
+                            <div>
+                                @Model.Customer.Status
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+            </table>
+
+            <div class="center">
+                @if (Model.Customer.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="AjaxPartialUpdate('Create','CustomerDetails')">Create Customer</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Edit Customer','CustomerDetails')">Edit</button>
+                    <button class="button-white" onclick="NonAjax('Cancel');">Go Back</button>
+                }
+            </div>
+        </div>
+
+    }
+</div>
+<script>
+    ValidateForm();
+</script>

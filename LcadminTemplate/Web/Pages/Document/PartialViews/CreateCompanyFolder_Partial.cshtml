@@ -1,0 +1,24 @@
+﻿@using Data
+@model Web.DocumentVM
+
+
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.CompanyFolder.CompanyId)
+
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Create Folder </div>
+
+<div class="form-800">
+    @{
+        await Html.RenderPartialAsync("EditCompanyFolder_Partial.cshtml");
+    }
+</div>
+
+

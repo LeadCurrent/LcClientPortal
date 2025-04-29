@@ -1,0 +1,61 @@
+﻿@model CompanyRolesVM
+@using Data
+@using Web
+<link href="~/css/pwcustomstyles.css" rel="stylesheet" />
+@{
+    var title = "Company Profile";
+    var formclass = "form-800";
+    if (Model.MobileApp)
+        formclass = "form-800 p-0";
+}
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.RemoveId)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.CompanyId)
+@Html.HiddenFor(m => m.Company.Id)
+<div id="popupbackground" class="popup-background" style="display:none;"></div>
+@if (!Model.MobileApp)
+{
+    <div class="pagetitle">@title</div>
+}
+
+<div class="@formclass">
+
+    <div class="center">
+        <button class="button" onclick="NonAjax('Show Create Role')">Create Role</button>
+    </div>
+    @if (Model.Roles.Any())
+    {
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>
+                        Role
+                    </th>
+                    <th></th>
+                </tr>
+                @foreach (var role in Model.Roles)
+                {
+                    <tr class="mobileportrait-mobilewide">
+                        <td>
+                            @role.RoleName
+                        </td>
+                        <td class="text-right"><button class="gridbutton" onclick="NonAjaxWithParam('Show Edit Role',@role.Id)">Edit</button></td>
+                    </tr>
+                    <tr class="desktop">
+                        <td>
+                            @role.RoleName
+                        </td>
+                        <td class="text-right"><button class="gridbutton" onclick="NonAjaxWithParam('Show Edit Role',@role.Id)">Edit</button></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+   
+
+</div>
+
+

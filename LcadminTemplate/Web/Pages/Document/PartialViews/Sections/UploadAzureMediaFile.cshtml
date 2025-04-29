@@ -1,0 +1,54 @@
+﻿@* @using Data
+@using Web
+@model CompanyDocumentVM
+
+<script>
+    function showuploadfile() {
+        document.getElementById('selectuploadfile').style.display = "none";
+        document.getElementById('uploading').style.display = "";
+    }
+</script>
+
+
+
+@Html.HiddenFor(m => m.MediaFileUpload.Id)
+@Html.HiddenFor(m => m.Com)
+@Html.HiddenFor(m => m.HubDocumentVersionId)
+@if (Model.MediaFileUpload == null)
+{
+    <div class="uploadvideo" id="selectuploadfile">
+        <input id="" type="file" name="uploadfile" width="300" />
+       
+    </div>
+    <div id="uploading" style="display:none; font-weight:bold;">Video File is Uploading. </div>
+}
+else if (Model.MediaFileUpload.FileUploadCompleted && !Model.MediaFileUpload.JobStarted)
+{
+    
+    <span style="font-weight:bold;">Video File Upload Complete. File Processing has Started.</span>
+    <button id="StartJob" style="display:none" onclick="AjaxPartialUpdate('Start Media Job','MediaFileUpload')"></button>
+    <script>
+        document.getElementById('UploadVideo').style.display = "none";
+        document.getElementById('StartJob').click();
+    </script>
+}
+else if (Model.MediaFileUpload.JobStarted && !Model.MediaFileUpload.JobFinished)
+{
+    <span style="font-weight:bold;">File Processing In Progress...</span>
+    <button id="CheckStatus" style="display:none" onclick="AjaxPartialUpdate('Check Job Status','MediaFileUpload')"></button>
+    <script>
+        document.getElementById('UploadVideo').style.display = "none";
+        document.getElementById('CheckStatus').click();
+    </script>
+}
+else if (Model.MediaFileUpload.JobFinished && !Model.MediaFileUpload.UploadFinished)
+{
+    <button id="JobFinished" style="display:none" onclick="NonAjax('Job Finished')"></button>
+    <script>
+        document.getElementById('UploadVideo').style.display = "none";
+        document.getElementById('AjaxUpdate').value = false;
+        document.getElementById('DivToUpdate').value = null;
+        document.getElementById('JobFinished').click();
+    </script>
+}
+ *@

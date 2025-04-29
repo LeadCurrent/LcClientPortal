@@ -1,0 +1,141 @@
+﻿@model CompanyProfileVM
+@using Data
+@using Web
+@using static Web.GeneralEnumDDLs
+@{
+    var title = "Update Company Profile";
+    var formclass = "form-800";
+    if (Model.MobileApp)
+        formclass = "form-800 p-0";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+@if (!Model.MobileApp)
+{
+    <div class="pagetitle">@title</div>
+}
+
+<div class="container-sec">
+    <div class="@formclass">
+        <div class="white-bg">
+            <div class="sectionheader">Update Company Profile</div>
+            @Html.HiddenFor(m => m.AjaxUpdate)
+            @Html.HiddenFor(m => m.RemoveId)
+            @Html.HiddenFor(m => m.Action)
+            @Html.HiddenFor(m => m.Company.Id)
+            @Html.HiddenFor(m => m.Company.CreateDate)
+            @Html.HiddenFor(m => m.Company.CreatedBy)
+            @Html.HiddenFor(m => m.Company.Logo)
+            @Html.HiddenFor(m => m.Logo)
+
+            <div>
+                <div class="input-form mt-0 pt-0">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Logo:
+                                </div>
+                                <div>
+                                    @{
+                                        await Html.RenderPartialAsync("CompanySettingsLogo.cshtml");
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Business Name:
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(m => m.Company.Name)
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="col-6">
+                                <div class="formlabel">
+                                    Billing Address:
+                                </div>
+                                <div class="formvalue">
+                                    @Html.TextBoxFor(m => m.Company.Address)
+                                </div>
+                            </td>
+                            <td class="col-2">
+                                <div class="formlabel">
+                                    City:
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(m => m.Company.City)
+                                </div>
+                            </td>
+                            <td class="col-2">
+                                <div class="formlabel">
+                                    State:
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(m => m.Company.State, StateDDL())
+                                </div>
+                            </td>
+                            <td class="col-2">
+                                <div class="formlabel">
+                                    Zip:
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(m => m.Company.ZipCode)
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Email:
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(m => m.Company.Email)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="formlabel">
+                                    Phone Number:
+                                </div>
+                                <div>
+                                    <span>
+                                        @Html.TextBoxFor(model => Model.Company.Phone, new { htmlattributes = new { onkeyup = "formatphone('Company_Phone');" } })
+                                    </span>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Time Zone :
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(m => m.Company.CompanyTimeZone, TimeZoneDDL())
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <div class="buttons">
+                        <button class="button" onclick="save_logo();NonAjax('Save Changes');">Save Changes</button>
+                        <button class="button" onclick="NonAjax('Camcel');">Go Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

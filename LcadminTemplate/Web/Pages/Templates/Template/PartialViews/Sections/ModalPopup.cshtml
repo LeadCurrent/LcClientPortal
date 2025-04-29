@@ -1,0 +1,166 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+@using static Web.GeneralEnumDDLs
+
+@if (Model.ShowModelPopup)
+{
+    @Html.HiddenFor(m => m.Template.Id)
+    @Html.HiddenFor(m => m.Template.CreateDate)
+    @Html.HiddenFor(m => m.Template.CreatedBy)
+
+   <div id="popupbackground" class="modal-popup-background" style="display:none;">
+    </div>
+
+
+    <div class="modal mt-5 " id="myModal">
+        <div class="modal-dialog">
+
+            <div class="modal-content width800">
+
+                <!-- Modal Header -->
+                <h6 class="sectionheader">Edit Template</h6>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="input-form">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="formlabel">
+                                        Name:
+                                        <span id="Template_Name_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Template.Name, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                                </td>
+
+                                <td>
+                                    <div class="formlabel">
+                                        Number:
+                                        <span id="Template_Number_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Template.Number, new { @class = "requirednumeric width75", onclick = "if (this.value == '0') this.value = '';", onkeyup = "ValidateForm();", onchange = "ValidateForm();" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="formlabel">
+                                        Dropdown:
+                                        <span id="Template_Dropdown_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.DropDownListFor(m => m.Template.Dropdown, SampleDDL(), new { @class = "requireddropdown", onchange = "ValidateForm();" })
+                                </td>
+
+                                <td>
+                                    <div class="formlabel">
+                                        Currency:
+                                        <span id="Template_Currency_Invalid" class="required">*</span>
+                                    </div>
+                                    <div class="currency-input">
+                                        <span class="currency-sign">$</span>
+                                        @Html.TextBoxFor(m => m.Template.Currency, new { @class = "requireddecimal", onclick = "if (this.value == '0.00') this.value = '';", onkeyup = "ValidateForm();" })
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="formlabel">
+                                        Date:
+                                        <span id="Date_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.HiddenFor(x => x.Template.Date, new { @class = "requiredfield" })
+                                    <input class="requiredfield"
+                                           id="Date"
+                                           type="date"
+                                           value="@CommonClasses.StringFormating.DatePicker(Model.Template.Date)"
+                                           onchange="document.getElementById('Template_Date').value = document.getElementById('Date').value; ValidateForm();">
+                                </td>
+                                <td>
+                                    <div class="formlabel">
+                                        Time:
+                                        <span id="Time_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.HiddenFor(x => x.Template.Time, new { @class = "requiredfield" })
+                                    <input class="requiredfield"
+                                           id="Time"
+                                           type="time"
+                                           value="@Model.Template.TimeStr"
+                                           onchange="document.getElementById('Template_Time').value = document.getElementById('Time').value; ValidateForm();">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="formlabel formRadioGroup">
+                                        Radio Select:
+                                        <span id="Template_RadioSelect_Invalid" class="required">*</span>
+                                        <div class="">
+                                            <div class="radioGroup">
+                                                <span>
+                                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item1, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 1<br>
+                                                </span>
+                                                <span>
+                                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item2, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 2<br>
+                                                </span>
+                                                <span>
+                                                    @Html.RadioButtonFor(x => x.Template.RadioSelect, TemplateEnums.SampleDropdown.Item3, new { @class = "requiredradio", onchange = "ValidateForm();" }) Item 3
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="formlabel">
+                                        @Html.CheckBoxFor(m => m.Template.CheckBox, new { onclick = "ValidateForm();" })  Checkbox
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="formlabel">
+                                        Phone:
+                                        <span id="Template_Phone_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Template.Phone, new { @class = "requiredphone", onkeyup = "ValidateForm();" })
+                                </td>
+
+                                <td>
+                                    <div class="formlabel">
+                                        Text Area:
+                                        <span id="Template_TextArea_Invalid" class="required">*</span>
+                                    </div>
+                                    @Html.TextAreaFor(m => m.Template.TextArea, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="center" id="savebuttons">
+                            <button class="button valid" onclick="ShowHide('loading','savebuttons');Ajax('Save Changes')">Save Changes</button>
+                            <button class="button-white" onclick="AjaxPartialUpdate('Cancel Popup','EditTemplatePopup')">Cancel</button>
+                        </div>
+                        <div class="center" id="loading" style="display:none;">
+                            Saving Changes...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <p style="display:none" id="popup" class="gridbutton" data-toggle="modal" data-backdrop="true" data-target="#myModal">Generatepopup</p>
+    <script>
+        document.getElementById('popup').click();
+    </script>
+
+    <script>
+        ValidateForm();
+    </script>
+
+}
+else
+{
+    <script>
+        $('.modal-backdrop').remove();
+        document.getElementById('body').classList = "body";
+    </script>
+}
+

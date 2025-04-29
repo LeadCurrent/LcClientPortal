@@ -1,0 +1,19 @@
+﻿@using Data
+@model Web.DocumentVM
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditFolder", "Document", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/EditCompanyFolder_Partial.cshtml");
+        }
+    </div>
+}
+<script>
+    highlightcurrentpage('nav_CompanyEvent');
+</script>

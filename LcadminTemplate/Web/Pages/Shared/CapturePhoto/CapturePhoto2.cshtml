@@ -1,0 +1,46 @@
+﻿<button class="button" onclick="BlockPost();take_picture2();">Take /Upload Picture</button>
+<div style="display:none">
+    <input style="display:none" type="file" id="input2" accept="image/*" capture="camera" value="Take Picture">
+    <input style="display:none" type="file" id="upload2" accept="image/*" value="Take Picture">
+    <canvas style="width:200px; padding-top:10px;" id="canvas2"></canvas>
+</div>
+
+<script>
+    function take_picture2() {
+        document.getElementById('input2').click();
+    }
+
+    var input2 = document.getElementById('input2');
+    input2.onchange = function () {
+        var file = input2.files[0];
+        drawOn_Canvas2(file);
+    };
+
+    function drawOn_Canvas2(file) {
+        var reader2 = new FileReader();
+
+        reader2.onload = function (e) {
+            var dataURL = e.target.result,
+                c = document.getElementById('canvas2'),
+                ctx = c.getContext('2d'),
+                img = new Image();
+
+            img.onload = function () {
+                ratio = 350 / img.width;
+                c.width = img.width * ratio;
+                c.height = img.height * ratio;
+                ctx.drawImage(img, 0, 0, img.width * ratio, img.height * ratio);
+            };
+
+            img.src = dataURL;
+        };
+
+        reader2.readAsDataURL(file);
+        setTimeout(() => { saveImage2(); }, 1000);
+    }
+
+    function saveImage2() {
+        document.getElementById('Image2').value = canvas2.toDataURL("image/png");
+        document.getElementById('save_photo2').click();
+    }
+</script>

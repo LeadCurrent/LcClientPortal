@@ -1,0 +1,57 @@
+﻿@using Data
+@model Web.DocumentVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Document.Id)
+@Html.HiddenFor(m => m.Document.CreateDate)
+@Html.HiddenFor(m => m.Document.CreatedBy)
+
+
+<style>
+    .amp-logo {
+        display: none !important;
+    }
+</style>
+
+<link href="//amp.azure.net/libs/amp/latest/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+<script src="//amp.azure.net/libs/amp/latest/azuremediaplayer.min.js"></script>
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Play Video </div>
+
+    <div class="form-800">
+        <div class="white-bg">
+            <div class="">
+
+                @if (Model.BackToEdit)
+                {
+                    <button class="button" onclick="NonAjax('Go Back To Edit')">Go Back</button>
+                }
+                else
+                {
+                     <button class="button" onclick="NonAjax('Go Back')">Go Back</button>
+                }
+                <div class="sectionheader">
+                @Model.Document.DocumentName
+                </div>
+
+
+                        <video id="vid1" class="azuremediaplayer amp-default-skin" controls autoplay width="776" height="480" poster="poster.jpg" data-setup='{"nativeControlsForTouch": false}'>
+                            <source src="@Model.Document.MediaFileURL" type="application/vnd.ms-sstr+xml" />
+                            <p class="amp-no-js">
+                                To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video
+                            </p>
+                        </video>
+      
+           
+            </div>
+        </div>
+    </div>
+
+<script>
+    ValidateDocument();
+</script>

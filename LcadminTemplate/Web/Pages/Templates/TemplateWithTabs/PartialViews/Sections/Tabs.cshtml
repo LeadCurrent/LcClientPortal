@@ -1,0 +1,33 @@
+﻿@using Data
+@using Web
+@model Web.TemplateWithTabsVM
+
+@Html.HiddenFor(m => m.CurrentTab)
+
+<div class="tabbar">
+    @if (Model.CurrentTab == "Tab 1")
+    {
+        <a class="activetab onehalf">Tab 1</a>
+    }
+    else
+    {
+        @Html.ActionLink("Tab 1", "Tab1", "TemplateWithTabs", null, new { @class = "inactivetab onehalf" })
+    }
+    @if (Model.CurrentTab == "Tab 2")
+    {
+        <a class="activetab onehalf">Tab 2</a>
+    }
+    else
+    {
+        @Html.ActionLink("Tab 2", "Tab2", "TemplateWithTabs", null, new { @class = "inactivetab onehalf" })
+    }
+    
+    @if (Model.CurrentTab == "Tab 3")
+    {
+        <a class="activetab onehalf">Tab 3</a>
+    }
+    else
+    {
+        @Html.ActionLink("Tab 3", "Tab2", "TemplateWithTabs", null, new { @class = "inactivetab onehalf" })
+    }
+</div>

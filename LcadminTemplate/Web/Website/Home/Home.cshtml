@@ -1,0 +1,548 @@
+@model ContactsVM
+@using Web
+@using Data
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+@{
+    Layout = "~/Pages/Shared/FrontEndLayout.cshtml";
+}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    var isCaptchaValid = false;
+
+    function onReCaptchaSuccess(token) {
+        document.getElementById('Total').value = token;
+        isCaptchaValid = true;
+        checkForm();
+    }
+
+    function onReCaptchaError() {
+        isCaptchaValid = false;
+        checkForm();
+    }
+
+    function checkForm() {
+        var isFormValid = document.getElementById("SignupName").value.trim() !== '' &&
+            document.getElementById("SignupEmail").value.trim() !== '' &&
+            document.getElementById("SignupPhone").value.trim() !== '' &&
+            document.getElementById("Company_Name").value.trim() !== '' &&
+            isCaptchaValid;
+
+        if (isFormValid) {
+            document.getElementById('sendRequest').style.display = '';
+           
+        } else {
+            document.getElementById('sendRequest').style.display = 'none';           
+        }
+    }
+
+    function submitForm() {
+        if (!isCaptchaValid) {
+            grecaptcha.execute();
+        } else {
+            document.getElementById('contactForm').submit();
+        }
+    }
+
+    document.querySelectorAll('.form-control').forEach(function (element) {
+        element.addEventListener('input', checkForm);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        checkForm();
+    });
+
+</script>
+
+<main class="main">
+    <div class="hero-banner text-white" style="background-image: url(../FrontEnd/images/banner-img.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="banner-text">
+                        <p data-bs-ride="carousel" data-aos="fade-up"
+                           data-aos-duration="1000">Simplified General Contracting</p>
+                        <h1 data-bs-ride="carousel" data-aos="fade-up"
+                            data-aos-duration="1500">
+                            Intuitive Software To Support Your Workflow
+                        </h1>
+                        <a href="~/SignUp" class="btn-primary" data-bs-ride="carousel" data-aos="fade-up"
+                           data-aos-duration="2000">Start Free Trail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-work-with-us sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        We Work With
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+                <h2>Companies In All Service Industries</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-2.svg" alt="">
+                        </div>
+                        <h2>New Companies</h2>
+                        <p class="m-0">
+                            Getting started can be overwhelming which is why we help support our clients with
+                            resources and tutorials. We work hand in hand to make sure you get started on the right foot.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-1.svg" alt="">
+                        </div>
+                        <h2>Established Companies</h2>
+                        <p class="m-0">
+                            Companies that are looking for a scheduling software that has a simplified approach
+                            to managing their workflow.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-3.svg" alt="">
+                        </div>
+                        <h2>Franchises</h2>
+                        <p class="m-0">
+                            GC Workflow works with franchises to establish enterprise level standards and
+                            reporting to ensure the success of the franchise and its franchisee's
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-enterprise-solutions sec-gap">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <figcaption class="m-0" data-aos="fade-left" data-aos-duration="1000" data-aos-once="true">
+                        <img src="~/FrontEnd/images/image-layer-1.jpg" alt="">
+                    </figcaption>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card-content" data-aos="fade-right" data-aos-duration="1500" data-aos-once="true">
+                        <h2>Enterprise Solutions</h2>
+                        <p>
+                            Whether your a Franchise looking to streamline your reporting or an established company with a
+                            unique workflow, GC Workflow is ready to meet the challenge. Many companies are surprised at how
+                            affordable our Enterprise Solutions can be. Contact Us so we can discuss what GC Workflow can do
+                            for you.
+                        </p>
+                        <a href="~/Contact" class="btn-primary">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-workflow sec-gap">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <figcaption class="m-0 pe-100" data-aos="fade-right" data-aos-duration="1000" data-aos-once="true">
+                        <img src="~/FrontEnd/images/image-layer-2.png" alt="">
+                    </figcaption>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card-content" data-aos="fade-left" data-aos-duration="1500" data-aos-once="true">
+                        <h2>Simplify Your Workflow</h2>
+                        <p>
+                            Managing the flow of your daily operations shouldn't be complicated. We worked with service
+                            companies across many industries to develop a workflow that track each job from start to finish.
+                            The progression through the workflow is automated to improve efficiencies and reduce human error
+                            while providing better visibility for your team.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-our-feature sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        Our Features
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+                <h2>Learn How We Support Your Operations</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-4.svg" alt="">
+                        </div>
+                        <h2>Workflow</h2>
+                        <p class="m-0">
+                            Any company can be broken down into a series of systems that all work together to
+                            make the big picture happen. With service companies each job is taken through a logical
+                            progression which is captured within GC Workflow. Our Workflow page is designed to keep the
+                            status of each job visible for your entire team.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-5.svg" alt="">
+                        </div>
+                        <h2>Communications</h2>
+                        <p class="m-0">
+                            Effective communication is the #1 contributor to providing your customers with great
+                            customer service. Our clients are able to create conversations with their customers to ensure
+                            clear, organized documented communication.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-6.svg" alt="">
+                        </div>
+                        <h2>Visibility</h2>
+                        <p class="m-0">
+                            Each section within GC Workflow has been designed to keep relevant information
+                            grouped and visible. By grouping relevant information we have made using GC Workflow more
+                            intuitive which has led to improved efficiencies and reduced training for users.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-white t-hover" data-aos="fade-up" data-aos-duration="2500" data-aos-once="true">
+                        <div class="iconbox d-flex align-items-center justify-content-center">
+                            <img src="~/FrontEnd/images/icon-7.svg" alt="">
+                        </div>
+                        <h2>Documentation</h2>
+                        <p class="m-0">
+                            Documentation is important. Our clients are able to capture useful information along
+                            with the history of jobs, clients, products and user actions. This is important to ensure
+                            processes are being followed and promotes accountability.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 text-center" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                <a href="~/Features" class="btn-primary">Explore Our Features</a>
+            </div>
+        </div>
+    </div>
+    <div class="sec-plans sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        About Us
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+                <h2>Our Plans At A Glance</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card-price-box t-hover"
+                         data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>The GC</h2>
+                            <p>
+                                Specifically created to help support general contractors and owner/operator service providers
+                                who specialize in handling single projects for their customers either themselves or through
+                                sub contractors.
+                            </p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Create Sales Appointment</li>
+                                    <li><i class="bi bi-check2-circle"></i> Send quotes online for quick and easy approvals</li>
+                                    <li>
+                                        <i class="bi bi-check2-circle"></i> Online invoices allow your customers to conveniently
+                                        pay anytime anywhere.
+                                    </li>
+                                    <li><i class="bi bi-check2-circle"></i> Package common products to create quotes faster</li>
+                                </ul>
+                                <a href="~/Features" class="btn-primary w-100">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-price-box t-hover" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>The Elite</h2>
+                            <p>A full feature plan designed to support established service companies effectively manage their workflow and teams. The ability to assign responsibility, clearly document work and maintain an audit log helps keep larger teams working together.</p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Utilize Divisions to separate different sectors of your operations</li>
+                                    <li><i class="bi bi-check2-circle"></i> Use Crews and Groups when scheduling jobs and tasks</li>
+                                    <li><i class="bi bi-check2-circle"></i> Audit logs allow clear visibility when changes are made</li>
+                                    <li><i class="bi bi-check2-circle"></i> Optimize your scheduling through our Drive Time Estimator</li>
+                                </ul>
+                                <a href="~/Features" class="btn-primary w-100">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-price-box t-hover" data-aos="fade-up" data-aos-duration="2500" data-aos-once="true">
+                        <div class="price-box-header text-center">
+                            <h2>The Pro</h2>
+                            <p>The Pro plan allows smaller teams to efficiently manage both one time and recurring jobs. Its included features are designed to streamline operations without complicated features that only apply to larger teams.</p>
+                        </div>
+                        <div class="card-price-body">
+                            <div class="price-features">
+                                <ul class="d-flex flex-column">
+                                    <li><i class="bi bi-check2-circle"></i> Manage and schedule your One Time and Recurring jobs</li>
+                                    <li><i class="bi bi-check2-circle"></i> Convenient time tracking for jobs and your staff</li>
+                                    <li><i class="bi bi-check2-circle"></i> Automate your recurring invoices</li>
+                                    <li><i class="bi bi-check2-circle"></i> Require Before and After photos to document your work</li>
+                                </ul>
+                                <a href="~/Features" class="btn-primary w-100">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-free-trail" style="background-image: url(./images/parallax-bg.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="img-guarantee" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <img src="~/FrontEnd/images/guarantee.png" alt="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="content-innerbox" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                        <h2>14 Day Free Trial</h2>
+                        <p>No Risk, No Contracts, No Commitments, Not Even A Credit Card Is Needed To Get Started</p>
+                        <a href="~/SignUp" class="btn-primary">Start Free Trail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sec-contact-us sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+                        Contact Us
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+
+                <h2 class="mb-3">Need More Information?</h2>
+                <p>Were always looking to connect with those in the service industry. If you have additional questions don't hesitate to contact us so we can get your questions answered.</p>
+            </div>
+
+            @using (Html.BeginForm("Contact", "Home"))
+            {
+                <div class="row">
+                    <div class="col-lg-7">
+                        <figcaption data-aos="fade-right" data-aos-duration="1500" data-aos-once="true">
+                            <img src="~/FrontEnd/images/img-contact.jpg" alt="">
+                        </figcaption>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card-contact h-100" data-aos="fade-left" data-aos-duration="1500" data-aos-once="true">
+                            @if (Model.RobotFailed || Model.ContactSent)
+                            {
+                                <label id="Contact"></label>
+                            }
+                            @if (!Model.ContactSent)
+                            {
+                                @Html.HiddenFor(m => m.Total)
+                                <h2 class="text-center">Contact Us</h2>
+                                <div class="form-group input-single">
+                                    <label>Full Name</label>
+                                    @Html.EditorFor(m => m.SignupName, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupName", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Email </label>
+                                    @Html.EditorFor(m => m.SignupEmail, new { htmlattributes = new { @class = "form-control requiredfield", id = "SignupEmail", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Phone</label>
+                                    @Html.EditorFor(m => m.SignupPhone, new { htmlattributes = new { @class = "form-control", id = "SignupPhone", onkeyup = "formatphone('SignupPhone');checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Company</label>
+                                    @Html.EditorFor(m => m.Company.Name, new { htmlattributes = new { @class = "form-control requiredfield", id = "Company_Name", onkeyup = "checkForm();" } })
+                                </div>
+                                <div class="form-group input-single">
+                                    <label>Message</label>
+                                    @Html.TextAreaFor(m => m.Message, new { @class = "form-control requiredfield", id = "Message", onkeyup = "checkForm();" })
+                                </div>
+
+                                <!-- reCAPTCHA widget -->
+                                <div class="form-group" style="align-items:start">
+                                    <div class="g-recaptcha" data-sitekey="@configuration["GoogleRecaptchaSettings:SiteKey"]" data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaError"></div>
+                                </div>
+                            
+                                <button id="sendRequest" style="display:none;" class="btn-primary w-100" onclick="NonAjax('Create')">Send Contact Request</button>
+                            }
+                            else
+                            {
+                                <div style="padding-top:100px">
+                                <h2 id="ContactSent" class="mb-3">Thank You!</h2>
+                                <p>We will get in touch with you as soon as possible!</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+        </div>
+    </div>
+    <div class="sec-faq sec-gap">
+        <div class="container">
+            <div class="block-header text-center" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            <div class="sec-accordion" id="accordionExample-2" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingOne1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne1" aria-expanded="false">
+                            Is there a Free Trial?
+                        </button>
+                    </div>
+                    <div id="collapseOne1" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                YES! Everyone gets a 14 Day Free Trail.  Just select the plan you want and enter your billing information before your free trial ends to enjoy uninterrupted access.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingTwo2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo2" aria-expanded="false">
+                            Are there any contracts?
+                        </button>
+                    </div>
+                    <div id="collapseTwo2" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Never! GC Workflow is a pay as you go service so you can cancel your subscription at any time.  You will keep access until the end of your billing cycle.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingThree3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree3" aria-expanded="false">
+                            Can I change my Plan?
+                        </button>
+                    </div>
+                    <div id="collapseThree3" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes, You can change you plan at anytime.  However, if you are downgrading your plan you will lose any features associated with the higher plan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingFour4">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour4" aria-expanded="false">
+                            Does GC Workflow Sync with QuickBooks?
+                        </button>
+                    </div>
+                    <div id="collapseFour4" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes, GC Workflow can sync wih your QuickBooks Online account.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingFive5">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFive5" aria-expanded="false">
+                            Do you have an App?
+                        </button>
+                    </div>
+                    <div id="collapseFive5" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Yes! Not only is GC Workflow designed to me mobile responsive we have also created an App to better support users who primarily are working from mobile devices.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="headingSix6">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSix6" aria-expanded="false">
+                            Will GC Workflow work on my cell phone/tablet?
+                        </button>
+                    </div>
+                    <div id="collapseSix6" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample-2">
+                        <div class="accordion-body">
+                            <p>
+                                Even if you are not using the GC Workflow app we have made sure GC Workflow is fully functional with mobile responsive pages to make sure you can get work done no matter the device you are using.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    if (document.getElementById("Contact") != null) {
+        window.location.hash = "Contact";
+    }
+
+</script>

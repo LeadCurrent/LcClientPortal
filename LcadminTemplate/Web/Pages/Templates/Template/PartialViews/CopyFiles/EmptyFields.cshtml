@@ -1,0 +1,15 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+
+@*Fields*@
+
+@if (Model.UpdateSuccessful)
+{
+    <div class="success-message">
+        Template updated successfully
+    </div>
+}
+<div class="validation-message" id="Invalid">
+    <i>Fill in all required fields</i>
+</div>

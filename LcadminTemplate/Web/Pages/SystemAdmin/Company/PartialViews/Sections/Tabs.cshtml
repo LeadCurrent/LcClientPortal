@@ -1,0 +1,12 @@
+﻿@using Data
+@model Data.CompanyViewModel
+<div class="tabbar">
+    @if (Model.CurrentTab == "Profile")
+    {
+        <span class="activetab">Profile</span>
+    }
+    else
+    {
+        <span>@Html.ActionLink("Profile", "Profile", "Company", new { CompanyId = Model.Company.Id }, new { @class = "inactivetab" })</span>
+    }
+</div>

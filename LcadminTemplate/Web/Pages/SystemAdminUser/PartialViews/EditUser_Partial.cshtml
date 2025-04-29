@@ -1,0 +1,25 @@
+﻿@model Web.UserVM
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(model => model.User.Id)
+<div class="pagetitle">Edit User</div>
+<div class="form-800" id="form">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/UserFields.cshtml");
+            }
+            <div class="buttons">
+                <button id="Valid" class="button" onclick="Ajax('Save Changes')">Save Changes</button>
+                <button class="button" onclick="NonAjax('Cancel')">Go Back</button>
+    @*             <button class="button" onclick="NonAjax('Change Password')">Change Password</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    ValidateForm();
+</script>
+

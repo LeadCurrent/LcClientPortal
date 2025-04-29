@@ -1,0 +1,144 @@
+﻿@model CompanyRolesVM
+@using Web
+@using Data
+@using static Data.RoleEnums;
+@using static Web.RoleEnumDDLs;
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.StringParam)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Company.Id)
+@Html.HiddenFor(m => m.CompanyId)
+@Html.HiddenFor(m => m.Role.Id)
+@Html.HiddenFor(m => m.Role.CompanyId)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+<div class="pagetitle">Edit User Role </div>
+<div class="form-800">
+    <div class="white-bg">
+
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Role
+                            <span id="Role_RoleName_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @if (Model.Role.RoleName == "Admin")
+                            {
+                                @Html.TextBoxFor(m => m.Role.RoleName, new { disabled = "disabled", @class = "requiredfield maxwidth", onkeyup = "ValidateForm();" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(m => m.Role.RoleName, new { @class = "requiredfield maxwidth", onkeyup = "ValidateForm();" })
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Description
+                        </div>
+                        <div>
+                            @Html.TextAreaFor(m => m.Role.Description, new { @class = "requiredfield maxwidth", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="center">
+                @if (Model.UpdateSuccessful)
+                {
+                    <div class="success-message">
+                        Role updated successfully
+                    </div>
+                }
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+                <div>
+                    <button class="button" id="Valid" onclick="Ajax('Update')">Update</button>
+                    <button class="button-white" onclick="NonAjax('Cancel')">Go Back</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop">
+                    <th style="width:60%">
+                        Page
+                    </th>
+                    <th style="width:40%">
+                        Permissions
+                    </th>
+                </tr>
+                @{
+                    int index = 0;
+                }
+                @if (Model.RolePermissions != null)
+                {
+                    @foreach (var rolePermission in Model.RolePermissions)
+                    {
+                        @Html.HiddenFor(m => m.RolePermissions[index].Id)
+                        @Html.HiddenFor(m => m.RolePermissions[index].RoleId)
+                        var accessBtn = "access" + index;
+
+                        <tr class="bottomborder">
+                            <td>
+                                @PermissionDesc(@rolePermission.Permission)
+                                @Html.HiddenFor(m => m.RolePermissions[index].Permission)
+                            </td>
+                            @if (Model.Role.RoleName == "Admin")
+                            {
+                                @if (PermissionDesc(@rolePermission.Permission) == "Jobs")
+                                {
+                                    <td colspan="3">
+                                        @Html.DropDownListFor(m => m.RolePermissions[index].JobAccess, JobAccessDDL(), new { disabled = "disabled", @class = "width200" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td colspan="3">
+                                        @Html.DropDownListFor(m => m.RolePermissions[index].Access, AccessDDL(), new { disabled = "disabled", @class = "width200" })
+                                    </td>
+                                }
+                            }
+                            else
+                            {
+                                @if (PermissionDesc(@rolePermission.Permission) == "Jobs")
+                                {
+                                    <td colspan="3">
+                                        <button class="button" id="@accessBtn" style="display:none" onclick="AjaxWithParam('Update DropDown Permissions', @Model.RolePermissions[index].Id)"></button>
+                                        <div id="ddlContainer_@index">
+                                            @Html.DropDownListFor(m => m.RolePermissions[index].JobAccess, JobAccessDDL(), new { onchange = $"ClickButton('{@accessBtn}')", @class = "width200" })
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td colspan="3">
+                                        <button class="button" id="@accessBtn" style="display:none" onclick="AjaxWithParam('Update DropDown Permissions', @Model.RolePermissions[index].Id)"></button>
+                                        <div id="ddlContainer_@index">
+                                            @Html.DropDownListFor(m => m.RolePermissions[index].Access, AccessDDL(), new { onchange = $"ClickButton('{@accessBtn}')", @class = "width200" })
+                                        </div>
+                                    </td>
+                                }
+                            }
+                        </tr>
+                        index++;
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    ValidateForm();
+</script>

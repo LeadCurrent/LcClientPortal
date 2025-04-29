@@ -1,0 +1,51 @@
+/*common css start*/
+@charset "utf-8";
+
+:root {
+    /*Background*/
+    --BackgroundColor: #DDDFE0;
+    /*Side Navigation*/
+    --SideNavBackgroundColor: #0E3A6B;
+    --SideNavTextColor: #666;
+    --SideNavSelectedItemBackgroundColor: #FFF;
+    --SideNavSelectedItemTextColor: #B0151B;
+    --SideNavBottomBorderColor: #FFFFFF;
+    --SideNavSubMenuBackgroundColor: #014487;
+    --whitebg: #FFF;
+    --whitebgtext: #333;
+    /*Buttons*/
+    --ButtonBackgroundColor: #333;
+    --ButtonTextColor: #FFF;
+    --WhiteButtonTextColor: #333;
+    --ButtonBorderColor: #333;
+    /*Tables*/
+    --TableHeaderBackgroundColor: #333;
+    --TableHeaderBorderColor: #FFF;
+    --TableHeaderTextColor: #FFF;
+    --InnerFormTableHeaderBackgroundColor: #000;
+    --InnerFormTableHeaderTextColor: #FFF;
+    --TableOddRow: #0e3a6b0d;
+    --TableEvenRow: #FFFFFFF;
+    --SelectedRow: #ff00001a;
+    /*Headers*/
+    --PageTitleColor: #FFF;
+    --SectionTitleColor: #226989;
+    --PageTitleBackgroundColor: #333;
+    --SectionHeaderBackGround: #B0151B;
+    --SectionHeaderTextColor: #B0151B;
+    --SectionHeaderBorderColor: #FFF;
+    /*Text*/
+    --secondarycolor: #0E3A6B;
+    --ErrorText: #d32f2f;
+    --SuccessText: #2e7d32;
+    --FormLabelColor: #333;
+    /*Tabs*/
+    --ActiveTabBackGroundColor: #B0151B;
+    --ActiveTabTextColor: #FFF;
+    --InactiveTabBackGroundColor: #FFF;
+    --InactiveTabTextColor: #B0151B;
+    --InactiveTabTextColor: #666;
+    --InactiveTabBorderColor: #FFF;
+    --WorkflowStepActiveTextColor: #B0151B;
+    --WorkflowStepInActiveTextColor: #0E3A6B;
+}

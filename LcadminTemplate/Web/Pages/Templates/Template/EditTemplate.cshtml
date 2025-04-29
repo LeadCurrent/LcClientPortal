@@ -1,0 +1,28 @@
+﻿@using Data
+@using Web
+@model Web.TemplateVM
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+    Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "Template", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @if (Model.ShowModelPopup)
+        {
+            await Html.RenderPartialAsync("PartialViews/ModelPopup.cshtml");
+
+        }
+        else
+        {
+        await Html.RenderPartialAsync("PartialViews/EditTemplate_Partial.cshtml");
+            
+        }
+    </div>
+}
+<script>
+    highlightcurrentpage('nav_Template');
+</script>

@@ -1,0 +1,47 @@
+﻿<button class="button" onclick="BlockPost();take_picture();">Take / Upload Picture</button>
+<div style="display:none">
+    <input style="display:none" type="file" id="input" accept="image/*" capture="camera" value="Take or Upload Picture">
+    <input style="display:none" type="file" id="upload" accept="image/*" value="Take or Upload Picture">
+    <canvas style="width:200px; padding-top:10px;" id="canvas"></canvas>
+</div>
+
+
+<script>
+    function take_picture() {
+        document.getElementById('input').click();
+    }
+
+    var input = document.getElementById('input');
+    input.onchange = function () {
+        var file = input.files[0];
+        drawOn_Canvas(file);
+    };
+
+    function drawOn_Canvas(file) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var dataURL = e.target.result,
+                c = document.getElementById('canvas'),
+                ctx = c.getContext('2d'),
+                img = new Image();
+
+            img.onload = function () {
+                ratio = 350 / img.width;
+                c.width = img.width * ratio;
+                c.height = img.height * ratio;
+                ctx.drawImage(img, 0, 0, img.width * ratio, img.height * ratio);
+            };
+
+            img.src = dataURL;
+        };
+
+        reader.readAsDataURL(file);
+        setTimeout(() => { saveImage(); }, 1000);
+    }
+
+    function saveImage() {
+        document.getElementById('Image').value = canvas.toDataURL("image/png");
+        document.getElementById('save_photo').click();
+    }
+</script>

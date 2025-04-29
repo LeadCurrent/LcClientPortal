@@ -1,0 +1,108 @@
+@media screen and (min-width: 1200px){
+    .container {max-width: 1320px;}  
+}
+    
+@media screen and (max-width: 1480px) and (min-width: 1200px) {
+    .container { max-width: 1100px;}
+}
+
+
+@media screen and (max-width: 1480px) {
+.card.card-white h2{ font-size: 22px;}
+}
+
+@media screen and (max-width: 1199px) {
+.card.card-white{ padding: 15px;}
+.card.card-white h2{ font-size: 20px;}
+.footer-widget.quickbox {padding: 0px 0px;}
+.card-content h2{ font-size: 32px;}
+.card-content p{ font-size: 16px;}
+.img-guarantee {max-width: 200px;}
+.content-innerbox {padding-left: 10px;}
+.card-content h2 {font-size: 26px;}
+.price-features { padding: 15px;}
+.card-price-body {padding: 15px;}
+.card-widget a{ padding: 10px;}
+.ic {margin-right: 5px;width: 36px;height: 36px;flex: 0 0 36px;font-size: 18px;}
+.text-right h6{ font-size: 16px;}
+}
+
+@media screen and (max-width: 991px) {
+.sec-work-with-us [class*='col']:not(:last-child){ margin-bottom: 50px;}
+.main {margin-top: 80px;}
+.sec-enterprise-solutions figcaption, 
+.sec-workflow  figcaption, 
+.sec-contact-us figcaption,
+.sec-workflow-experience figcaption,
+.sec-quoting-invoicing figcaption {margin-bottom: 30px !important;}
+.sec-plans [class*='col']:not(:last-child){ margin-bottom: 50px;}
+.card-price-box h2{ font-size: 22px;}
+.card-contact {padding: 15px;}
+.page-title h2 {font-size: 3rem;}
+
+.page-banner{ padding: 30px 0px;}
+.page-title p {font-size: 12px;letter-spacing: 2px;}
+.page-title h2 {font-size: 26px;line-height: 1.1;}
+.ste-card i {width: 80px;height: 80px;}
+.ste-card i img{ max-width: 35px;}
+.step-text{ font-size: 60px;}
+.sec-contact-us [class*='col']:not(:last-child){ margin-bottom: 30px;}
+}
+    
+    
+@media screen and (max-width: 767px) {
+.header .offcanvas-start {background: var(--black);}
+.offcanvas-start { border-right: none; width: 300px;}
+.header-right .offcanvas-body {align-items: self-start;padding: 20px 0px;}
+.header-right .offcanvas-body nav {width: 100%;}
+.navbar-nav .nav-item {padding:0px 20px;}
+.navbar-nav li .nav-link {padding: 8px 0px;color: #fff;}
+.navbar-nav .nav-link{ font-size: 16px;color: #fff;text-align: left;}
+.header .border-bottom {border-bottom: 1px solid #64686c!important;}
+.header .btn {margin-left: 15px; margin-top: 5px;}
+.header .btn-primary i{ display: none;}
+.logo{max-width: 160px;}
+.main {
+    margin-top: 70px;
+}
+/* End header css */
+
+/* body css start */
+.hero-banner {height: auto; min-height: inherit;}
+.banner-text h1 {font-size: 26px; margin-bottom: 25px; line-height: 1.5;}
+.banner-text p {font-size: 16px;margin-bottom: 10px;}
+.btn-primary, .btn-secondary, .btn-outline { min-width: 151px;padding: 10px 10px;font-size: 15px;}
+.sec-gap {padding: 30px 0px;}
+.header .btn-primary {font-size: 15px;padding: 6px 10px;min-width: 83px;}
+
+.iconbox { width: 80px;height: 80px;}
+.iconbox img {width: 44px;}
+.sec-free-trail .row {flex-direction: column;}
+.content-innerbox {padding-left: 0;text-align: center;}
+.sec-free-trail {padding: 30px 0px;}
+.img-guarantee {max-width: 110px; margin-bottom: 20px;}
+.content-innerbox h2 { font-size: 25px; margin-bottom: 10px;}
+.content-innerbox p {font-size: 15px;margin-bottom: 20px;}
+.sec-accordion .accordion-button{ font-size: 15px;}
+.footer { padding-top: 30px;}
+.sec-accordion .accordion-item{ margin-bottom: 15px;}
+.banner-text {text-align: center;}
+.page-banner .btn-primary{ min-width: 111px; padding: 8px;font-size: 14px;}
+.stepwrapper [class*='col-']:not(:last-child) .ste-card::before{ display: none;}
+.ste-card {padding: 0px 15px;}
+.stepwrapper{ padding: 30px 0px;}
+.sec-steps {margin-bottom: 30px;}
+.price-features{ min-height: inherit;}
+.price-box-header span {font-size: 3rem;}
+.sec-free-trail.growing-business {padding: 30px 0px;}
+.footer-widget.quickbox {margin-bottom: 25px;}
+.block-header h2{ font-size: 28px;}
+.footer-bottom p{ font-size: 13px;}
+
+}
+    
+    
+       
+           
+           
+           

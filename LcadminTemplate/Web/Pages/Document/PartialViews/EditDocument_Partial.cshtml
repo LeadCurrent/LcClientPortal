@@ -1,0 +1,334 @@
+﻿@using Data
+@using static Data.DocumentEnums
+@model Web.DocumentVM
+
+<script>
+    function showuploading() {
+        document.getElementById('buttons').style.display = 'none';
+        document.getElementById('uploading').style.display = 'inline';
+    }
+</script>
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Document.Id)
+@Html.HiddenFor(m => m.Document.CreateDate)
+@Html.HiddenFor(m => m.Document.CreatedBy)
+@Html.HiddenFor(m => m.Document.CompanyId)
+@Html.HiddenFor(m => m.Document.CurrentVersionNumber)
+
+
+<style>
+    .previewModal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .previewModal-content {
+        background-color: #fefefe;
+        margin: 3% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Edit Documents</div>
+
+<div class="form-800">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                await Html.RenderPartialAsync("Sections/DocumentFields.cshtml");
+            }
+
+            <div class="center mt-3">
+                @if (Model.UpdateSuccessful)
+                {
+                    <div class="success-message">
+                        Document was updated successfully
+                    </div>
+                }
+                <div id="uploading" style="display:none; font-weight:bold; font-size:10px">
+                    Uploading document...
+                </div>
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="button" id="Valid" onclick="Ajax('Update')">Update Document</button>
+                <button class="filterbutton mt-1" onclick="NonAjaxWithConfirmation('Remove','Are you sure you want to remove this Document?');">Remove Document</button>
+                <button class="filterbutton mt-1" onclick="NonAjax('Cancel')">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="white-bg">
+        <div class="sectionheader">Version History</div>
+        <table class="tablestyle">
+            <tr class="desktop">
+                <th style="width:5%">
+                    Version
+                </th>
+                <th style="width:30%">
+                    Name
+                </th>
+                <th style="width:25%">
+                    Created On
+                </th>
+                <th style="width:35%">
+                    Uploaded By
+                </th>
+                <th style="width:5%">
+                </th>
+
+            </tr>
+            @{
+                var i = 0;
+            }
+            @foreach (var document in Model.Document.DocumentVersions)
+            {
+                var PreviewBtn = "Preview_" + i;
+                var DownloadForEmailBtn = "DownloadForEmail_" + i;
+                var DownloadHighResBtn = "DownloadHighRes_" + i;
+                @Html.HiddenFor(m => document.Id)
+                <tr class="mobileportrait-mobilewide">
+                    <td>
+                        <div>
+                            <b>Version: </b>
+                            @document.VersionNumber
+                        </div>
+                        <div>
+                            <b>Name: </b>
+                            @document.FileName
+                        </div>
+                        <div>
+                            <b>Created On:</b> @document.UpdateDate
+                        </div>
+                        <div>
+                            <b>Uploaded By:</b> @document.UpdatedBy
+                        </div>
+                        <div class="center m-2">
+                            <button class="gridbutton" onclick="previewAttachment('@document.FileName', @document.Id)">Preview</button>
+                            <a style="color:#666666; text-decoration: none" href="@document.FilePath" class="gridbutton">High Res</a>
+                            <button class="dropdown-item" type="button" onclick="compressAndDownload('@document.FilePath', '@document.FileName')">Download for Email</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        @document.VersionNumber
+                    </td>
+                    <td>
+                        @document.FileName
+                    </td>
+                    <td>
+                        @document.UpdateDate
+                    </td>
+                    <td>
+                        @document.UpdatedBy
+                    </td>
+                    @{
+                        var fullUrl = (document.LinkURL != null) ? "https://" + @document.LinkURL : string.Empty;
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="gridbutton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                @if (document.Document.DocumentFileType == DocumentFileType.Link)
+                                {
+                                    <button class="dropdown-item" type="button" onclick="window.open('@fullUrl', '_blank')">Preview</button>
+                                }
+                                else if (document.Document.DocumentFileType == DocumentFileType.Image)
+                                {
+                                    <button class="dropdown-item" type="button" onclick="previewAttachment('@document.FileName', @document.DocumentId)">Preview</button>
+                                    <button class="dropdown-item" type="button" onclick="compressAndDownload('@document.FilePath', '@document.FileName')">Download for Email</button>
+                                    <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download Original</button>
+                                }
+                                else if (document.Document.DocumentFileType == DocumentFileType.Document)
+                                {
+                                    <button class="dropdown-item" type="button" onclick="previewAttachment('@document.FileName', @document.DocumentId)">Preview</button>
+                                    <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download</button>
+                                }
+                                else if (document.Document.DocumentFileType == DocumentFileType.Video)
+                                {
+                                    <button class="dropdown-item" type="button" onclick="previewAttachment('@document.FileName', @document.DocumentId)">Preview</button>
+                                    <button class="dropdown-item" type="button" onclick="window.location.href='@document.FilePath'">Download</button>
+                                }
+                            </div>
+                        </div>
+                        <div id="previewModal" class="previewModal" style="display:none;">
+                            <div class="previewModal-content" id="previewModalContent">
+                                <span class="close" onclick="closePreviewModal()">&times;</span>
+                                <img id="previewImage" style="width: 100%; height: auto; display: none;" alt="Preview Image">
+                                <iframe id="previewIframe" style="display:none;" width="100%" height="800px"></iframe>
+                                <video id="previewVideo" controls style="display:none; min-width: 100%;">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+    ValidateForm();
+</script>
+
+
+
+<script>
+    function Preview(id) {
+        var btnId = "Preview_" + id;
+        $('#' + btnId).click();
+    }
+    function DownloadForEmail(id) {
+        var btnId = "DownloadForEmail_" + id;
+        $('#' + btnId).click();
+    }
+    function DownloadHighRes(id) {
+        var btnId = "DownloadHighRes_" + id;
+        $('#' + btnId).click();
+    }
+</script>
+
+<script>
+    function closePreviewModal() {
+        var imgElement = document.getElementById('previewImage');
+        var iframeElement = document.getElementById('previewIframe');
+
+        imgElement.src = '';
+        iframeElement.src = '';
+        document.getElementById('previewModal').style.display = "none";
+    }
+
+
+    // code for previewing document
+    function previewAttachment(filename, DocumentId) {
+        debugger
+        event.preventDefault();
+
+        var fileExtension = filename.split('.').pop().toLowerCase();
+        $.ajax({
+            url: '@Url.Action("PreviewAttachment", "Document")',
+            type: 'GET',
+            data: {
+                filename: filename,
+                DocumentId: DocumentId
+            },
+            success: function (response) {
+                if (response.fileUrl) {
+                    console.log("File URL: " + response.fileUrl);
+
+                    var imgElement = document.getElementById('previewImage');
+                    var iframeElement = document.getElementById('previewIframe');
+                    var videoElement = document.getElementById('previewVideo');
+
+                    imgElement.style.display = "none";
+                    iframeElement.style.display = "none";
+                    videoElement.style.display = "none";
+
+                    if (["jpg", "jpeg", "png", "gif", "bmp"].includes(fileExtension)) {
+                        imgElement.src = response.fileUrl;
+                        imgElement.style.display = "block";
+                    } else if (fileExtension === "pdf") {
+                        var encodedUrl = encodeURIComponent(response.fileUrl);
+                        console.log("Encoded URL for PDF Viewer: " + encodedUrl);
+
+                        iframeElement.src = "https://docs.google.com/gview?url=" + encodedUrl + "&embedded=true";
+                        iframeElement.style.display = "block";
+                        adjustIframeWidth(iframeElement);
+                    } else if (fileExtension === "docx" || fileExtension === "doc" || fileExtension === "pptx" || fileExtension === "xlsx" || fileExtension === "txt" || fileExtension === "ppt") {
+                        iframeElement.src = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(response.fileUrl);
+                        iframeElement.style.display = "block";
+                        adjustIframeWidth(iframeElement);
+                    } else if (["mp4", "webm", "ogg"].includes(fileExtension)) {
+                        videoElement.src = response.fileUrl;
+                        videoElement.style.display = "block";
+                    } else {
+                        alert("File type not supported for preview.");
+                        return;
+                    }
+
+                    document.getElementById('previewModal').style.display = "block";
+                } else {
+                    alert("Failed to load the document.");
+                }
+            },
+            error: function () {
+                alert("An error occurred while trying to preview the document.");
+            }
+        });
+    }
+
+    function adjustIframeWidth(iframeElement) {
+        iframeElement.style.width = "100%";
+        var windowWidth = window.innerWidth;
+
+        if (windowWidth < 768) {
+            iframeElement.style.width = "90%";
+        } else if (windowWidth < 1200) {
+            iframeElement.style.width = "95%";
+        } else {
+            iframeElement.style.width = "100%";
+        }
+    }
+</script>
+
+<script>
+    // Compress download for email images
+    function compressAndDownload(filePath, fileName) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = filePath;
+
+        img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(function (blob) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+            }, 'image/jpeg', 0.5);
+        };
+    }
+</script>

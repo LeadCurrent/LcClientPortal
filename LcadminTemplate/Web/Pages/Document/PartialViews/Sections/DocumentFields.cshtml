@@ -1,0 +1,229 @@
+﻿@using Data
+@using Web
+@model Web.DocumentVM
+@using static Data.DocumentEnums
+@using static Web.DocumentEnumDDL
+
+@Html.HiddenFor(x => x.CompanyFolder.Id)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.BlockPostBack)
+
+@if (Model.GetAllFoldersName != null && Model.GetAllFoldersName.Any())
+{
+    <div class="sectionheader">
+        @if (Model.Document.CompanySubFolderId != null && Model.Document.CompanySubFolderId > 0)
+        {
+            <button class="buttonaslink" onclick="NonAjax('Go To Document List')">Documents</button>
+        }
+        @foreach (var item in Model.GetAllFoldersName)
+        {
+            <span>></span>
+            if (item == Model.GetAllFoldersName.Last())
+            {
+                <span>@item.Name</span>
+            }
+            else
+            {
+                <button class="buttonaslink" onclick="NonAjaxWithParam('View Folder', @item.Id)">@item.Name</button>
+            }
+        }
+    </div>
+}
+<table>
+    <tr>
+        <td>
+            <div class="formlabel">
+                Document Name   <span id="Document_DocumentName_Invalid" class="required">*</span>
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.Document.DocumentName, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="formlabel">
+                Document Type
+            </div>
+            <div>
+                @Html.DropDownListFor(m => m.Document.DocumentFileType, DocumentFileTypeDDL(), new { @id = "documentTypeDropdown", @onchange = "handleDocumentTypeChange()" })
+            </div>
+        </td>
+    </tr>
+    <tr id="videoRow" style="display:none;">
+        <td>
+            <div class="formlabel">
+                Select Video Source:
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    @Html.RadioButtonFor(x => x.SelectedUploadType, VideoUploadType.UploadNewVideo, new { id = "videoUpload", onclick = "toggleVideoOption('upload');" })
+                    <label for="videoUpload">Upload Video</label>
+                </div>
+                <div>
+                    @Html.RadioButtonFor(x => x.SelectedUploadType, VideoUploadType.YouTubeVideo, new { id = "youtubeLink", onclick = "toggleVideoOption('youtube');" })
+                    <label for="youtubeLink">YouTube Video</label>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr id="fileupload" class="mx-auto">
+        @if (Model.Document.FileName != null)
+        {
+            <td>
+                <div class="mx-auto">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Current File:
+                                </div>
+                                <div class="documentlink">
+                                    <a style="color:black" href="@Model.Document.FilePath">@Model.Document.FileName</a>
+                                    @Html.HiddenFor(x => x.Document.MediaFileURL)
+                                    @Html.HiddenFor(x => x.Document.FilePath)
+                                    @Html.HiddenFor(x => x.Document.FileName)
+                                </div>
+                            </td>
+                            <td id="videoUploadSection" style="display:none;">
+                                <div class="formlabel">
+                                    Upload Document:
+                                </div>
+                                <div>
+                                    <input id="" type="file" name="uploadfile" width="300" />
+                                </div>
+                            </td>
+                            <td id="youtubeLinkSection" style="display:none;">
+                                <div class="formlabel">
+                                    YouTube Video Link:
+                                </div>
+                                <div>
+                                    @Html.EditorFor(m => m.Document.FilePath)
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        }
+        else
+        {
+            <td id="videoUploadSection" style="display:none;">
+                <div class="formlabel">
+                    Upload Document:
+                </div>
+                <div>
+                    <input id="" type="file" name="uploadfile" width="300" />
+                </div>
+            </td>
+            <td id="youtubeLinkSection" style="display:none;">
+                <div class="formlabel">
+                    YouTube Video Link:
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.Document.FilePath)
+                </div>
+            </td>
+        }
+    </tr>
+    <tr id="linkurl" style="display:none;">
+        <td>
+            <div class="row">
+                <div class="col-3">
+                    <div class="formlabel">
+                        Icon:
+                    </div>
+                    <div>
+                        @Html.DropDownListFor(m => m.Document.IconType, LinkIconDDL(), new { style = "width:100%;" })
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="formlabel">
+                        Link URL:
+                    </div>
+                    <div class="input-group" style="width:100%; display: flex; align-items: center;">
+                        <span>https://&nbsp;</span>
+                        @Html.TextBoxFor(m => m.Document.LinkURL, new { style = "flex-grow: 1; width:50%;" })
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+      function handleDocumentTypeChange() {
+          debugger
+    const dropdown = document.getElementById('documentTypeDropdown');
+    const selectedValue = dropdown.options[dropdown.selectedIndex].text;
+    const fileUploadRow = document.getElementById('fileupload');
+    const linkUrlRow = document.getElementById('linkurl');
+    const videoRow = document.getElementById('videoRow');  // Radio buttons row
+    const videoUploadSection = document.getElementById('videoUploadSection');
+    const youtubeLinkSection = document.getElementById('youtubeLinkSection');
+    const isLinkUrlNotNull = @Html.Raw(Model.Document.LinkURL != null ? "true" : "false");
+
+    // Hide all sections initially
+    fileUploadRow.style.display = 'none';
+    linkUrlRow.style.display = 'none';
+    videoRow.style.display = 'none';
+    videoUploadSection.style.display = 'none';
+    youtubeLinkSection.style.display = 'none';
+
+    // Show sections based on the selected document type
+    if (selectedValue === 'Link' || isLinkUrlNotNull) {
+        linkUrlRow.style.display = '';  // Show link URL section
+    } 
+    else if (selectedValue === 'Video') {
+        videoRow.style.display = '';  // Show video radio buttons row
+
+        // Check if any video radio button is pre-selected and show the respective section
+        const selectedUploadOption = document.querySelector('input[name="SelectedUploadType"]:checked');
+        if (selectedUploadOption) {
+            toggleVideoOption(selectedUploadOption.value);  // Show the correct field based on pre-selection
+        }
+    } 
+    else if (selectedValue === 'Document' || selectedValue === 'Image') {
+        fileUploadRow.style.display = '';  // Show file upload row
+        videoUploadSection.style.display = 'table-cell';  // Show video upload section for Document or Image
+    }
+
+    // If dropdown value is changed from "Video" to anything else, clear the radio button selection
+    if (selectedValue !== 'Video') {
+        clearRadioButtons();  // Clear the radio buttons
+    }
+}
+
+function toggleVideoOption(option) {
+    const videoUploadSection = document.getElementById('videoUploadSection');
+    const youtubeLinkSection = document.getElementById('youtubeLinkSection');
+    const fileUploadRow = document.getElementById('fileupload');
+
+    // Hide both sections first
+    videoUploadSection.style.display = 'none';
+    youtubeLinkSection.style.display = 'none';
+
+    // Show the appropriate section based on the selected option
+    if (option === 'upload') {
+        videoUploadSection.style.display = 'table-cell'; // Show video upload row
+        fileUploadRow.style.display = '';  // Show the file upload row
+    } else if (option === 'youtube') {
+        youtubeLinkSection.style.display = 'table-cell'; // Show YouTube link row
+        fileUploadRow.style.display = '';  // Show the file upload row
+    }
+}
+
+function clearRadioButtons() {
+    const radioButtons = document.querySelectorAll('input[name="SelectedUploadType"]');
+    radioButtons.forEach(rb => rb.checked = false);  // Uncheck all radio buttons
+}
+
+
+</script>
+
+
+
+<script>
+    ValidateForm();
+     handleDocumentTypeChange();
+</script>

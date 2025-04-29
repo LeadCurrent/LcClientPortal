@@ -1,0 +1,24 @@
+﻿@using Data
+@using Web
+@model Web.CustomerRequestVM
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+    Layout = "~/Pages/Shared/CustomerLayout.cshtml";
+}
+
+@using (Html.BeginForm("CreateNewRequest", "CustomerNewRequest", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/CreateNewRequest_Partial.cshtml");
+        }
+    </div>
+}
+
+
+<script>
+    highlightcurrentpage('nav_CustomerNewRequest');
+</script>

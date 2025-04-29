@@ -1,0 +1,72 @@
+﻿@using Data
+@using Web
+@model Web.UserVM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+
+<div class="pagetitle">Users</div>
+<div class="filters">
+    <div class="row width300" style="margin:auto;">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-12 filter">
+            <div class="filter-label">Status:</div>
+            <div>
+                @Html.DropDownListFor(model => model.FilterStatus, StatusDDL(), new { onchange = "ClickButton('filter');" })
+            </div>
+        </div>
+
+        <button id="filter" style="display:none" onclick="Ajax('Apply Filters')"></button>
+    </div>
+</div>
+<div class="form-600">
+
+    <div class="buttons">
+        <button class="button mt-0" onclick="NonAjax('Create')">Add New User</button>
+        <button class="button mt-0" onclick="Ajax('Get Mails')">Get Google Mails</button>
+        <button class="button mt-0" onclick="Ajax('Get Microsoft Mails')">Get Microsoft Mails</button>
+
+    </div>
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="roundheader">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Roles
+                </th>
+                <th class="buttoncolumn">
+
+                </th>
+            </tr>
+            @foreach (var companyuser in Model.CompanyUsers)
+            {
+                <tr>
+                    <td>
+                        @companyuser.User.FullName
+                    </td>
+                    <td>
+                        @if (companyuser.User.SystemAdmin)
+                        {
+                            <div>System Admin</div>
+                        }
+                        @foreach (var role in companyuser.CompanyUserRoles)
+                        {
+                            <div>@role.Role.RoleName</div>
+                        }
+
+                    </td>
+                    <td>
+                        <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@companyuser.Id);">Edit</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+

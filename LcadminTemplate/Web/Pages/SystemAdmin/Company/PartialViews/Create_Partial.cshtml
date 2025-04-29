@@ -1,0 +1,158 @@
+﻿@model CompanyViewModel
+@using Web
+@using Data
+@using static Web.GeneralEnumDDLs
+
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Company.Id)
+
+<div id="popupbackground" class="popup-background" style="display:none;">
+</div>
+<div class="pagetitle">Create New Company </div>
+<div class="form-800">
+    <div class="white-bg">
+        <div class="input-form">
+            @{
+                var message = ViewBag.Message as string;
+            }
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="alert alert-warning">
+                    @message
+                </div>
+            }
+            <div class="sectiontitle">Company Information</div>
+            <table>
+                <tr>
+                    <td style="max-width:800px">
+                        <div class="formlabel">
+                            Company Name:
+                            <span id="Company_Name_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Company.Name, new { @class = "requiredfield maxwidth", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Company Email:
+                          
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Company.Email )
+                        </div>
+                    </td>
+              
+                    <td>
+                        <div class="formlabel">
+                            Company Phone:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Company.Phone, new { onkeyup = "formatphone('Company_Phone');" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Time Zone :
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(m => m.Company.CompanyTimeZone, TimeZoneDDL())
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+            <div class="sectiontitle">Owner Information</div>
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            First Name:
+                            <span id="User_FirstName_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.User.FirstName, new { @class="requiredfield", onkeyup = "ValidateForm();" } )
+                        </div>
+                    </td>
+               
+                    <td>
+                        <div class="formlabel">
+                            Last Name:
+                            <span id="User_LastName_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.User.LastName, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Phone Number:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.User.Phone, new { onkeyup = "formatphone('User_Phone')" } )
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Email:
+                            <span id="User_Email_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.User.Email, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            User Name:
+                            <span id="User_UserName_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.User.UserName, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+              
+                    <td>
+                        <div class="formlabel">
+                            Temporary Password:
+                            <span id="Password_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Password, new { @class = "requiredfield", onkeyup = "ValidateForm();" })
+                        </div>
+                        <div style="text-align:left; color: #d32f2f;">
+                            <i>6+ characters, 1+ letter, 1+ number</i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="buttons">
+            <div class="validation-message" id="Invalid">
+                <i>Fill in all required fields</i>
+            </div>
+            <div>
+                <button class="button" id="Valid" onclick="NonAjax('Create')">Create Company</button>
+                <button class="button-white" onclick="NonAjax('Cancel')">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    ValidateForm();
+</script>

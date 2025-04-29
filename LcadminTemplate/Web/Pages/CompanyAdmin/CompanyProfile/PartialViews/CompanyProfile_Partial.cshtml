@@ -1,0 +1,223 @@
+﻿@model CompanyProfileVM
+@using Data
+@using Web
+@using static Data.CompanyEnums
+<link href="~/css/pwcustomstyles.css" rel="stylesheet" />
+@{
+    var title = "Company Profile";
+    var formclass = "form-800";
+    if (Model.MobileApp)
+        formclass = "form-800 p-0";
+}
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.RemoveId)
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.CompanyId)
+@Html.HiddenFor(m => m.Company.Id)
+<div id="popupbackground" class="popup-background" style="display:none;"></div>
+
+    <div class="pagetitle">@title</div>
+
+<div class="@formclass">
+
+   
+    <div class="white-bg">
+        <div class="sectionheader mt-0 mobilewide-desktop">Company Information</div>
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Company:
+                        </div>
+                        <div class="m-2">
+                            <div>
+                                @Model.Company.Name
+                            </div>
+                            <div>
+                                @Model.Company.Address
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Logo:
+                        </div>
+                        <div>
+                            @if (Model.Company.Logo != null)
+                            {
+                                <img height="75" src=@Model.Company.Logo />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Email:
+                        </div>
+                        <div>
+                            @Model.Company.Email
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Phone:
+                        </div>
+                        <div>
+                            @Model.Company.Phone
+                        </div>
+                    </td>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            TimeZone:
+                        </div>
+                        <div>
+                                @TimeZoneDesc(Model.Company.CompanyTimeZone)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="buttons">
+                            <button class="button" onclick="NonAjax('Update Profile');">Update</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="white-bg">
+        <div class="d-flex justify-content-between sectionheader mt-3">
+            <span class="mt-1">Account Contacts</span>
+            @if (!Model.AddNewContact && Model.EditContactId == 0)
+            {
+                <button class="button" style="margin: 0 !important" onclick="Ajax('Add New Contact')">Add New Contact</button>
+            }
+        </div>
+
+        <table class="tablestyle bottomborder">
+        
+            @for (int i = 0; i < Model.Company.CompanyContacts.Count(); i++)
+            {
+                <tr class="desktop">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Contact Info
+                    </th>
+                    <th>
+                        Roles
+                    </th>
+                    <th></th>
+                </tr>
+                var Contact = Model.Company.CompanyContacts[i];
+                <tr class="mobileportrait-mobilewide">
+                    <td colspan="4">
+                        <div>
+                            <b>Name:</b> @Contact.CompanyUser.User.FullName<br />
+                            <b>Email:</b> @Contact.CompanyUser.User.Email<br />
+                            <b>Phone:</b> @Contact.CompanyUser.User.Phone<br />
+                            <b>Roles:</b>
+                            @if (Contact.PrimaryContact)
+                            {
+                                <div>Primary Contact</div>
+                            }
+                            @if (Model.EditContactId == Contact.Id)
+                            {
+                                <button class="gridbutton" onclick="AjaxWithParam('Update Contact',@Contact.Id)">Update Contact</button>
+                                <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                            }
+                            else
+                            {
+                                <button class="gridbutton" onclick="AjaxWithParam('Show Edit Contact',@Contact.Id)">Edit Contact</button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        <div>@Contact.CompanyUser.User.FullName</div>
+                    </td>
+                    <td>
+                        <div>@Contact.CompanyUser.User.Email</div>
+                        <div>@Contact.CompanyUser.User.Phone</div>
+                    </td>
+                    <td>
+                        @if (Model.EditContactId == Contact.Id)
+                        {
+                            @Html.HiddenFor(x => x.Company.CompanyContacts[i].Id)
+
+                            <div>
+                                @Html.CheckBoxFor(x => x.Company.CompanyContacts[i].PrimaryContact) Primary Contact
+                            </div>
+                        }
+                        else
+                        {
+                            @if (Contact.PrimaryContact)
+                            {
+                                <div>Primary Contact</div>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @if (Model.EditContactId == Contact.Id)
+                        {
+                            <button class="gridbutton" onclick="AjaxWithParam('Update Contact',@Contact.Id)">Update Contact</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="gridbutton" onclick="AjaxWithParam('Show Edit Contact',@Contact.Id)">Edit Contact</button>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (Model.AddNewContact)
+            {
+                <tr>
+                    <td colspan="4" class="mobileportrait-mobilewide">
+                        <div>
+                            <div class="formlabel">Staff Member</div>
+                            @Html.DropDownListFor(m => m.CompanyContact.CompanyUserId, Model.StaffDDL, "Select Staff Member", new { @class = "dropdown" })
+                        </div>
+                        <div>
+                            <div>
+                                @Html.CheckBoxFor(x => x.CompanyContact.PrimaryContact) Primary Contact
+                            </div>
+                        </div>
+                        <div>
+                            <button class="gridbutton" onclick="Ajax('Create Contact')">Create Contact</button>
+                            <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="desktop">
+                    <td>
+                        <div class="formlabel">Staff Member</div>
+                        @Html.DropDownListFor(m => m.CompanyContact.CompanyUserId, Model.StaffDDL)
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.CheckBoxFor(x => x.CompanyContact.PrimaryContact) Primary Contact
+                        </div>
+                    </td>
+                    <td>
+                        <button class="gridbutton" onclick="Ajax('Create Contact')">Create Contact</button>
+                        <button class="gridbutton" onclick="Ajax('Cancel')">Cancel</button>
+                    </td>
+                </tr>
+            }
+
+        </table>
+  
+    </div>
+</div>
+
+

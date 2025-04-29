@@ -1,0 +1,304 @@
+﻿@using Data
+@using Web
+@model Web.UserVM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.CompanyUser.Id)
+@Html.HiddenFor(m => m.CompanyUser.UserId)
+@Html.HiddenFor(m => m.CompanyUser.CreateDate)
+@Html.HiddenFor(m => m.CompanyUser.CompanyId)
+@Html.HiddenFor(m => m.User.userLogin)
+@Html.HiddenFor(m => m.ShowEdit)
+
+@if(!Model.ShowHistory)
+{
+    @if (Model.ShowEdit)
+    {
+    <table>
+        <tr>
+            <td>
+                <div class="formlabel">
+                    First Name:
+                    <span id="CompanyUser_User_FirstName_Invalid" class="required">*</span>
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.CompanyUser.User.FirstName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                </div>
+            </td>
+            <td>
+                <div class="formlabel">
+                    Last Name:
+                    <span id="CompanyUser_User_LastName_Invalid" class="required">*</span>
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.CompanyUser.User.LastName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="formlabel">
+                    Phone Number:
+                </div>
+                <div>
+                    @Html.EditorFor(model => Model.CompanyUser.User.Phone, new { htmlattributes = new { onkeyup = "formatphone('CompanyUser_User_Phone');" } })
+                </div>
+            </td>
+            <td>
+                <div class="formlabel">
+                    Primary Email:
+                </div>
+                <div>
+                    @Html.EditorFor(model => Model.CompanyUser.User.Email, new { htmlattributes = new { onkeyup = "formatphone('CompanyUser_User_Phone');" } })
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="formlabel">
+                    User Name:<span id="CompanyUser_User_UserName_Invalid" class="required">*</span>
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.CompanyUser.User.UserName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+
+                </div>
+            </td>
+            <td>
+                @if (Model.CompanyUser.User != null)
+                {
+                    <div class="formlabel">
+                        Status:
+                    </div>
+                    <div>
+                        @Html.DropDownListFor(x => x.CompanyUser.User.Status, StatusDDL(), new { onchange = "ClickButton('statusBtn')" })
+                        <button class="button" id="statusBtn" style="display:none;" onclick="Ajax('Update User Status')"></button>
+                    </div>
+                }
+            </td>
+        </tr>
+        @if (Model.CompanyUser.User == null)
+        {
+            <tr>
+
+                <td>
+                    <div class="formlabel">
+                        Password:
+                        <span id="Password_Invalid" class="required">*</span>
+                    </div>
+                    @Html.EditorFor(m => m.Password, new { htmlattributes = new { @class = "requiredpassword", onkeyup = "ValidateForm();" } })
+                    @if (Model.PasswordInvalid)
+                    {
+                        <br />
+                        <span style="color:red"> <i>Invalid Password</i></span>
+                    }
+                    <div><i>6+ characters, 1+ letter, 1+ number</i></div>
+                </td>
+                <td>
+                    <div class="formlabel">
+                        Repeat&nbsp;Password:
+                        <span id="ConfirmPassword_Invalid" class="required">*</span>
+                    </div>
+                    @Html.EditorFor(m => m.ConfirmPassword, new { htmlattributes = new { @class = "requiredconfirmpassword", onkeyup = "ValidateForm();" } })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="formlabel">
+                        Role:
+                        <span id="roleSpan" style="display:none; color: red;">*</span>
+                    </div>
+                    <div id="templateList" class="dropdown-check-list check-box-section" tabindex="100">
+                        <span id="templateSpan" class="form-control anchor" onclick="OpenMultiSelectDropdown('templateList','templateGroupOptions')" style="font-size:smaller; overflow:auto"> </span>
+                        <ul class="itm" id="templateGroupOptions">
+                            @foreach (var item in Model.RoleDDL)
+                            {
+                                <li>
+                                    <span style="display:inline">
+                                        <input name="RoleGroups" onclick="SelectMultiSelectItem('templateList');" type="checkbox" value="@item.Value"
+                                        @if (Model.CompanyRoleGroup != null && Array.Exists(Model.CompanyRoleGroup, x => x == @item.Value)
+                                      )
+                                        {
+                                            <text>checked</text>
+                                        } />
+                                    </span>
+                                    <span style="display:inline">
+                                        @item.Text
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <script>
+                        SelectMultiSelectItem('templateList');
+                    </script>
+                </td>
+                <td></td>
+            </tr>
+        }
+
+        @if (Model.IsSystemAdmin)
+        {
+            <tr class="pt-2">
+                <td>
+                    <div></div>
+                    <div style="text-align:left">
+                        @Html.CheckBoxFor(m => m.CompanyUser.User.SystemAdmin) SystemAdmin
+                    </div>
+                </td>
+                <td>
+                    @if (Model?.User?.userLogin != null)
+                    {
+                        <div class="formlabel">
+                            Last Login: @Model.User.LastLoginDate
+                        </div>
+                        <div>
+                            <button class="gridbutton" onclick="Ajax('Show History')">Show Login History</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="formlabel">
+                            Last Login: No Login Record
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    }
+        else
+        {
+            <div class="formlabel">
+                First Name:
+            </div>
+            <div>
+                @Model.CompanyUser.User.FirstName
+            </div>
+            <br />
+            <div class="formlabel">
+                Last Name:
+            </div>
+            <div>
+                @Model.CompanyUser.User.LastName
+            </div>
+            <br />
+            <div class="formlabel">
+                Phone Number:
+            </div>
+            <div>
+                @Model.CompanyUser.User.Phone
+            </div>
+            <br />
+            <div class="formlabel">
+                Primary Email:
+            </div>
+            <div>
+                @Model.CompanyUser.User.Email
+            </div>
+            <br />
+            <div class="formlabel">
+                User Name:
+            </div>
+            <div>
+                @Model.CompanyUser.User.UserName
+
+            </div>
+            <br />
+            @if (Model.CompanyUser.User != null)
+            {
+                <div class="formlabel">
+                    Status:
+                </div>
+                <div>
+                    @Model.CompanyUser.User.Status
+                </div>
+                <br />
+            }
+            @if (Model.IsSystemAdmin)
+            {
+            <div></div>
+            <div style="text-align:left">
+                @Html.CheckBoxFor(m => m.CompanyUser.User.SystemAdmin, new { @disabled = "disabled" }) SystemAdmin
+            </div>
+
+                @if (Model?.User?.userLogin != null)
+                {
+                    <div class="formlabel">
+                        Last Login: @Model.User.LastLoginDate
+                    </div>
+                    <div>
+                        <button class="gridbutton" onclick="Ajax('Show History')">Show Login History</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="formlabel">
+                        Last Login: No Login Record
+                    </div>
+                }
+
+            }
+            <div class="center">
+
+                <button id="Valid" class="button" onclick="Ajax('Edit User')">Edit</button>
+
+                <button class="button" onclick="NonAjax('Cancel')">Go Back</button>
+
+            </div>
+        }
+}
+else
+{
+        <div class="sectionheader">Log In History</div>
+    @foreach(var loginRecords in Model.User.userLogin)
+    {
+        
+     <table>
+    <tr>
+        <td>
+            <div class="formlabel">
+                Device Type:
+            </div>
+            <div>
+                @loginRecords.Device
+            </div>
+        </td>
+        <td>
+            <div class="formlabel">
+                Login Date/Time:    
+            </div>
+            <div>
+                @loginRecords.LoginDateTime
+            </div>
+        </td>
+     </tr>
+    </table>
+    }
+    <button class="gridbutton" onclick="Ajax('Go Back')">Go Back</button>
+
+@if (Model.UpdateSuccessful)
+{
+    <div class="success-message">
+        User updated successfully
+    </div>
+}
+
+<div class="validation-message" id="PasswordsDoNotMatch" style="display:none">
+    Passwords do not match
+</div>
+<div class="validation-message" id="Invalid" style="display:none">
+    Fill in all required fields
+</div>
+}
+
+<script>
+    selectedDropdown('templateList');
+    ValidateForm();
+</script>
+
+
+

@@ -1,0 +1,134 @@
+﻿@using Data
+@using Web
+@model Web.UserVM
+@using static Web.GeneralEnumDDLs
+<table>
+    <tr>
+        <td>
+            <div class="formlabel">
+                First Name:
+                <span id="User_FirstName_Invalid" class="required">*</span>
+            </div>
+            <div>
+                @Html.EditorFor(m => m.User.FirstName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+            </div>
+        </td>
+        <td>
+            <div class="formlabel">
+                Last Name:
+                <span id="User_LastName_Invalid" class="required">*</span>
+            </div>
+            <div>
+                @Html.EditorFor(m => m.User.LastName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="formlabel">
+                Email:
+            </div>
+            <div>
+                @Html.EditorFor(m => m.User.Email, new { htmlattributes = new { onkeyup = "ValidateForm();" } })
+            </div>
+        </td>
+
+        <td>
+            <div class="formlabel">
+                Phone Number:
+            </div>
+            <div>
+                @Html.EditorFor(model => Model.User.Phone, new { htmlattributes = new { onkeyup = "formatphone('User_Phone');" } })
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="formlabel">
+                User Name:<span id="User_UserName_Invalid" class="required">*</span>
+            </div>
+            <div>
+                @Html.EditorFor(m => m.User.UserName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+
+            </div>
+        </td>
+        <td>
+
+            <div class="formlabel">
+                Company:
+            </div>
+            <div>
+                @Html.DropDownListFor(x => x.User.SelectedCompanyId, Model.CompanyDDL)
+            </div>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @if (Model.User.UserName != null)
+            {
+                <div class="formlabel">
+                    Status:
+                </div>
+                <div>
+                    @Html.DropDownListFor(x => x.User.Status, StatusDDL())
+                </div>
+            }
+        </td>
+      
+        <td></td>
+    </tr>
+    @if (Model.User.UserName == null)
+    {
+        <tr>
+
+            <td>
+                <div class="formlabel">
+                    Password:
+                    <span id="Password_Invalid" class="required">*</span>
+                </div>
+                @Html.EditorFor(m => m.Password, new { htmlattributes = new { @class = "requiredpassword", onkeyup = "ValidateForm();" } })
+                @if (Model.PasswordInvalid)
+                {
+                    <br />
+                    <span style="color:red"> <i>Invalid Password</i></span>
+                }
+                <div><i>6+ characters, 1+ letter, 1+ number</i></div>
+            </td>
+            <td>
+                <div class="formlabel">
+                    Repeat&nbsp;Password:
+                    <span id="ConfirmPassword_Invalid" class="required">*</span>
+                </div>
+                @Html.EditorFor(m => m.ConfirmPassword, new { htmlattributes = new { @class = "requiredconfirmpassword", onkeyup = "ValidateForm();" } })
+            </td>
+        </tr>
+    }
+    <tr>
+        <td>
+            <div class="formlabel">
+                Roles:
+            </div>
+            <div style="text-align:left">
+                @Html.CheckBoxFor(m => m.User.Developer) Developer &nbsp;&nbsp; @Html.CheckBoxFor(m => m.User.SystemAdmin) SystemAdmin
+            </div>
+        </td>
+        <td>
+        </td>
+    </tr>
+</table>
+@if (Model.UpdateSuccessful)
+{
+    <div class="success-message">
+        User updated successfully
+    </div>
+}
+
+<div class="validation-message" id="PasswordsDoNotMatch" style="display:none">
+    Passwords do not match
+</div>
+<div class="validation-message" id="Invalid" style="display:none">
+    Fill in all required fields
+</div>
+
+

@@ -1,0 +1,102 @@
+﻿@model Web.UserVM
+
+@using Web
+@using Data
+@{
+    
+    Layout = "~/Pages/Shared/FrontEndLayout.cshtml";
+}
+<main class="main">
+    @if (CommonClasses.Environment.environment.Contains("LongRange"))
+    {
+        <div class="page-banner text-white" style="background-image: url(../FrontEnd/images/longrangebanner.png);">
+            <div class="container">
+                <div class="page-title">
+                        <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Long Range Point of Sale</h2>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="page-banner text-white" style="background-image: url(../FrontEnd/images/login.jpg);">
+            <div class="container">
+                <div class="page-title">
+                    @if (CommonClasses.Environment.environment == "DEPaymentsProd")
+                    {
+                        <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Dynamic Excellence Payments</h2>
+                    }
+                    @if (CommonClasses.Environment.environment == "LongRange")
+                    {
+                        <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Long Range Point of Sale</h2>
+                    }
+                    else
+                    {
+                        <h2 data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">Log In</h2>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="sec-contact-us sec-gap">
+        <div class="container">
+            <div class="block-header text-center">
+                <div class="d-flex align-items-center justify-content-center block-title mb-2">
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                    <div class="px-2">
+
+                        <span> Log In</span>
+
+                    </div>
+                    <div class="bullet-sm">
+                        <hr>
+                    </div>
+                </div>
+
+            </div>
+            @using (Html.BeginForm("Login", "Account"))
+            {
+                @Html.HiddenFor(m => m.AjaxUpdate)
+                @Html.HiddenFor(m => m.Param)
+                @Html.HiddenFor(m => m.Action)
+                <div class="row mb-lg-5 pb-5">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card-contact h-100" data-aos="fade-left" data-aos-duration="1500" data-aos-once="true">
+
+                            <div class="form-group input-single">
+                                <label>User Name<span id="UserName_Invalid" class="required" style="color:red">*</span></label>
+                                @Html.EditorFor(m => m.UserName, new { htmlattributes = new { @class = "form-control requiredfield", onkeyup = "ValidateForm();" } })
+                            </div>
+                            <div class="form-group input-single">
+                                <label>Password <span id="Password_Invalid" class="required" style="color:red">*</span></label>
+                                @Html.EditorFor(m => m.Password, new { htmlattributes = new { @class = "form-control requiredfield", onkeyup = "ValidateForm();" } })
+                            </div>
+                            <div class="form-group input-single">
+                                @Html.EditorFor(m => m.RememberMe) Remember Me
+                            </div>
+
+                            @if (Model.InvalidLogin)
+                            {
+                                <div style="color:red; padding-top:10px"><i>Invalid Login</i></div>
+                            }
+                            <a href="~/Account/ResetPassword" value="ResetPassword">Forgot Password?</a>
+                            <div id="Valid">
+                                <button class="btn-primary w-100" value="Login" onclick="Ajax('Login')">Log In</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</main>
+<script>ValidateForm();</script>

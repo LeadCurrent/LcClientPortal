@@ -1,0 +1,151 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pages\API\**" />
+    <Compile Remove="Pages\Billing\**" />
+    <Compile Remove="Pages\Communications\**" />
+    <Compile Remove="Pages\Feedback\**" />
+    <Compile Remove="Pages\InvoiceAndPayment\**" />
+    <Compile Remove="Pages\MyJobs\**" />
+    <Compile Remove="Pages\SystemAdmin\SystemCommunications\**" />
+    <Compile Remove="Pages\TrainingAndVideo\**" />
+    <Compile Remove="Pages\User\EnumDDLs\**" />
+    <Content Remove="Pages\API\**" />
+    <Content Remove="Pages\Billing\**" />
+    <Content Remove="Pages\Communications\**" />
+    <Content Remove="Pages\Feedback\**" />
+    <Content Remove="Pages\InvoiceAndPayment\**" />
+    <Content Remove="Pages\MyJobs\**" />
+    <Content Remove="Pages\SystemAdmin\SystemCommunications\**" />
+    <Content Remove="Pages\TrainingAndVideo\**" />
+    <Content Remove="Pages\User\EnumDDLs\**" />
+    <EmbeddedResource Remove="Pages\API\**" />
+    <EmbeddedResource Remove="Pages\Billing\**" />
+    <EmbeddedResource Remove="Pages\Communications\**" />
+    <EmbeddedResource Remove="Pages\Feedback\**" />
+    <EmbeddedResource Remove="Pages\InvoiceAndPayment\**" />
+    <EmbeddedResource Remove="Pages\MyJobs\**" />
+    <EmbeddedResource Remove="Pages\SystemAdmin\SystemCommunications\**" />
+    <EmbeddedResource Remove="Pages\TrainingAndVideo\**" />
+    <EmbeddedResource Remove="Pages\User\EnumDDLs\**" />
+    <None Remove="Pages\API\**" />
+    <None Remove="Pages\Billing\**" />
+    <None Remove="Pages\Communications\**" />
+    <None Remove="Pages\Feedback\**" />
+    <None Remove="Pages\InvoiceAndPayment\**" />
+    <None Remove="Pages\MyJobs\**" />
+    <None Remove="Pages\SystemAdmin\SystemCommunications\**" />
+    <None Remove="Pages\TrainingAndVideo\**" />
+    <None Remove="Pages\User\EnumDDLs\**" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.5.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Bitmovin.Api.Sdk" Version="1.222.0" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
+    <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.7.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.13" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.6.1" />
+    <PackageReference Include="MimeKit" Version="4.11.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
+    <PackageReference Include="Twilio" Version="7.8.5" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonClasses\CommonClasses.csproj" />
+    <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\CompanyAdmin\CompanyProfile\PartialViews\Sections\" />
+    <Folder Include="Pages\CompanyAdmin\Course\EnumDDLs\" />
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Intuit.Ipp.Core">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Data">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.DataService">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.DataService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Diagnostics">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.EntitlementService">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.EntitlementService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Exception">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Exception.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.GlobalTaxService">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.GlobalTaxService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.OAuth2PlatformClient">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.OAuth2PlatformClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.QueryFilter">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.QueryFilter.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.ReportService">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.ReportService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Retry">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Retry.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Security">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Utility">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.WebHooksService">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\Intuit.Ipp.WebHooksService.dll</HintPath>
+    </Reference>
+    <Reference Include="OAuth2_CoreMVC_Sample">
+      <HintPath>..\..\TopFour2\Web\quickbooksbinaries\OAuth2_CoreMVC_Sample.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\CompanyAdmin\Course\PartialViews\Sections\CustomerNotes.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

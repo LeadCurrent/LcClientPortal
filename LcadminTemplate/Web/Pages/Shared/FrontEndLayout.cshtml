@@ -1,0 +1,230 @@
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<Data.User> signInManager
+@{
+    
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    @if (CommonClasses.Environment.environment == "DEPaymentsProd")
+    {
+        <title>Dynamic Excellence Payments</title>
+    }
+    else if (CommonClasses.Environment.environment.Contains("LongRange"))
+    {
+    <title>Long Range Point of Sale</title>
+    }
+    else
+    {
+        <title>LeadCurrent</title>
+    }
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="/images/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_15_Pro_Max__iPhone_15_Plus__iPhone_14_Pro_Max_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_15_Pro__iPhone_15__iPhone_14_Pro_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_14__iPhone_13_Pro__iPhone_13__iPhone_12_Pro__iPhone_12_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_11_Pro_Max__iPhone_XS_Max_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/iPhone_11__iPhone_XR_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/images/icons/iPhone_8_Plus__iPhone_7_Plus__iPhone_6s_Plus__iPhone_6_Plus_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/iPhone_8__iPhone_7__iPhone_6s__iPhone_6__4.7__iPhone_SE_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/4__iPhone_SE__iPod_touch_5th_generation_and_later_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/12.9__iPad_Pro_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/11__iPad_Pro__10.5__iPad_Pro_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/10.9__iPad_Air_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/10.5__iPad_Air_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/10.2__iPad_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/9.7__iPad_Pro__7.9__iPad_mini__9.7__iPad_Air__9.7__iPad_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/images/icons/8.3__iPad_Mini_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_15_Pro_Max__iPhone_15_Plus__iPhone_14_Pro_Max_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_15_Pro__iPhone_15__iPhone_14_Pro_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_14__iPhone_13_Pro__iPhone_13__iPhone_12_Pro__iPhone_12_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_11_Pro_Max__iPhone_XS_Max_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/iPhone_11__iPhone_XR_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/images/icons/iPhone_8_Plus__iPhone_7_Plus__iPhone_6s_Plus__iPhone_6_Plus_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/iPhone_8__iPhone_7__iPhone_6s__iPhone_6__4.7__iPhone_SE_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/4__iPhone_SE__iPod_touch_5th_generation_and_later_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/12.9__iPad_Pro_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/11__iPad_Pro__10.5__iPad_Pro_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/10.9__iPad_Air_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/10.5__iPad_Air_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/10.2__iPad_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/9.7__iPad_Pro__7.9__iPad_mini__9.7__iPad_Air__9.7__iPad_portrait.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/images/icons/8.3__iPad_Mini_portrait.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/FrontEnd/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/FrontEnd/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/css/aos.css">
+    @if (CommonClasses.Environment.environment == "DEPaymentsProd")
+    {
+        <link rel="stylesheet" href="~/FrontEnd/css/destyle.css">
+    }
+    else if (CommonClasses.Environment.environment.Contains("LongRange"))
+    {
+        <link rel="stylesheet" href="~/FrontEnd/css/longrangestyle.css">
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/FrontEnd/css/style.css">
+    }
+
+
+    <link rel="stylesheet" href="~/FrontEnd/css/responsive.css">
+    <script src="~/js/JavaScriptFunctions.js"></script>
+
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <div class="logo me-auto">
+                    <a href="~/home">
+                        @if (CommonClasses.Environment.environment == "DEPaymentsProd")
+                        {
+                            <img id="logo" src="/images/dynamicexcellencelogo.png" alt="Logo" height="50">
+                        }
+                        else if (CommonClasses.Environment.environment.Contains("LongRange"))
+                        {
+                            <img id="logo" src="/images/longrangelogo.png" alt="Logo" height="50">
+                        }
+                        else
+                        {
+                            <img id="logo" src="/images/LCLogo.png" alt="Logo" height="50">
+                        }
+                    </a>
+                </div>
+                @if (CommonClasses.Environment.environment != "DEPaymentsProd" && !CommonClasses.Environment.environment.Contains("LongRange"))
+                {
+                    <div class="header-right d-flex align-items-center justify-content-center">
+                        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
+                             aria-labelledby="offcanvasExampleLabel">
+                            <div class="offcanvas-header d-md-none justify-content-between border-bottom">
+                                <div class="header-close text-white ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">
+                                    <i class="bi bi-x-lg"></i>
+                                </div>
+                            </div>
+                            <div class="offcanvas-body">
+                                <nav>
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item"><a href="~/features" class="nav-link">Features</a></li>
+                                        <li class="nav-item"><a href="~/pricing" class="nav-link">Pricing</a></li>
+                                        <li class="nav-item"><a href="~/contacts" class="nav-link">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-auth">
+                        <a href="~/SignUp" class="btn-primary">
+                            Sign Up
+                        </a>
+                    </div>
+                    <span>
+                        &nbsp; &nbsp;
+                    </span>
+                    <div class="user-auth">
+                        <a href="~/Account/Login" class="btn-primary">
+                            Log In
+                        </a>
+                    </div>
+                    <button class="btn d-md-none bg-transparent border-0 p-0" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                        <span class="mobile-nav">
+                            <span class="bar1"></span>
+                            <span class="bar2"></span>
+                            <span class="bar3"></span>
+                        </span>
+                    </button>
+                }
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+    @if (CommonClasses.Environment.environment != "DEPaymentsProd")
+    {
+        <footer class="footer text-white">
+            <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="footer-widget">
+                            <div class="foot-logo">
+                                <img src="~/images/leadcurrentlogo.png" style="height:56px">
+                                <p>Simplify daily operations with our streamlined workflow, tracking jobs from start to finish for service companies across industries.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="footer-widget quickbox">
+                            <h4>Quick Link</h4>
+                            <div class="d-lg-flex justify-content-between">
+                                <ul class="list-unstyled-menu">
+                                    <li><a href="~/home">Service</a></li>
+                                    <li><a href="~/features">Features</a></li>
+                                    <li><a href="~/pricing">Pricing</a></li>
+                                </ul>
+                                <ul class="list-unstyled-menu">
+                                    <li><a href="~/contact">Contact Us</a></li>
+                                    <li><a href="~/account/login">LogIn</a></li>
+                                    <li><a href="~/privacy">Privacy Policy </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="footer-widget">
+                            <h4>Subscribe</h4>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Get updates">
+                                <button class="btn-primary"><i class="bi bi-arrow-right"></i></button>
+                            </div>
+                            <p class="foot-text"><i class="bi bi-geo-alt"></i>Katy, Texas</p>
+                            @*                             <p class="foot-text">
+                            <a href="tel:(000) 000-0000"><i class="bi bi-phone"></i> (000) 000-0000</a>
+                            </p> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <div class="container">
+                <p class="m-0">Copyright ©2024 leadcurrent.com</p>
+            </div>
+        </div>
+    </footer>
+    }
+    <script src="~/FrontEnd/js/jquery.min.js"></script>
+    <script src="~/FrontEnd/js/bootstrap.bundle.js"></script>
+    <script src="~/FrontEnd/js/aos.js"></script>
+    <script src="~/FrontEnd/js/custom.js"></script>
+
+    <script src="~/js/pwAjax.js"></script>
+</body>
+</html>

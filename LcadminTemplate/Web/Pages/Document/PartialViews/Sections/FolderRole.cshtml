@@ -1,0 +1,79 @@
+﻿@using Data
+@using Web
+@model Web.DocumentVM
+
+@if (Model.ShowCreateOrUpdate)
+{
+
+    <div class="white-bg">
+        @if (Model.CompanyFolder != null && Model.CompanyFolder.RestrictAccess)
+        {
+            <div class="sectionheader">Role With Access</div>
+            @if (Model.ShowAddRole)
+            {
+                <div class="input-form">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="formlabel">
+                                    Role:
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(m => m.FolderAccess.RoleId, Model.RoleDDL, new { onchange = "ClickButton('btnAddRole');" })
+                                    <button id="btnAddRole" style="display: none" onclick="AjaxPartialUpdate('Add Role','FolderRole')">Add Role</button>
+                                </div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+            @if (!Model.ShowAddRole)
+            {
+                <div class="center">
+                    <button class="button" onclick="AjaxPartialUpdate('ShowAdd Role','FolderRole')">Add Role</button>
+                </div>
+            }
+            @if (Model.FolderAccessies != null && Model.FolderAccessies.Any())
+            {
+                <div>
+                    <div>
+                        <table class="tablestyle" style="width: 100%">
+                            <tr>
+                                <td colspan="100" style="padding:0px">
+                                    <div class="sectiontitle center">Assigned Roles</div>
+                                </td>
+                            </tr>
+                            @foreach (var Role in Model.FolderAccessies)
+                            {
+                                <tr>
+                                    <td style="
+                        border-radius: 15px !important;">
+
+                                        <div class="row m-0 justify-content-between" style="max-width: 100%">
+                                            <div>
+                                                @Role.Role.RoleName
+                                            </div>
+                                            <div>
+                                                <button class="gridbutton" onclick="AjaxPartialUpdateWithParam('Remove Folder Access', @Role.Id, 'FolderRole')">Remove</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="center pb-2">
+                    <b>No Role Assigned</b>
+                </div>
+            }
+        }
+
+    </div>
+
+}
+

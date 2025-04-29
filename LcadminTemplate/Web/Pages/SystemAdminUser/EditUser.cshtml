@@ -1,0 +1,18 @@
+﻿@model Web.UserVM
+
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+    Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "SystemAdminUser", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{await Html.RenderPartialAsync("PartialViews/EditUser_Partial.cshtml");}
+    </div>
+}
+<script>
+    highlightcurrentpage('nav_SystemAdminUser');
+</script>
