@@ -171,7 +171,7 @@
 
                     @if (CommonClasses.Environment.Templates
                    && (User.Claims.Where(c => c.Type.Contains("Templates")).FirstOrDefault() != null
-                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null))
+                   || User.Claims.Where(c => c.Type == "Developer").FirstOrDefault() != null && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null))
                     {
                         <li class="sidebar-dropdown">
                             <a class="space-between-sec">

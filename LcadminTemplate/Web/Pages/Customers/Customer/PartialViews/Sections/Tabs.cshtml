@@ -24,7 +24,7 @@
     {
         <a>@Html.ActionLink("Customer Profile", "Edit", "Customer", new { CustomerId = Model.Customer.Id }, new { @class = "inactivetab" })</a>
     }
-      @if (CommonClasses.Environment.Email)
+@*       @if (CommonClasses.Environment.Email)
     {
         @if (Model.CurrentTab == "Email")
         {
@@ -35,7 +35,7 @@
             <a>@Html.ActionLink("Email", "Email", "Customer", new { CustomerId = Model.Customer.Id }, new { @class = "inactivetab onethird" })</a>
         }
     }
-   
+    *@
 
 </div>
 

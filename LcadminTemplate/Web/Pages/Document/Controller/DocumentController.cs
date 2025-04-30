@@ -24,20 +24,22 @@ namespace Web.Controllers
         public CompanyDataLibrary CompanyDL { get; }
         public CompanyRolesDataLibrary CompanyRolesDL { get; }
         public UserDataLibrary UserDL { get; }
-        
+
 
         public DocumentController(
             RazorViewToStringRenderer RazorViewToStringRenderer,
             DocumentDataLibrary DocumentDataLibrary,
             CompanyDataLibrary CompanyDataLibrary,
             ExceptionLogger _exceptionLogger,
-            UserDataLibrary userDataLibrary
+            UserDataLibrary userDataLibrary,
+            CompanyRolesDataLibrary CompanyRolesDataLibrary
+
         )
         {
             DocumentDL = DocumentDataLibrary;
             viewRenderer = RazorViewToStringRenderer;
             CompanyDL = CompanyDataLibrary;
-            
+            CompanyRolesDL = CompanyRolesDataLibrary;
             exceptionLogger = _exceptionLogger;
             UserDL = userDataLibrary;
         }
