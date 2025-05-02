@@ -21,20 +21,18 @@ namespace Scheduler.Controllers
         public UserManager<User> UserManager { get; }
         public SignInManager<User> SignInManager { get; }
         public UserDataLibrary UserDL { get; }
-        public CompanyDataLibrary CompanyDL { get; }
         private readonly RazorViewToStringRenderer viewRenderer;
 
 
         public SystemAdminFirstTimeLogin(UserManager<User> userManager,
             SignInManager<User> signInManager,
             UserDataLibrary UserDataLibrary,
-            CompanyDataLibrary CompanyDataLibrary,
             RazorViewToStringRenderer RazorViewToStringRenderer)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             UserDL = UserDataLibrary;
-            CompanyDL = CompanyDataLibrary;
+
             viewRenderer = RazorViewToStringRenderer;
         }
 
@@ -43,7 +41,6 @@ namespace Scheduler.Controllers
         public async Task<IActionResult> CreateUserFirstTime()
         {
             var Model = new UserVM();
-            Model.Companys = await CompanyDL.GetCompanys();
             Model.User = new User();
             Model.User.SystemAdmin = true;
             if (HttpContext.Session.GetString("MobileApp") != null)
@@ -76,12 +73,10 @@ namespace Scheduler.Controllers
                     LastName = ViewModel.User.LastName,
                     Email = ViewModel.User.Email,
                     Status = Status.Active,
-                    Developer = ViewModel.User.Developer,
                     SystemAdmin = ViewModel.User.SystemAdmin,
                     TemporaryPassword = true,
                     EmailConfirmed = true,
                     Phone = ViewModel.User.Phone,
-                    SelectedCompanyId = ViewModel.User.SelectedCompanyId
                 };
 
                 var result = await UserManager.CreateAsync(NewUser, ViewModel.Password);
@@ -96,9 +91,6 @@ namespace Scheduler.Controllers
                 }
                 else
                 {
-                    if (ViewModel.User.Developer)
-                        await UserManager.AddClaimAsync(NewUser, new Claim("Developer", "True"));
-
                     if (ViewModel.User.SystemAdmin)
                         await UserManager.AddClaimAsync(NewUser, new Claim("SystemAdmin", "True"));
 

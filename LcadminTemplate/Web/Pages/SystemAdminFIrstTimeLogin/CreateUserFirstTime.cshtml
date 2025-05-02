@@ -76,16 +76,6 @@
 
                                         </div>
                                     </td>
-                                    <td>
-
-                                        <div class="formlabel">
-                                            Company:
-                                        </div>
-                                        <div>
-                                            @Html.DropDownListFor(x => x.User.SelectedCompanyId, Model.CompanyDDL)
-                                        </div>
-
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -134,7 +124,7 @@
                                             Roles:
                                         </div>
                                         <div style="text-align:left">
-                                            @Html.CheckBoxFor(m => m.User.Developer) Developer &nbsp;&nbsp; @Html.CheckBoxFor(m => m.User.SystemAdmin, new { @disabled = "disabled" }) SystemAdmin
+                                            @Html.CheckBoxFor(m => m.User.SystemAdmin, new { @disabled = "disabled" }) SystemAdmin
                                             @Html.HiddenFor(m => m.User.SystemAdmin)
                                         </div>
                                     </td>

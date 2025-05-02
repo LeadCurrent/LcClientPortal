@@ -11,8 +11,9 @@ namespace Data
         public int CompanyId { get; set; }
 
         /* Lists */
-        public List<CustomerNote> CustomerNotes { get; set; }
-        public List<Document> CustomerDocuments { get; set; }
+        public virtual ICollection<CustomerNote> CustomerNotes { get; set; } = new List<CustomerNote>();
+
+        public virtual ICollection<Document> CustomerDocuments { get; set; } = new List<Document>();
 
         /*Strings */
         public string Name { get; set; }
