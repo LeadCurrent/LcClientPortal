@@ -70,7 +70,6 @@ namespace Web
             Model.UserProfile = await UserDL.GetCurrentUser(User.Identity.Name);
             Model.Roles = await CompanyRolesDL.GetRoles(CompanyId);
             Model.CompanyId = Model.Company.Id;
-            Model.CompanyPhoneNumbers = await CompanyIntegrationDL.GetCompanyPhoneNumbers(CompanyId);
             Model.CompanyEmailAccounts = await CompanyIntegrationDL.GetCompanyEmailAccounts(Model.CompanyId);
             var companyUserId = Model.CompanyUsers.FirstOrDefault(x => x.CompanyId == CompanyId)?.Id;
             if (companyUserId != null)

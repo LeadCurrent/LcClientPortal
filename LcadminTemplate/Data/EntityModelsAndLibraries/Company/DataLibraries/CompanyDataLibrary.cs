@@ -219,18 +219,6 @@ namespace Data
             return emailAccount;
         }
 
-        public async Task<CompanyPhoneNumber> GetDefaultOrFirstCompanyPhoneAccount(int companyId)
-        {
-            // Fetch the default account, if none exists, fetch the first one
-            var phoneNumber = await context.CompanyPhoneNumber
-                .Where(x => x.CompanyId == companyId)
-                .OrderByDescending(x => x.IsDefault)
-                .ThenBy(x => x.Id)
-                .FirstOrDefaultAsync();
-
-            return phoneNumber;
-        }
-
         public async Task UpdateCompanyFromSystemAdmin(Company Company, string CurrentUser)
         {
             context.ChangeTracker.Clear();

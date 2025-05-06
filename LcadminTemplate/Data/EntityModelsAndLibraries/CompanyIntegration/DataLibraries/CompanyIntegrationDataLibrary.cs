@@ -31,15 +31,6 @@ namespace Data
                                  .Where(e => e.CompanyEmailAccountId == CompanyEmailAccountId)
                                  .ToListAsync();
         } 
-        public async Task<List<CompanyUserPhoneNumber>> GetCompanyUserPhoneNumberByCompanyPhoneNumberId(int CompanyPhoneNumberId)
-        {
-            return await context.CompanyUserPhoneNumber
-                                 .Include(x => x.CompanyPhoneNumber)
-                                 .Include(x => x.CompanyUser)
-                                 .ThenInclude(x => x.User)
-                                 .Where(e => e.CompanyPhoneNumberId == CompanyPhoneNumberId)
-                                 .ToListAsync();
-        }
         public async Task DeleteCompanyUserEmailById(int Id)
         {
             var CompanyEmailAccount = await context.CompanyUserEmail.Where(s => s.Id == Id).FirstOrDefaultAsync();
@@ -59,24 +50,6 @@ namespace Data
 
         }
 
-        public async Task DeleteCompanyUserPhoneNumberById(int Id)
-        {
-            var CompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.Where(s => s.Id == Id).FirstOrDefaultAsync();
-            context.CompanyUserPhoneNumber.Remove(CompanyUserPhoneNumber);
-            await context.SaveChangesAsync();
-            if (CompanyUserPhoneNumber.IsDefault)
-            {
-                var NewDefaultAccount = await context.CompanyUserPhoneNumber.FirstOrDefaultAsync();
-                if (NewDefaultAccount != null)
-                {
-                    NewDefaultAccount.IsDefault = true;
-                    context.Entry(NewDefaultAccount).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                }
-
-            }
-
-        }
         public async Task<bool> AddCompanyUserEmail(int CompanyEmailAccountId, int CompanyUserId)
         {
             var CompanyUserEmailCount = context.CompanyUserEmail.Where(x => x.CompanyUserId == CompanyUserId).Count();
@@ -93,37 +66,6 @@ namespace Data
             var result = await context.SaveChangesAsync() > 0;
             return result;
         }  
-        public async Task<bool> AddCompanyUserPhoneNumber(int CompanyPhoneNumberId, int CompanyUserId)
-        {
-            var CompanyUserEmailCount = context.CompanyUserPhoneNumber.Where(x => x.CompanyUserId == CompanyUserId).Count();
-
-
-            var CompanyUserPhoneNumber = new CompanyUserPhoneNumber();
-            CompanyUserPhoneNumber.CompanyUserId = CompanyUserId;
-            CompanyUserPhoneNumber.CompanyPhoneNumberId = CompanyPhoneNumberId;
-            if (CompanyUserEmailCount == 0)
-            {
-                CompanyUserPhoneNumber.IsDefault = true;
-            }
-            context.CompanyUserPhoneNumber.Add(CompanyUserPhoneNumber);
-            var result = await context.SaveChangesAsync() > 0;
-            return result;
-        }
-        public async Task<List<CompanyPhoneNumber>> GetCompanyPhoneNumbers(int CompanyId)
-        {
-            return await context.CompanyPhoneNumber.Where(x => x.CompanyId == CompanyId).ToListAsync();
-
-        }
-        public async Task CreateCompanyPhoneNumber(int CompanyId, string phoneNumber, string ContactName,bool AllStaffAccess = false)
-        {
-            var CompanyPhoneNumber = new CompanyPhoneNumber();
-            CompanyPhoneNumber.CompanyId = CompanyId;
-            CompanyPhoneNumber.PhoneNumber = phoneNumber;
-            CompanyPhoneNumber.Name = ContactName;
-            CompanyPhoneNumber.AllStaffAccess = AllStaffAccess;
-            await context.CompanyPhoneNumber.AddAsync(CompanyPhoneNumber);
-            await context.SaveChangesAsync();
-        }
 
         public async Task<CompanyEmailAccount> GetCompanyEmailAccount(int CompanyEmailAccountId)
         {
@@ -142,84 +84,7 @@ namespace Data
             context.Entry(CT).State = EntityState.Modified;
             await context.SaveChangesAsync();
         } 
-        public async Task UpdateCompanyPhoneNUmber(CompanyPhoneNumber CompanyPhoneNumber)
-        {
-            context.ChangeTracker.Clear();
-            var CT = context.CompanyPhoneNumber.Where(x => x.Id == CompanyPhoneNumber.Id).FirstOrDefault();
-            CT.Name = CompanyPhoneNumber.Name;
-            CT.PhoneNumber = CompanyPhoneNumber.PhoneNumber;
-            CT.AllStaffAccess = CompanyPhoneNumber.AllStaffAccess;
-            context.Entry(CT).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-        }
-        public async Task SetDefaultPhoneNumber(int PhoneNumberId)
-        {
-            context.ChangeTracker.Clear();
-
-            var CompanyPhoneNumbers = await context.CompanyPhoneNumber.Where(s => s.Id != PhoneNumberId).ToListAsync();
-
-            foreach (var phoneNumber in CompanyPhoneNumbers)
-            {
-                phoneNumber.IsDefault = false;
-
-                context.Entry(phoneNumber).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-            }
-
-            var CompanyPhoneNumber = await context.CompanyPhoneNumber.Where(s => s.Id == PhoneNumberId).FirstOrDefaultAsync();
-            CompanyPhoneNumber.IsDefault = true;
-
-            context.Entry(CompanyPhoneNumber).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-        }
-        public async Task<CompanyPhoneNumber> GetCompanyPhoneNumberByNumber(string PhoneNumber)
-        {
-            var CompanyPhoneNumber = await context.CompanyPhoneNumber.Where(x => x.PhoneNumber == PhoneNumber).FirstOrDefaultAsync();
-            return CompanyPhoneNumber;
-        }
-        public async Task<CompanyPhoneNumber> GetCompanyPhoneNumberById(int Id)
-        {
-            var CompanyPhoneNumber = await context.CompanyPhoneNumber.Where(x => x.Id == Id).FirstOrDefaultAsync();
-            return CompanyPhoneNumber;
-        }
-        public async Task DeletePhoneNumber(int PhoneNumberId)
-        {
-            var CompanyPhoneNumber = await context.CompanyPhoneNumber.Where(s => s.Id == PhoneNumberId).FirstOrDefaultAsync();
-            var CompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.Where(s => s.CompanyPhoneNumberId == PhoneNumberId).FirstOrDefaultAsync();
-            if (CompanyUserPhoneNumber != null)
-            {
-                context.CompanyUserPhoneNumber.Remove(CompanyUserPhoneNumber);
-                await context.SaveChangesAsync();
-                if (CompanyUserPhoneNumber.IsDefault)
-                {
-                    var NewDefaultCompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.FirstOrDefaultAsync();
-                    if (NewDefaultCompanyUserPhoneNumber != null)
-                    {
-                        NewDefaultCompanyUserPhoneNumber.IsDefault = true;
-                        context.Entry(NewDefaultCompanyUserPhoneNumber).State = EntityState.Modified;
-                        await context.SaveChangesAsync();
-
-                    }
-
-                }
-            }
-
-            context.CompanyPhoneNumber.Remove(CompanyPhoneNumber);
-            await context.SaveChangesAsync();
-            if (CompanyPhoneNumber.IsDefault)
-            {
-                var NewDefaultCompanyPhoneNumber = await context.CompanyPhoneNumber.FirstOrDefaultAsync();
-                if (NewDefaultCompanyPhoneNumber != null)
-                {
-                    NewDefaultCompanyPhoneNumber.IsDefault = true;
-                    context.Entry(NewDefaultCompanyPhoneNumber).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                }
-
-            }
-
-        }
-        public async Task<bool> CreateCompanyEmailAccount(int CompanyId, int emailType, string Name, string Email, DateTime LastSyncDate, string token,bool AllStaffAccess)
+        public async Task<bool> CreateCompanyEmailAccount(int CompanyId, int emailType, string Name, string Email, string token)
         {
             context.ChangeTracker.Clear();
             var CompanyEmailAccountCount = context.CompanyEmailAccount.Where(x => x.CompanyId == CompanyId).Count();
@@ -233,14 +98,7 @@ namespace Data
                 CompanyId = CompanyId,
                 RefreshToken = token,
                 IsDefault = false,
-                LastSyncDate = LastSyncDate
             };
-            if (AllStaffAccess == true)
-            {
-                CompanyEmailAccount.AllStaffAccess = true;
-            }
-            else
-                CompanyEmailAccount.AllStaffAccess = false;
             if (CompanyEmailAccountCount == 0)
             {
                 CompanyEmailAccount.IsDefault = true;

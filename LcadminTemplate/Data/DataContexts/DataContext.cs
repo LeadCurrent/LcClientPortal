@@ -18,10 +18,8 @@ namespace Data
         public DbSet<Company> Company { get; set; }
         public DbSet<CompanyContact> CompanyContact { get; set; }
         public DbSet<CompanyNote> CompanyNote { get; set; }
-        public DbSet<CompanyPhoneNumber> CompanyPhoneNumber { get; set; }
         public DbSet<CompanyUser> CompanyUser { get; set; }
         public DbSet<CompanyUserNote> CompanyUserNote { get; set; }
-        public DbSet<CompanyUserPhoneNumber> CompanyUserPhoneNumber { get; set; }
         public DbSet<CompayUserRole> CompayUserRole { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
 

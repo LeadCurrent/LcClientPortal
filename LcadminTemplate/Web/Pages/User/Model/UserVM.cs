@@ -29,9 +29,7 @@ namespace Web
         public List<CompanyEmailAccount> CompanyEmailAccounts { get; set; }
         public List<CompanyEmailAccount> UserEmailAccounts { get; set; }
         public List<CompanyUserEmail> CompanyUserEmail { get; set; }
-        public List<Role> Roles { get; set; }
-        public List<CompanyPhoneNumber> CompanyPhoneNumbers { get; set; }
-      
+        public List<Role> Roles { get; set; }      
         public Company Company { get; set; }
 
         /* strings */

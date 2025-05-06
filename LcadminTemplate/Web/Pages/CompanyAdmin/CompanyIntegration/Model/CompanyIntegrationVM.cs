@@ -49,13 +49,9 @@ namespace Web
         public User UserProfile { get; set; } 
 
         public List<CompanyEmailAccount> CompanyEmailAccounts { get; set; }
-        public List<CompanyPhoneNumber> CompanyPhoneNumbers { get; set; }
         public List<CompanyUserEmail> CompanyUserEmails { get; set; }
-        public List<CompanyUserPhoneNumber> CompanyUserPhoneNumbers { get; set; }
         public Company Company { get; set; }
         public CompanyEmailAccount CompanyEmailAccount { get; set; }
-        public CompanyPhoneNumber CompanyPhoneNumber { get; set; }
-
         public List<CompanyUser> CompanyUsers { get; set; }
 
         public List<SelectListItem> CompanyUserDDL

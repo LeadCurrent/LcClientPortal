@@ -261,12 +261,6 @@ namespace Data
             return await context.User
                 .Where(u => u.Email == Email).FirstOrDefaultAsync();
         }
-        public async Task<List<CompanyPhoneNumber>> GetCompanyPhoneNumber(int CompanyId)
-        {
-            return await context.CompanyPhoneNumber
-                .Where(u => u.CompanyId == CompanyId).ToListAsync();
-        }
-
 
         public async Task UpdateCompanyEmailAccount(int CompanyEmailAccountId)
         {
@@ -284,13 +278,7 @@ namespace Data
                                  .Where(e => e.CompanyUserId == companyUserId)
                                  .ToListAsync();
         }
-        public async Task<List<CompanyUserPhoneNumber>> GetCompanyUserPhoneNumbers(int companyUserId)
-        {
-            return await context.CompanyUserPhoneNumber
-                                 .Include(x => x.CompanyPhoneNumber)
-                                 .Where(e => e.CompanyUserId == companyUserId)
-                                 .ToListAsync();
-        }
+
         public async Task<CompanyUserEmail> GetDefaultOrFirstCompanyUserEmail(int companyUserId)
         {
             var emailAccount = await context.CompanyUserEmail
@@ -353,24 +341,6 @@ namespace Data
             }
 
         }
-        public async Task DeleteUserPhoneNumber(int PhoneNumberId)
-        {
-            var CompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.Where(s => s.CompanyPhoneNumberId == PhoneNumberId).FirstOrDefaultAsync();
-            context.CompanyUserPhoneNumber.Remove(CompanyUserPhoneNumber);
-            await context.SaveChangesAsync();
-            if (CompanyUserPhoneNumber.IsDefault)
-            {
-                var NewDefaultCompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.FirstOrDefaultAsync();
-                if (NewDefaultCompanyUserPhoneNumber != null)
-                {
-                    NewDefaultCompanyUserPhoneNumber.IsDefault = true;
-                    context.Entry(NewDefaultCompanyUserPhoneNumber).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                }
-
-            }
-
-        }
         public async Task SetDefaultEmail(int EmailAccountId)
         {
             context.ChangeTracker.Clear();
@@ -391,26 +361,7 @@ namespace Data
             context.Entry(CompanyUserEmail).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
-        public async Task SetDefaultUserPhoneNumber(int PhoneNumberId)
-        {
-            context.ChangeTracker.Clear();
 
-            var CompanyUserPhoneNumbers = await context.CompanyUserPhoneNumber.Where(s => s.CompanyPhoneNumberId != PhoneNumberId).ToListAsync();
-
-            foreach (var phoneNumber in CompanyUserPhoneNumbers)
-            {
-                phoneNumber.IsDefault = false;
-
-                context.Entry(phoneNumber).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-            }
-
-            var CompanyUserPhoneNumber = await context.CompanyUserPhoneNumber.Where(s => s.CompanyPhoneNumberId == PhoneNumberId).FirstOrDefaultAsync();
-            CompanyUserPhoneNumber.IsDefault = true;
-
-            context.Entry(CompanyUserPhoneNumber).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-        }
         public async Task<bool> CreateCompanyEmailAccountAndCompanyUserEmail(int CompanyId, int emailType, string Name, string Email, string token, int CompanyUserId, DateTime LastSyncDate)
         {
             context.ChangeTracker.Clear();
@@ -454,45 +405,6 @@ namespace Data
             var result = await context.SaveChangesAsync() > 0;
             return result;
         }
-        public async Task<bool> CreateCompanyPhoneNoAndCompanyUserPhoneNo(int CompanyId, string Name, int CompanyUserId, string PhoneNumber)
-        {
-            context.ChangeTracker.Clear();
-
-            var CompanyPhoneNumberCount = context.CompanyPhoneNumber.Where(x => x.CompanyId == CompanyId).Count();
-            var CompanyUserPhoneNumbersCount = context.CompanyUserPhoneNumber.Where(x => x.CompanyUserId == CompanyUserId).Count();
-
-
-            var CompanyPhoneNumber = new CompanyPhoneNumber
-            {
-                Name = Name,
-                PhoneNumber = PhoneNumber,
-                CompanyId = CompanyId
-            };
-            if (CompanyPhoneNumberCount == 0)
-            {
-                CompanyPhoneNumber.IsDefault = true;
-            }
-
-            context.CompanyPhoneNumber.Add(CompanyPhoneNumber);
-            var success = await context.SaveChangesAsync() > 0;
-
-            if (success)
-            {
-                var CompanyUserPhoneNumber = new CompanyUserPhoneNumber();
-                CompanyUserPhoneNumber.CompanyUserId = CompanyUserId;
-                CompanyUserPhoneNumber.CompanyPhoneNumberId = CompanyPhoneNumber.Id;
-                if (CompanyUserPhoneNumbersCount == 0)
-                {
-                    CompanyUserPhoneNumber.IsDefault = true;
-                }
-                context.CompanyUserPhoneNumber.Add(CompanyUserPhoneNumber);
-            }
-
-
-            var result = await context.SaveChangesAsync() > 0;
-            return result;
-        }
-
         public async Task<bool> AddUserEmail(int CompanyEmailAccountId, int CompanyUserId)
         {
             var CompanyUserEmailCount = context.CompanyUserEmail.Where(x => x.CompanyUserId == CompanyUserId).Count();
@@ -506,22 +418,6 @@ namespace Data
                 CompanyUserEmail.IsDefault = true;
             }
             context.CompanyUserEmail.Add(CompanyUserEmail);
-            var result = await context.SaveChangesAsync() > 0;
-            return result;
-        }
-        public async Task<bool> AddUserCompanyPhoneNumber(int CompanyPhoneNumberId, int CompanyUserId)
-        {
-            var CompanyUserPhoneCount = context.CompanyUserPhoneNumber.Where(x => x.CompanyUserId == CompanyUserId).Count();
-
-
-            var CompanyUserPhoneNumber = new CompanyUserPhoneNumber();
-            CompanyUserPhoneNumber.CompanyUserId = CompanyUserId;
-            CompanyUserPhoneNumber.CompanyPhoneNumberId = CompanyPhoneNumberId;
-            if (CompanyUserPhoneCount == 0)
-            {
-                CompanyUserPhoneNumber.IsDefault = true;
-            }
-            context.CompanyUserPhoneNumber.Add(CompanyUserPhoneNumber);
             var result = await context.SaveChangesAsync() > 0;
             return result;
         }

@@ -66,8 +66,6 @@ namespace Web
         //public List<ProductCategory> ProductCategories { get; set; }
         public List<RolePermission> RolePermissions { get; set; }
         public List<CompanyEmailAccount> CompanyEmailAccounts { get; set; }
-        public List<CompanyPhoneNumber> CompanyPhoneNumbers { get; set; }
-
         public List<SelectService> SelectedServices { get; set; }
         public Company Company { get; set; }
         public List<CompanyUser> CompanyUsers { get; set; }

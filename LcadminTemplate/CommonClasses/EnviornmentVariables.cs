@@ -54,14 +54,17 @@ namespace CommonClasses
         public static string GoogleClientId()
         {
             if (environment.Contains("Dev"))
-                return "";
+                return "843118869333-anmt2cmc86hq7c8cuibvh2r1mjss20qm.apps.googleusercontent.com";
             else
                 return "";
         }
 
         public static string GoogleClientSecret()
         {
-            return "";
+            if (environment.Contains("Dev"))
+                return "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";
+            else
+                return "";
         }
 
         public static string GoogleApplicationName()
