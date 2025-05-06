@@ -1,5 +1,6 @@
 ﻿using Data;
 using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Google.Apis.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -123,7 +124,7 @@ namespace Data
             return Company;
         }
 
-        public async Task<Company> CreateCompany(Company Company, User user)
+        public async Task<(Company company, int companyUserId)> CreateCompany(Company Company, User user)
         {
             context.ChangeTracker.Clear();
             //var CurrentPlan = await context.Plans.Where(x => x.PlanPricing == PlanPricing.Default).FirstOrDefaultAsync();
@@ -139,19 +140,14 @@ namespace Data
             CurrentCompany.CreateDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "UTC", "Central Standard Time");
             CurrentCompany.CreatedBy = user.FullName;
 
-            
-           
-
-            //Billing fields
-            var BillDate = CurrentCompany.CreateDate.AddDays(15).Day;
-            BillDate = BillDate == 29 || BillDate == 30 || BillDate == 31 ? 1 : BillDate;
-
             context.Company.Add(CurrentCompany);
             await context.SaveChangesAsync();
 
             var companyUser = new CompanyUser
             {
                 CompanyId = CurrentCompany.Id,
+                CreateDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "UTC", "Central Standard Time"),
+                Status = Status.Active,
                 UserId = user.Id
             };
 
@@ -168,7 +164,7 @@ namespace Data
             context.CompanyContact.Add(CompanyContact);
             await context.SaveChangesAsync();
 
-            return CurrentCompany;
+            return (CurrentCompany, companyUser.Id);
         }
 
         public async Task<CompanyEmailAccount> GetEmailAccount(string EmailAccount)

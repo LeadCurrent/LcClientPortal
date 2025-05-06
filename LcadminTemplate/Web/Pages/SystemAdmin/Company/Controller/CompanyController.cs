@@ -181,8 +181,7 @@ namespace Web
                     if (result.Succeeded)
                     {
                         //company
-                        var Company = await CompanyDL.CreateCompany(ViewModel.Company, NewUser);
-                        var CompanyUserId = await CompanyDL.CreateCompanyUser(Company.Id, NewUser.Id);
+                        var (Company, CompanyUserId) = await CompanyDL.CreateCompany(ViewModel.Company, NewUser);
 
                         //Role
                         var AdminRole = await CompanyRolesDL.CreateRole("Admin", Company.Id);
