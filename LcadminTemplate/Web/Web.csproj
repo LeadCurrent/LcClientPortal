@@ -9,6 +9,7 @@
     <Compile Remove="Pages\API\**" />
     <Compile Remove="Pages\Billing\**" />
     <Compile Remove="Pages\Communications\**" />
+    <Compile Remove="Pages\CompanyAdmin\Course\**" />
     <Compile Remove="Pages\Feedback\**" />
     <Compile Remove="Pages\InvoiceAndPayment\**" />
     <Compile Remove="Pages\MyJobs\**" />
@@ -18,6 +19,7 @@
     <Content Remove="Pages\API\**" />
     <Content Remove="Pages\Billing\**" />
     <Content Remove="Pages\Communications\**" />
+    <Content Remove="Pages\CompanyAdmin\Course\**" />
     <Content Remove="Pages\Feedback\**" />
     <Content Remove="Pages\InvoiceAndPayment\**" />
     <Content Remove="Pages\MyJobs\**" />
@@ -27,6 +29,7 @@
     <EmbeddedResource Remove="Pages\API\**" />
     <EmbeddedResource Remove="Pages\Billing\**" />
     <EmbeddedResource Remove="Pages\Communications\**" />
+    <EmbeddedResource Remove="Pages\CompanyAdmin\Course\**" />
     <EmbeddedResource Remove="Pages\Feedback\**" />
     <EmbeddedResource Remove="Pages\InvoiceAndPayment\**" />
     <EmbeddedResource Remove="Pages\MyJobs\**" />
@@ -36,6 +39,7 @@
     <None Remove="Pages\API\**" />
     <None Remove="Pages\Billing\**" />
     <None Remove="Pages\Communications\**" />
+    <None Remove="Pages\CompanyAdmin\Course\**" />
     <None Remove="Pages\Feedback\**" />
     <None Remove="Pages\InvoiceAndPayment\**" />
     <None Remove="Pages\MyJobs\**" />
@@ -89,7 +93,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\CompanyAdmin\CompanyProfile\PartialViews\Sections\" />
-    <Folder Include="Pages\CompanyAdmin\Course\EnumDDLs\" />
+    <Folder Include="Pages\Sources\EnumDDL\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
@@ -139,13 +143,6 @@
     <Reference Include="OAuth2_CoreMVC_Sample">
       <HintPath>..\..\TopFour2\Web\quickbooksbinaries\OAuth2_CoreMVC_Sample.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Pages\CompanyAdmin\Course\PartialViews\Sections\CustomerNotes.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

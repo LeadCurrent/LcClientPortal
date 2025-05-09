@@ -105,6 +105,10 @@ namespace DotNet5Template
 
             services.AddScoped<DocumentDataLibrary, DocumentDataLibrary>();
 
+            //Sources
+            services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();
+            services.AddScoped<AllocationDataLibrary, AllocationDataLibrary>();
+
             //NewDataLibrary
 
             services.AddDbContextPool<DataContext>(options => options.UseSqlServer(CommonClasses.Environment.DBConnection()));

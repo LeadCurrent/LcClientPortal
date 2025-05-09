@@ -110,6 +110,7 @@ namespace Web
                 if (Action == "Select Company")
                 {
                     await SelectCompany(ViewModel , Action);
+                    return RedirectToAction("Index");
                 }
 
                 if (Action == "Apply Filters")
@@ -133,7 +134,8 @@ namespace Web
 
                 var VM = await getCompanyViewModel();
 
-                var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("Company/PartialViews/CompanyList_Partial", VM)).Result;
+                var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("~/Pages/SystemAdmin/Company/PartialViews/CompanyList_Partial.cshtml", VM)).Result;
+                
                 return Json(new { isValid = true, html = HTML });
 
             }
@@ -189,7 +191,6 @@ namespace Web
 
                         //claims
                         await UserDL.AddUserClaimAsync(NewUser.Id, "CompanyId", Company.Id.ToString());
-                        await UserDL.AddUserClaimAsync(NewUser.Id, "Plan", "Default");
                         await UserDL.AddUserClaimAsync(NewUser.Id, "Admin", "True");
                         await UserDL.AddUserClaimAsync(NewUser.Id, "CompanyName", Company.Name);
 
@@ -390,7 +391,7 @@ namespace Web
             }
         }
 
-        public async Task<IActionResult> SelectCompany(CompanyViewModel ViewModel, string Action)
+        public async Task SelectCompany(CompanyViewModel ViewModel, string Action)
         {
             var user = await UserDL.GetCurrentUser(User.Identity.Name);
             var claims = await UserManager.GetClaimsAsync(user);
@@ -418,7 +419,6 @@ namespace Web
 
             await SignInManager.SignOutAsync();
             await SignInManager.SignInAsync(user, true);
-            return RedirectToAction("Index");
         }
 
     }

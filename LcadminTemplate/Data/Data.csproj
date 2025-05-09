@@ -102,9 +102,7 @@
     <Folder Include="EntityModelsAndLibraries\Searchportal\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\Models\" />
-    <Folder Include="EntityModelsAndLibraries\Source\DataLibrary\" />
-    <Folder Include="EntityModelsAndLibraries\Source\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Source\Models\" />
+    <Folder Include="EntityModelsAndLibraries\Sources\Enums\" />
     <Folder Include="EntityModelsAndLibraries\State\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\State\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Submission\DataLibrary\" />
@@ -116,7 +114,6 @@
     <Folder Include="EntityModelsAndLibraries\FulfillmentAPIV1\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\FulfillmentAPIV1\Enums\" />
     <Folder Include="EntityModelsAndLibraries\FulfillmentAPIV1\Models\" />
-    <Folder Include="EntityModelsAndLibraries\Allocation\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Allocation\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Allocation\Models\" />
     <Folder Include="EntityModelsAndLibraries\CompanyIntegration\Enums\" />

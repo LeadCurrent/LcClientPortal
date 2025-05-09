@@ -95,6 +95,14 @@
                             </a>
                         </li>
                     }
+                    @if (CommonClasses.Environment.Sources && (User.Claims.Where(c => c.Type.Contains("Sources")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Sources" id="nav_Sources">
+                                <span class="title">Sources</span>
+                            </a>
+                        </li>
+                    }
                     @if (CommonClasses.Environment.Documents && (User.Claims.Where(c => c.Type.Contains("Documents")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
                         <li>

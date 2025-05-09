@@ -66,6 +66,8 @@ namespace Web
                 {
                     Model.MobileApp = true;
                 }
+                Model.CurrentTab = "Integrations";
+                return View("Integration", Model);
                 return View("UserRole", Model);
 
             }

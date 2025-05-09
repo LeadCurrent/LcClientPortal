@@ -50,9 +50,6 @@
                     Company Name
                 </th>
                 <th style="width:15%;">
-                    Plan
-                </th>
-                <th style="width:15%;">
                     Created Date
                 </th>
                 <th style="width: 15%; text-align: center">
@@ -136,83 +133,6 @@
                 </tr>
             }
         </table>
-
-        @*<div class="mobileportrait-mobilewide">
-        <table class="tablestyle" style="width:100%">
-        <tr>
-        <th>
-        Companys
-        </th>
-        </tr>
-        @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Active).ToList())
-        {
-        @if (Company.Selected)
-        {
-        <tr style="background-color: #ffdec9;">
-        <td>
-        <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
-
-        </td>
-        </tr>
-        }
-        else
-        {
-        <tr>
-        <td>
-        <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
-
-        </td>
-        </tr>
-        }
-        }
-        </table>
-        </div>*@
-    </div>
-
-    @*@if (Model.Companys.Where(t => t.Status == Status.Inactive).Count() > 0)
-    {
-    <div class="white-bg">
-    <div class="sectiontitle" style="padding-top:20px; padding-bottom:10px">
-    Inactive Companys
-    </div>
-    <div class="desktop">
-    <table class="tablestyle" style="width:100%">
-    <tr>
-    <th>
-    Name
-    </th>
-
-    </tr>
-    @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Inactive).ToList())
-    {
-    <tr>
-    <td>
-    @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })
-    </td>
-    </tr>
-    }
-    </table>
-    </div>
-    <div class="mobileportrait-mobilewide">
-    <table class="tablestyle" style="width:100%">
-    <tr>
-    <th>
-    Companies
-    </th>
-    </tr>
-    @foreach (var Company in Model.Companys.Where(Company => Company.Status == Status.Inactive).ToList())
-    {
-    <tr>
-    <td>
-    <b>Name: </b> @Html.ActionLink(@Company.Name, "Edit", new { CompanyId = Company.Id })<br />
-    </td>
-    </tr>
-    }
-    </table>
-    </div>
-    </div>
-    }*@
-
 </div>
 <script>
 

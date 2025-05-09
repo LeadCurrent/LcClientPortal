@@ -15,7 +15,7 @@ namespace Web.Controllers
 {
     [Authorize(Policy = "AdminOrDocuments")]
 
-    public class DocumentController : Controller
+    public class SourcesController : Controller
     {
         
         private readonly RazorViewToStringRenderer viewRenderer;
@@ -26,7 +26,7 @@ namespace Web.Controllers
         public UserDataLibrary UserDL { get; }
 
 
-        public DocumentController(
+        public SourcesController(
             RazorViewToStringRenderer RazorViewToStringRenderer,
             DocumentDataLibrary DocumentDataLibrary,
             CompanyDataLibrary CompanyDataLibrary,

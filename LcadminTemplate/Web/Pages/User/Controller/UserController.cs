@@ -80,6 +80,7 @@ namespace Scheduler.Controllers
                 UserVM.MobileApp = MobileApp;
                 HttpContext.Session.SetString("MobileApp", "True");
             }
+            
             return View("UserList", UserVM);
         }
 
@@ -95,32 +96,6 @@ namespace Scheduler.Controllers
             if (Action == "Create")
                 return RedirectToAction("Create");
 
-            if (Action == "Get Mails")
-            {
-                var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
-                var DefaultCompanyEmailAccount = await CompanyDL.GetDefaultOrFirstCompanyEmailAccount(CompanyId);
-                string accessToken = await GoogleAPI.GetAccessTokenFromRefreshTokenAsync(DefaultCompanyEmailAccount.RefreshToken);
-                //var AllMails = GoogleAPI.GetAllEmails(accessToken);
-                //var MailsWithBody = GoogleAPI.GetAllEmailsWithBodies(accessToken);
-                DateTime afterTimestamp = DefaultCompanyEmailAccount.LastSyncDate; // Example timestamp
-
-
-                // var emails = GoogleAPI.GetAllEmailsWithBodies(accessToken, afterTimestamp);
-
-
-            }
-            if (Action == "Get Microsoft Mails")
-            {
-
-                var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
-                var DefaultCompanyEmailAccount = await CompanyDL.GetDefaultOrFirstCompanyEmailAccount(CompanyId);
-                string accessToken = await MicrosoftAPI.GetAccessTokenAsync(DefaultCompanyEmailAccount.RefreshToken);
-                DateTime afterTimestamp = new DateTime(2024, 5, 14, 12, 30, 7); // Example timestamp
-
-                //DateTime afterTimestamp = DateTime.Today.AddHours(8);
-
-                // var emails = MicrosoftAPI.FetchEmailsAsync(accessToken, afterTimestamp);
-            }
             var UserVM = await getUserListModel();
 
             var HTML = await viewRenderer.RenderViewToStringAsync("User/PartialViews/UserList_Partial", UserVM);

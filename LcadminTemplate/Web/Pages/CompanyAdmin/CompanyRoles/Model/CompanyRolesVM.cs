@@ -22,7 +22,7 @@ namespace Web
         /* Properties */
         public int CompanyId { get; set; }
         public string RoleName { get; set; }
-
+        public string CurrentTab { get; set; }
 
         /* Models */
         public Role Role { get; set; }

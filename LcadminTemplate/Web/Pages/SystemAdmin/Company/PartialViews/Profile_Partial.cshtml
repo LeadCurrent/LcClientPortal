@@ -247,7 +247,7 @@
             </tr>
             @for (int i = 0; i < Model.Company.CompanyContacts.Count(); i++)
             {
-               
+
                 var Contact = Model.Company.CompanyContacts[i];
                 <tr class="mobileportrait-mobilewide">
                     <td colspan="4">
@@ -312,6 +312,7 @@
                     </td>
                 </tr>
             }
+
             @if (Model.AddNewContact)
             {
                 <tr>
@@ -351,9 +352,9 @@
             }
 
         </table>
-  
-    </div>
 
+    </div>
+    @* Company Notes *@
     <div class="white-bg">
         <div class="d-flex justify-content-between sectionheader mt-3">
             <span class="mt-1">Company Notes</span>
@@ -375,7 +376,7 @@
                     <button class="button" onclick="Ajax('Add Note')">Add Note</button>
                     <button class="button-white" onclick="Ajax('Cancel')">Cancel</button>
                 </div>
-            }      
+            }
         </div>
         @if (Model.CompanyNotes != null)
         {
@@ -400,6 +401,7 @@
                 </div>
             }
         }
+    
     </div>
 </div>
 

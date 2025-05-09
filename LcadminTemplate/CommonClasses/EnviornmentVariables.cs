@@ -162,6 +162,13 @@ namespace CommonClasses
                 return true;
             }
         }
+        public static bool Sources
+        {
+            get
+            {
+                return true;
+            }
+        }
         public static bool CompanyProfile
         {
             get
