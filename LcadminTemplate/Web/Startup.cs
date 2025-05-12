@@ -89,7 +89,6 @@ namespace DotNet5Template
             services.AddScoped<CompanyRolesDataLibrary, CompanyRolesDataLibrary>();
             services.AddScoped<CompanyIntegrationDataLibrary, CompanyIntegrationDataLibrary>();
             services.AddScoped<EmailDataLibrary, EmailDataLibrary>();
-            services.AddScoped<CompanyRolesDataLibrary, CompanyRolesDataLibrary>();
 
             /* System Admin */
 
@@ -102,8 +101,6 @@ namespace DotNet5Template
 
             //Customers
             services.AddScoped<CustomerDataLibrary, CustomerDataLibrary>();
-
-            services.AddScoped<DocumentDataLibrary, DocumentDataLibrary>();
 
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();

@@ -90,8 +90,8 @@ namespace Web
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
 
-                Model.CurrentTab = "Roles";
-                return View("Roles", Model);
+                Model.CurrentTab = "Integration";
+                return View("Integration", Model);
             }
             catch (Exception ex)
             {
