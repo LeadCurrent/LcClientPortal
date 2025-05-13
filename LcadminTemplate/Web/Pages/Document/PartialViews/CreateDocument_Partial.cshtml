@@ -1,13 +1,6 @@
 ﻿@using Data
 @model Web.DocumentVM
 
-<script>
-    function showuploading() {
-        document.getElementById('buttons').style.display = 'none';
-        document.getElementById('uploading').style.display = 'inline';
-    }
-</script>
-
 @Html.HiddenFor(m => m.AjaxUpdate)
 @Html.HiddenFor(m => m.Param)
 @Html.HiddenFor(m => m.Action)
@@ -17,6 +10,14 @@
 
 <div id="popupbackground" class="popup-background" style="display:none;">
 </div>
+
+<script>
+    function showuploading() {
+        debugger
+        document.getElementById('buttons').style.display = 'none';
+        document.getElementById('uploading').style.display = 'inline';
+    }
+</script>
 
 <div class="pagetitle">Create Document</div>
 
@@ -35,7 +36,15 @@
                 <div class="validation-message" id="Invalid">
                     <i>Fill in all required fields</i>
                 </div>
-                <button class="button valid" id="Valid" onclick="javascript:showuploading(); NonAjax('Create')">Add Document</button>
+
+                @if (!String.IsNullOrEmpty(Model.ErrorMsg))
+                {
+                    <div style="color: var(--ErrorText); text-align: center;font-weight: bold;">
+                        <i>@Model.ErrorMsg</i>
+                    </div>
+                }
+
+                <button class="button valid" id="Valid" onclick="showuploading(); NonAjax('Create')">Add Document</button>
                 @if (Model.CompanyFolder != null)
                 {
                     <button class="filterbutton mt-1" onclick="NonAjax('Cancel')">Cancel</button>
