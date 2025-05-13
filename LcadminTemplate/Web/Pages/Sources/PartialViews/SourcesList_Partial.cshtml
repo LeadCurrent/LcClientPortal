@@ -1,0 +1,170 @@
+﻿@using Data
+@using Web
+@model Web.SourcesViewModel
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle"> Sources</div>
+<div>
+
+    <div class="form-1400">
+
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Create New Source</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Allocations
+                    </th>
+                    <th>
+                        APIKey
+                    </th>
+                    <th>
+                        OSAccessKey
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+                @if (Model.Sources != null)
+                {
+                    if (!Model.ShowNoListAvailable)
+                    {
+                        @foreach (var Source in Model.Sources)
+                        {
+                            <tr class="mobileportrait-mobilewide">
+                                <td>
+                                    <div><b class="secondary-text">Source:</b></div>
+                                    <div>
+                                        @Html.ActionLink(Source?.Name ?? "No Name", "EditSources", "Sources", new { SourceId = Source.Id })
+                                    </div>
+
+                                    <div><b class="secondary-text">Allocations:</b></div>
+                                    <div>
+                                        @($"{Source.ActiveAllocationsCount} Active, {Source.InactiveAllocationsCount} Inactive")
+                                    </div>
+
+                                    <div><b class="secondary-text">APIKey:</b></div>
+                                    <div>
+                                        @(!string.IsNullOrEmpty(Source.Apikey) ? Source.Apikey : "-")
+                                    </div>
+
+                                    <div><b class="secondary-text">OSAccessKey:</b></div>
+                                    <div>
+                                        @(!string.IsNullOrEmpty(Source.Accesskey) ? Source.Accesskey : "-")
+                                    </div>
+
+                                    <div><b class="secondary-text">Status:</b></div>
+                                    <div>
+                                        @(Source.Active ? "Active" : "Not Active")
+                                    </div>
+                                    <div>
+                                        <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@Source.Id)">View</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="desktop">
+                                <td>
+                                    @Html.ActionLink(Source?.Name ?? "No Name", "EditSources", "Sources", new { SourceId = Source.Id })
+                                </td>
+                                <td>
+                                    @($"{Source.ActiveAllocationsCount} Active, {Source.InactiveAllocationsCount} Inactive")
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Source.Apikey))
+                                    {
+                                        <b class="secondary-text">APIKey:</b> @Source.Apikey
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Source.Accesskey))
+                                    {
+                                        <b class="secondary-text">AccessKey:</b> @Source.Accesskey
+                                    }
+                                </td>
+                                <td>
+                                    <span>@(Source.Active ? "Active" : "Not Active")</span>
+                                </td>
+                                <td>
+                                    <button class="gridbutton" onclick="NonAjaxWithParam('Edit',@Source.Id)">View</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    
+                    else
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                @if (Model.Company.Name != null)
+                                {
+                                    <span>Sources are not Available for @Model.Company.Name Company</span>
+                                }
+                                else
+                                {
+                                    <span>Sources are not Available</span>
+                                }
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="desktop">
+                            <td>
+                                @if (Model.Company.Name != null)
+                                {
+                                    <span>Sources are not Available for @Model.Company.Name Company</span>
+                                }
+                                else
+                                {
+                                    <span>Sources are not Available</span>
+                                }
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    highlightcurrentpage("nav_Customers-lead");
+</script>
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            liveSearch: true,
+            showSubtext: true
+        });
+    });
+</script>
+<script>
+
+    var activeItemsArray = [];
+    @if (Model.Sources != null)
+    {
+        @foreach (var d in Model.Sources)
+        {
+            @:activeItemsArray.push("@d.Name");
+        }
+    }
+
+        AutoCompleteSuggestions($('#SelectedCompanyName'), activeItemsArray);
+</script>

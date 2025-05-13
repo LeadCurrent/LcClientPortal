@@ -80,6 +80,7 @@ namespace Scheduler.Controllers
                 UserVM.MobileApp = MobileApp;
                 HttpContext.Session.SetString("MobileApp", "True");
             }
+            
             return View("UserList", UserVM);
         }
 
@@ -95,32 +96,6 @@ namespace Scheduler.Controllers
             if (Action == "Create")
                 return RedirectToAction("Create");
 
-            if (Action == "Get Mails")
-            {
-                var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
-                var DefaultCompanyEmailAccount = await CompanyDL.GetDefaultOrFirstCompanyEmailAccount(CompanyId);
-                string accessToken = await GoogleAPI.GetAccessTokenFromRefreshTokenAsync(DefaultCompanyEmailAccount.RefreshToken);
-                //var AllMails = GoogleAPI.GetAllEmails(accessToken);
-                //var MailsWithBody = GoogleAPI.GetAllEmailsWithBodies(accessToken);
-                DateTime afterTimestamp = DefaultCompanyEmailAccount.LastSyncDate; // Example timestamp
-
-
-                // var emails = GoogleAPI.GetAllEmailsWithBodies(accessToken, afterTimestamp);
-
-
-            }
-            if (Action == "Get Microsoft Mails")
-            {
-
-                var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
-                var DefaultCompanyEmailAccount = await CompanyDL.GetDefaultOrFirstCompanyEmailAccount(CompanyId);
-                string accessToken = await MicrosoftAPI.GetAccessTokenAsync(DefaultCompanyEmailAccount.RefreshToken);
-                DateTime afterTimestamp = new DateTime(2024, 5, 14, 12, 30, 7); // Example timestamp
-
-                //DateTime afterTimestamp = DateTime.Today.AddHours(8);
-
-                // var emails = MicrosoftAPI.FetchEmailsAsync(accessToken, afterTimestamp);
-            }
             var UserVM = await getUserListModel();
 
             var HTML = await viewRenderer.RenderViewToStringAsync("User/PartialViews/UserList_Partial", UserVM);
@@ -263,27 +238,6 @@ namespace Scheduler.Controllers
                     VM.CompanyEmailAccounts.Add(EmailAccount);
                 }
             });
-
-            var CompanyPhoneNumber = await UserDL.GetCompanyPhoneNumber(CompanyId);
-            var CompanyUserPhoneNumber = await UserDL.GetCompanyUserPhoneNumbers(VM.CompanyUser.Id);
-            VM.CompanyPhoneNumbers = new List<CompanyPhoneNumber>();
-
-            CompanyUserPhoneNumber.ForEach(email =>
-            {
-                var companyPhoneNumber = CompanyPhoneNumber.Where(x => x.Id == email.CompanyPhoneNumberId).FirstOrDefault();
-                if (companyPhoneNumber != null)
-                {
-                    if (email.IsDefault == true)
-                        companyPhoneNumber.IsDefault = true;
-                    else
-                        companyPhoneNumber.IsDefault = false;
-
-                    VM.CompanyPhoneNumbers.Add(companyPhoneNumber);
-                }
-            });
-
-            if (!CompanyUserPhoneNumber.Any())
-                VM.CompanyPhoneNumbers = CompanyPhoneNumber;
 
             return VM;
         }
@@ -455,11 +409,6 @@ namespace Scheduler.Controllers
                  // await UserDL.CreateCompanyEmailAccountAndCompanyUserEmail(CompanyId, 3, ViewModel.OtherAccountName, ViewModel.OtherAccountEmail, null ,ViewModel.CompanyUser.Id);
 
             }
-            if (Action == "Connect to Phone Number")
-            {
-                  await UserDL.CreateCompanyPhoneNoAndCompanyUserPhoneNo(CompanyId,ViewModel.ContactName,ViewModel.CompanyUser.Id , ViewModel.PhoneNumber);
-
-            }
             if (Action == "Remove Email Account")
             {
                 await UserDL.DeleteUserEmail(ViewModel.Param);
@@ -471,40 +420,21 @@ namespace Scheduler.Controllers
                 return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
 
             }
-            if (Action == "Add Phone Number")
-            {
-                await UserDL.AddUserCompanyPhoneNumber(ViewModel.Param, ViewModel.CompanyUser.Id);
-                return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
-
-            }
             if (Action == "Set Default Email")
             {
                 await UserDL.SetDefaultEmail(ViewModel.Param);
                 return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
             }
-            if (Action == "Set Default Phone Number")
-            {
-                await UserDL.SetDefaultUserPhoneNumber(ViewModel.Param);
-                return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
-            }
+
             if (Action == "Remove Default Email Account")
             {
                 await UserDL.DeleteUserEmail(ViewModel.Param);
-                return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
-            }
-            if (Action == "Remove Phone Number")
-            {
-                await UserDL.DeleteUserPhoneNumber(ViewModel.Param);
                 return RedirectToAction("EditUser", new { Id = ViewModel.CompanyUser.Id });
             }
             if (Action == "Show Other Account Fields")
             {
                 VM.ShowAddOtherAccount = true;
 
-            }
-            if (Action == "Show Add Phone Number")
-            {
-                VM.ShowAddPhoneNumber = true;
             }
             if (Action == "Cancel Add other Account")
             {
@@ -546,25 +476,7 @@ namespace Scheduler.Controllers
                     VM.CompanyEmailAccounts.Add(EmailAccount);
                 }
             }
-            var CompanyPhoneNumber = await UserDL.GetCompanyPhoneNumber(CompanyId);
-            var CompanyUserPhoneNumber = await UserDL.GetCompanyUserPhoneNumbers(ViewModel.CompanyUser.Id);
-            VM.CompanyPhoneNumbers = new List<CompanyPhoneNumber>();
-            foreach (var email in CompanyUserPhoneNumber)
-            {
-                var companyPhoneNumber = CompanyPhoneNumber.Where(x => x.Id == email.CompanyPhoneNumberId).FirstOrDefault();
-                if (companyPhoneNumber != null)
-                {
-                    if (email.IsDefault == true)
-                    {
-                        companyPhoneNumber.IsDefault = true;
-                    }
-                    else
-                    {
-                        companyPhoneNumber.IsDefault = false;
-                    }
-                    VM.CompanyPhoneNumbers.Add(companyPhoneNumber);
-                }
-            }
+
             if (Action == "Connect to Existing accounts")
             {
                 VM = await GetEditUserModel(ViewModel.CompanyUser.Id);

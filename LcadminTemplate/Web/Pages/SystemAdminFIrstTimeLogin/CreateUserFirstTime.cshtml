@@ -9,7 +9,29 @@
     else
         Layout = "~/Pages/Shared/TemplateLayout.cshtml";
 }
+<style>
+    .password-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
 
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 30px; /* space for the icon */
+        }
+
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 16px;
+        user-select: none;
+    }
+
+</style>
 @using (Html.BeginForm("CreateUserFirstTime", "SystemAdminFirstTimeLogin", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
 {
     <div id="partialview">
@@ -78,34 +100,32 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
-                                        @if (Model.User.UserName != null)
-                                        {
-                                            <div class="formlabel">
-                                                Status:
-                                            </div>
-                                            <div>
-                                                @Html.DropDownListFor(x => x.User.Status, StatusDDL())
-                                            </div>
-                                        }
-                                    </td>
+                                    <td style="display:none;">
+                                        <div class="formlabel">
+                                            User Name:<span id="User_UserName_Invalid" class="required">*</span>
+                                        </div>
+                                        <div>
+                                            @Html.EditorFor(m => m.User.UserName, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
 
-                                    <td></td>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @if (Model.User.UserName == null)
                                 {
                                     <tr>
-
                                         <td>
                                             <div class="formlabel">
                                                 Password:
                                                 <span id="Password_Invalid" class="required">*</span>
                                             </div>
-                                            @Html.EditorFor(m => m.Password, new { htmlattributes = new { @class = "requiredpassword", onkeyup = "ValidateForm();" } })
+                                            <div class="password-wrapper">
+                                                @Html.EditorFor(m => m.Password, new { htmlattributes = new { @class = "requiredpassword password-field", id = "Password", onkeyup = "ValidateForm();" } })
+                                                <span class="toggle-password" onclick="togglePassword('Password', this)">👁️</span>
+                                            </div>
                                             @if (Model.PasswordInvalid)
                                             {
                                                 <br />
-                                                <span style="color:red"> <i>Invalid Password</i></span>
+                                                <span style="color:red"><i>Invalid Password</i></span>
                                             }
                                             <div><i>6+ characters, 1+ letter, 1+ number</i></div>
                                         </td>
@@ -114,7 +134,10 @@
                                                 Repeat&nbsp;Password:
                                                 <span id="ConfirmPassword_Invalid" class="required">*</span>
                                             </div>
-                                            @Html.EditorFor(m => m.ConfirmPassword, new { htmlattributes = new { @class = "requiredconfirmpassword", onkeyup = "ValidateForm();" } })
+                                            <div class="password-wrapper">
+                                                @Html.EditorFor(m => m.ConfirmPassword, new { htmlattributes = new { @class = "requiredconfirmpassword password-field", id = "ConfirmPassword", onkeyup = "ValidateForm();" } })
+                                                <span class="toggle-password" onclick="togglePassword('ConfirmPassword', this)">👁️</span>
+                                            </div>
                                         </td>
                                     </tr>
                                 }
@@ -154,7 +177,6 @@
                         }
                         <div class="buttons">
                             <button id="Valid" class="button" onclick="Ajax('Create')">Create User</button>
-                            <button class="button" id="GoBack" onclick="NonAjax('Cancel')">Go Back</button>
                         </div>
                     </div>
                 </div>
@@ -167,4 +189,16 @@
 }
 <script>
     highlightcurrentpage('nav_SystemAdminUser');
+
+    function togglePassword(fieldId, icon) {
+        var field = document.getElementById(fieldId);
+        if (field.type === "password") {
+            field.type = "text";
+            icon.textContent = "👁️‍🗨️";
+        } else {
+            field.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+
 </script>

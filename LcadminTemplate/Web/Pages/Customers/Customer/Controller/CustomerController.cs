@@ -121,6 +121,7 @@ namespace Web.Controllers
             {
                 if (Action == "Create")
                     return RedirectToAction("Create");
+
                 #region for Aplly Filters
                 CustomersViewModel CustomersVM = new CustomersViewModel();
                 if (ViewModel.SelectedCompanyName != null)

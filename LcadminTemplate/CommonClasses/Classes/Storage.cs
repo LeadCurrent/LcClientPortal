@@ -26,6 +26,7 @@ namespace Web
             string emailHtmlUrl = await UploadBlobContent(emailHtmlContent, $"EmailContent/{relatedContentType}/HTML/{id}", CommonClasses.Environment.StorageContainer());
             return emailHtmlUrl;
         }
+
         public static async Task<(string emailHtmlContent, string emailJsonContent)> RetrieveEmailContentFromBlob(string relatedcontenttype, int Id)
         {
             string emailHtmlContent = await DownloadBlobContent($"EmailContent/{relatedcontenttype}/HTML/{Id}", CommonClasses.Environment.StorageContainer());
@@ -45,8 +46,6 @@ namespace Web
             return emailHtmlContent;
         }
 
-
-
         public static async Task<string> RetrieveEmailJsonContentFromBlob(string relatedContentType, int id)
         {
             string emailJsonContent = await DownloadBlobContent($"EmailContent/{relatedContentType}/JSON/{id}", CommonClasses.Environment.StorageContainer());
@@ -65,6 +64,7 @@ namespace Web
             string emailJsonUrl = await UploadBlobContent(emailJsonContent, $"EmailContent/{relatedContentType}/JSON/{id}", CommonClasses.Environment.StorageContainer());
             return emailJsonUrl;
         }
+
         private static async Task<string> UploadBlobContent(string content, string blobName, string containerName)
         {
             using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content)))
@@ -81,6 +81,7 @@ namespace Web
                 return containerClient.GetBlobClient(blobName).Uri.ToString();
             }
         }
+
         private static async Task<string> DownloadBlobContent(string blobName, string containerName)
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(CommonClasses.Environment.StorageAccount());
@@ -95,6 +96,7 @@ namespace Web
             else return null;
 
         }
+
         public static async Task UploadLargeDocument(IFormFile file, string filename)
         {
             try
@@ -158,6 +160,7 @@ namespace Web
                 var str = ex.InnerException;
             }
         }
+
         public static void UploadDocument(IFormFile file, string filename)
         {
             try
@@ -200,6 +203,7 @@ namespace Web
                 var str = ex.InnerException;
             }
         }
+
         public static async Task UploadDocument(string fileUrl, string filename)
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(CommonClasses.Environment.StorageAccount());

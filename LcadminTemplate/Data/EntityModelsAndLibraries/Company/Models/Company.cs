@@ -19,8 +19,6 @@ namespace Data
         public List<Customer> Customers { get; set; }
         public List<CompanyContact> CompanyContacts { get; set; }
         public List<CompanyEmailAccount> CompanyEmailAccounts { get; set; }
-        public List<CompanyPhoneNumber> CompanyPhoneNumbers { get; set; }
-
         
 
         /* Strings */

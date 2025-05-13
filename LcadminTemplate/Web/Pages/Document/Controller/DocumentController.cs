@@ -157,7 +157,7 @@ namespace Web.Controllers
                 {
                     var RoleIds = await CompanyRolesDL.GetUserRoleIdsByUserNameAsync(User.Identity.Name);
                     Model.ParentFolders = new List<CompanyFolder>();
-                    Model.Documents = new List<Document>();
+                    Model.Documents = new List<Data.Document>();
 
                     foreach (var RoleId in RoleIds)
                     {
@@ -256,7 +256,7 @@ namespace Web.Controllers
             try
             {
                 var Model = new DocumentVM();
-                Model.Document = new Document();
+                Model.Document = new Data.Document();
                 Model.CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
                 Model.GetAllFoldersName = await DocumentDL.GetAllCompanySubFoldersAsync(CompanySubFolderId);
                 Model.CompanyFolder = await DocumentDL.GetCompanySubFolder(CompanySubFolderId);
@@ -408,12 +408,12 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateDocument(int CompanySubFolderId)
+        public async Task<IActionResult> CreateDocument(int CompanySubFolderId, string DocumentName,  DocumentFileType DocumentFileType, string ErrorMsg)
         {
             try
             {
                 var Model = new DocumentVM();
-                Model.Document = new Document();
+                Model.Document = new Data.Document();
                 Model.Document.CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
                 if (CompanySubFolderId > 0)
                 {
@@ -422,6 +422,14 @@ namespace Web.Controllers
                 }
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
+
+                if (!String.IsNullOrEmpty(DocumentName))
+                {
+                    Model.Document.DocumentName = DocumentName;
+                    Model.Document.DocumentFileType = DocumentFileType;
+                    Model.ErrorMsg = ErrorMsg;
+                }
+
                 return View("CreateDocument", Model);
             }
             catch (Exception ex)
@@ -465,178 +473,102 @@ namespace Web.Controllers
 
                 if (Action == "Create")
                 {
-                    var DocumentVersion = new DocumentVersion();
-                    var DocumentId = 0;
-
-                    string BuildDocumentPath(string basePath, string folderName, string subFolderName, string fileName)
+                    if (uploadfile != null && uploadfile.Count() > 0)
                     {
-                        var path = basePath;
-                        if (!string.IsNullOrEmpty(folderName))
-                            path += folderName + "/";
+                        var DocumentVersion = new DocumentVersion();
+                        int DocumentId = 0;
 
-                        if (!string.IsNullOrEmpty(subFolderName))
-                            path += subFolderName + "/";
-
-                        return path + Data.DateTimeFunctions.FileTimeStamp() + "/" + fileName;
-                    }
-
-                    foreach (var formFile in uploadfile)
-                    {
-                        if (formFile.Length > 0)
+                        string BuildDocumentPath(string BasePath, string FolderName, string SubFolderName, string FileName)
                         {
-                            
-                            var isVideo = ViewModel.Document.DocumentFileType == DocumentFileType.Video;
-                            var isDocumentOrImage = ViewModel.Document.DocumentFileType == DocumentFileType.Document || ViewModel.Document.DocumentFileType == DocumentFileType.Image;
+                            var Path = BasePath;
+                            if (!string.IsNullOrEmpty(FolderName))
+                                Path += FolderName + "/";
+                            if (!string.IsNullOrEmpty(SubFolderName))
+                                Path += SubFolderName + "/";
+                            return Path + Data.DateTimeFunctions.FileTimeStamp() + "/" + FileName;
+                        }
 
-                            string baseFolder = "Company Documents/";
+                        bool IsDocOrImg = ViewModel.Document.DocumentFileType == DocumentFileType.Document
+                                          || ViewModel.Document.DocumentFileType == DocumentFileType.Image;
 
-                            if (isVideo)
+                        string BaseFolder = ViewModel.Document.DocumentFileType == DocumentFileType.Image
+                                            ? "Company Document Images/"
+                                            : "Company Documents/";
+
+                        foreach (var FormFile in uploadfile)
+                        {
+                            if (FormFile.Length <= 0) continue;
+
+                            if (ViewModel.Document.DocumentFileType == DocumentFileType.Video)
                             {
-                                var filename = "Company Document/" + ViewModel.Document.DocumentName.Replace(" ", "") + "video" + CommonClasses.StringFormating.FileTimeStamp() + ".mp4";
-                                await Storage.UploadLargeDocument(formFile, filename);
-                                ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id > 0 ? ViewModel.CompanyFolder.Id : (int?)null;
-                                ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + filename;
-                                ViewModel.Document.CurrentVersionNumber = 1;
-                                ViewModel.Document.FileName = filename;
+                                string FileName = $"Company Document Videos/{ViewModel.Document.DocumentName.Replace(" ", "")}video{CommonClasses.StringFormating.FileTimeStamp()}.mp4";
+                                await Storage.UploadLargeDocument(FormFile, FileName);
+
+                                ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + FileName;
+                                ViewModel.Document.FileName = FileName;
                             }
-                            else if (isDocumentOrImage)
+                            else if (IsDocOrImg)
                             {
-                                string folderName = null, subFolderName = null;
+                                string FolderName = null, SubFolderName = null;
+
                                 if (ViewModel.CompanyFolder.Id > 0)
                                 {
                                     ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id;
-                                    var companySubfolder = await DocumentDL.GetCompanySubFolder(ViewModel.CompanyFolder.Id);
-                                    folderName = companySubfolder.Name;
-                                    if (companySubfolder.ParentFolderId > 0)
+                                    var SubFolder = await DocumentDL.GetCompanySubFolder(ViewModel.CompanyFolder.Id);
+                                    FolderName = SubFolder.Name;
+
+                                    if (SubFolder.ParentFolderId > 0)
                                     {
-                                        var parentFolder = await DocumentDL.GetCompanySubFolder(companySubfolder.ParentFolderId);
-                                        folderName = parentFolder.Name;
-                                        subFolderName = companySubfolder.Name;
+                                        var ParentFolder = await DocumentDL.GetCompanySubFolder(SubFolder.ParentFolderId);
+                                        FolderName = ParentFolder.Name;
+                                        SubFolderName = SubFolder.Name;
                                     }
                                 }
                                 else
                                 {
-                                    folderName = ViewModel.CompanyFolder.Name;
+                                    FolderName = ViewModel.CompanyFolder.Name;
                                 }
 
-                                var filename = BuildDocumentPath(baseFolder, folderName, subFolderName, formFile.FileName);
-                                await Storage.UploadLargeDocument(formFile, filename);
+                                string FileName = BuildDocumentPath(BaseFolder, FolderName, SubFolderName, FormFile.FileName);
+                                await Storage.UploadLargeDocument(FormFile, FileName);
 
-                                ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + filename;
-                                ViewModel.Document.FileName = formFile.FileName;
-                                ViewModel.Document.CurrentVersionNumber = 1;
+                                ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + FileName;
+                                ViewModel.Document.FileName = FormFile.FileName;
                             }
+
+                            ViewModel.Document.CurrentVersionNumber = 1;
                         }
-                    }
 
-                    if (ViewModel.Document.FilePath != null && ViewModel.Document.DocumentFileType == DocumentFileType.Video)
+                        if (!string.IsNullOrEmpty(ViewModel.Document.FilePath) && ViewModel.Document.DocumentFileType == DocumentFileType.Video)
+                        {
+                            ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id > 0 ? ViewModel.CompanyFolder.Id : (int?)null;
+                            ViewModel.Document.FileName = $"YouTube Video - {ViewModel.Document.DocumentName.Replace(" ", "")}{CommonClasses.StringFormating.FileTimeStamp()}";
+                        }
+
+                        if (ViewModel.Document.DocumentFileType == DocumentFileType.Link)
+                        {
+                            ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id > 0 ? ViewModel.CompanyFolder.Id : (int?)null;
+                            ViewModel.Document.CurrentVersionNumber = 1;
+                            ViewModel.Document.FileName = $"{ViewModel.Document.DocumentName.Replace(" ", "")}.{ViewModel.Document.IconType}";
+                            DocumentVersion.LinkURL = ViewModel.Document.LinkURL;
+                        }
+
+                        DocumentId = await DocumentDL.CreateDocument(ViewModel.Document, User.Identity.Name);
+                        DocumentVersion.DocumentId = DocumentId;
+                        DocumentVersion.VersionNumber = 1;
+                        DocumentVersion.FileName = ViewModel.Document.FileName;
+
+                        if (ViewModel.Document.DocumentFileType != DocumentFileType.Link)
+                        {
+                            DocumentVersion.FilePath = ViewModel.Document.FilePath;
+                        }
+
+                        await DocumentDL.CreateDocumentVersion(DocumentVersion, User.Identity.Name);
+                    }
+                    else
                     {
-                        ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id > 0 ? ViewModel.CompanyFolder.Id : (int?)null;
-                        ViewModel.Document.FileName = "YouTube Video - " + ViewModel.Document.DocumentName.Replace(" ", "") + CommonClasses.StringFormating.FileTimeStamp();
+                        return RedirectToAction("CreateDocument", new { CompanySubFolderId = 0,  DocumentName = ViewModel.Document.DocumentName, DocumentFileType = ViewModel.Document.DocumentFileType, ErrorMsg = "Please upload the selected Document."});
                     }
-
-                    if (ViewModel.Document.DocumentFileType == DocumentFileType.Link)
-                    {
-                        ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id > 0 ? ViewModel.CompanyFolder.Id : (int?)null;
-                        ViewModel.Document.CurrentVersionNumber = 1;
-                        ViewModel.Document.FileName = ViewModel.Document.DocumentName.Replace(" ", "") + "." + ViewModel.Document.IconType;
-                        DocumentVersion.LinkURL = ViewModel.Document.LinkURL;
-                    }
-
-                    DocumentId = await DocumentDL.CreateDocument(ViewModel.Document, User.Identity.Name);
-                    DocumentVersion.DocumentId = DocumentId;
-                    DocumentVersion.VersionNumber = 1;
-                    DocumentVersion.FileName = ViewModel.Document.FileName;
-                    if (ViewModel.Document.DocumentFileType != DocumentFileType.Link)
-                    {
-                        DocumentVersion.FilePath = ViewModel.Document.FilePath;
-                    }
-                    await DocumentDL.CreateDocumentVersion(DocumentVersion, User.Identity.Name);
-
-
-                    //var DocumentVersion = new DocumentVersion();
-                    //var DocumentId = 0;
-                    //foreach (var formFile in uploadfile)
-                    //{
-                    //    if (formFile.Length > 0)
-                    //    {
-                    //        var env = new Environment();
-
-                    //        if (ViewModel.Document.DocumentFileType == DocumentFileType.Video)
-                    //        {
-                    //            var filename = "Company Document/" + ViewModel.Document.DocumentName.Replace(" ", "") + "video" + CommonClasses.StringFormating.FileTimeStamp() + ".mp4";
-                    //            await Storage.UploadLargeDocument(formFile, filename);
-                    //            ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + filename;
-                    //            ViewModel.Document.CurrentVersionNumber = 1;
-                    //            ViewModel.Document.FileName = filename;
-                    //            ViewModel.DocumentId = await DocumentDL.CreateDocument(ViewModel.Document, User.Identity.Name);
-                    //            DocumentVersion.DocumentId = ViewModel.DocumentId;
-                    //            DocumentVersion.VersionNumber = 1;
-                    //            DocumentVersion.FileName = ViewModel.Document.FileName;
-                    //            DocumentVersion.FilePath = CommonClasses.Environment.StorageURL() + filename;
-                    //            await DocumentDL.CreateDocumentVersion(DocumentVersion, User.Identity.Name);
-                    //        }
-                    //        else if (ViewModel.Document.DocumentFileType == DocumentFileType.Document || ViewModel.Document.DocumentFileType == DocumentFileType.Image)
-                    //        {
-                    //            var filename = "Company Documents/";
-                    //            if (ViewModel.CompanyFolder.Id > 0)
-                    //            {
-                    //                ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id;
-                    //                var companySubfolder = await DocumentDL.GetCompanySubFolder(ViewModel.CompanyFolder.Id);
-                    //                if (companySubfolder.ParentFolderId > 0)
-                    //                {
-                    //                    var folder = await DocumentDL.GetCompanySubFolder(companySubfolder.ParentFolderId);
-                    //                    filename += folder.Name + "/" + companySubfolder.Name;
-
-
-                    //                }
-                    //                else
-                    //                {
-                    //                    filename += companySubfolder.Name;
-                    //                }
-                    //            }
-
-                    //            else
-                    //                filename += ViewModel.CompanyFolder.Name + "/";
-
-                    //            filename += Data.DateTimeFunctions.FileTimeStamp() + "/";
-                    //            filename += formFile.FileName;
-                    //            await Storage.UploadLargeDocument(formFile, filename);
-
-                    //            ViewModel.Document.FileName = formFile.FileName;
-                    //            ViewModel.Document.FilePath = CommonClasses.Environment.StorageURL() + filename;
-                    //            ViewModel.Document.CurrentVersionNumber = 1;
-                    //            DocumentId = await DocumentDL.CreateDocument(ViewModel.Document, User.Identity.Name);
-                    //            DocumentVersion.DocumentId = DocumentId;
-                    //            DocumentVersion.VersionNumber = 1;
-                    //            DocumentVersion.FileName = ViewModel.Document.FileName;
-                    //            DocumentVersion.FilePath = ViewModel.Document.FilePath;
-                    //            await DocumentDL.CreateDocumentVersion(DocumentVersion, User.Identity.Name);
-                    //        }
-                    //    }
-                    //}
-
-                    //if(ViewModel.Document.FilePath != null)
-                    //{
-                    //    ViewModel.Document.FileName = "Youtube Video - " + ViewModel.Document.DocumentName.Replace(" ", "") + CommonClasses.StringFormating.FileTimeStamp();
-                    //}
-
-                    //if (ViewModel.Document.DocumentFileType == DocumentFileType.Link)
-                    //{
-                    //    if(ViewModel.CompanyFolder.Id > 0)
-                    //        ViewModel.Document.CompanySubFolderId = ViewModel.CompanyFolder.Id;
-                    //    else
-                    //        ViewModel.Document.CompanySubFolderId = null;
-
-                    //    ViewModel.Document.CurrentVersionNumber = 1;
-                    //    ViewModel.Document.FileName = ViewModel.Document.DocumentName.Replace(" ", "") + "." + ViewModel.Document.IconType;
-                    //    DocumentId = await DocumentDL.CreateDocument(ViewModel.Document, User.Identity.Name);
-                    //    DocumentVersion.DocumentId = DocumentId;
-                    //    DocumentVersion.VersionNumber = 1;
-                    //    DocumentVersion.LinkURL = ViewModel.Document.LinkURL;
-                    //    DocumentVersion.FileName = ViewModel.Document.FileName;
-                    //    await DocumentDL.CreateDocumentVersion(DocumentVersion, User.Identity.Name);
-                    //}
                 }
 
                 if (Action == "Resume Video Upload")
@@ -645,7 +577,7 @@ namespace Web.Controllers
                     return Json(new { isValid = true, html = UploadHTML });
                 }
 
-                if (ViewModel.CompanyFolder.ParentFolderId > 0)
+                if (ViewModel.CompanyFolder != null && ViewModel.CompanyFolder.ParentFolderId > 0)
                     return RedirectToAction("EditFolder", new { CompanySubFolderId = ViewModel.CompanyFolder.Id });
                 else
                     return RedirectToAction("Index");

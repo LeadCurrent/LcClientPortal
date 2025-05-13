@@ -54,14 +54,17 @@ namespace CommonClasses
         public static string GoogleClientId()
         {
             if (environment.Contains("Dev"))
-                return "";
+                return "843118869333-anmt2cmc86hq7c8cuibvh2r1mjss20qm.apps.googleusercontent.com";
             else
                 return "";
         }
 
         public static string GoogleClientSecret()
         {
-            return "";
+            if (environment.Contains("Dev"))
+                return "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";
+            else
+                return "";
         }
 
         public static string GoogleApplicationName()
@@ -79,41 +82,32 @@ namespace CommonClasses
 
         public static string StorageContainer()
         {
-            if (environment.Contains("Dev"))
-                return "dev";
-            else if (environment.Contains("Test"))
-                return "test";
-            else if (environment.Contains("Prod"))
-                return "prod";
-            return "";
+            return "company";
         }
 
         public static string BaseStorageURL()
         {
-            if (environment.Contains("Dev"))
-                return "";
-            else
-                return "";
+                return "https://lcadminportal.blob.core.windows.net/";
         }
 
         public static string StorageURLWithoutSlash()
         {
-            return "";
+            return "https://lcadminportal.blob.core.windows.net";
         }
 
         public static string StorageAccount()
         {
-            return "";
+            return "DefaultEndpointsProtocol=https;AccountName=lcadminportal;AccountKey=hsUU26Gu6S2aYBPec+sj3AYuHLaS8t0udEXPzcJG4jmW8JUwkbUE2W0UBfgr76HRRv4leUh50ZLN+AStwMfNtg==;EndpointSuffix=core.windows.net";
         }
 
         public static string StorageAccountName()
         {
-            return "leadcurrent";
+            return "lcadminportal";
         }
 
         public static string StorageAccountKey()
         {
-            return "";
+            return "hsUU26Gu6S2aYBPec+sj3AYuHLaS8t0udEXPzcJG4jmW8JUwkbUE2W0UBfgr76HRRv4leUh50ZLN+AStwMfNtg==";
         }
 
         public static string StorageURL()
@@ -153,6 +147,13 @@ namespace CommonClasses
             }
         }
         public static bool Documents
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public static bool Sources
         {
             get
             {

@@ -1,0 +1,184 @@
+﻿@model Web.SourcesViewModel
+@using Data;
+@using static Web.GeneralEnumDDLs
+@using static Data.GeneralEnums
+<div class="white-bg">
+    <div class="sectionheader">Source Details</div>
+
+    @Html.HiddenFor(m => m.AjaxUpdate)
+    @Html.HiddenFor(m => m.Param)
+    @Html.HiddenFor(m => m.Action)
+    @Html.HiddenFor(m => m.Source.Id)
+
+    @if (Model.ShowEditSources)
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                             Name:
+                            <span id="Source_Name_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Source.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                        </div>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Apikey:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Source.Apikey)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                        </div>
+                        <div>
+                            <button class="button" onclick="Ajax('GenerateGUID')">Generate GUID</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Lcsourceid:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Source.Lcsourceid, new { onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Lcsiteid:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Source.Lcsiteid)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            OSAccesskey:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Source.Accesskey)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Active:
+                        </div>
+                        <div>
+                            @Html.CheckBoxFor(m => m.Source.Active)
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="center">
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+            </div>
+            <div class="center">
+                @if (Model.Source.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="NonAjax('Create')">Create Source</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Update Source','SourcesDetails')">Save Changes</button>
+                    <button class="button-white" onclick="AjaxPartialUpdate('Cancel Edit','SourcesDetails');">Cancel</button>
+                }
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Name: @Model.Source.Name
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Apikey:
+                        </div>
+                        <div>
+                            @Model.Source.Apikey
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Lcsourceid:
+                        </div>
+                        <div>
+                            @Model.Source.Lcsourceid
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Lcsiteid:
+                        </div>
+                        <div>
+                            @Model.Source.Lcsiteid
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            OSAccesskey:
+                        </div>
+                        <div>
+                            @Model.Source.Accesskey
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Status:
+                        </div>
+                        <div>
+                            @Html.CheckBoxFor(m => m.Source.Active, new { @disabled = "disabled" })
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="center">
+                @if (Model.Source.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="AjaxPartialUpdate('Create','SourcesDetails')">Create Source</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Edit Source','SourcesDetails')">Edit</button>
+                    <button class="button-white" onclick="NonAjax('Cancel');">Go Back</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+<script>
+    ValidateForm();
+</script>

@@ -52,8 +52,6 @@ namespace Scheduler.Controllers
         public async Task<IActionResult> CreateUserFirstTime(UserVM ViewModel, string Action)
         {
             var HTML = "";
-            if (Action == "Cancel")
-                return RedirectToAction("Index", "SystemAdminUser", "");
 
             if (Action == "CreateUserFirstTime")
             {

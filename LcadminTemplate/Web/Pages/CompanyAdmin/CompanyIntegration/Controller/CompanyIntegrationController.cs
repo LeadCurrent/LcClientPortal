@@ -59,7 +59,6 @@ namespace Web
             Model.UserProfile = await UserDL.GetCurrentUser(User.Identity.Name);
 
             Model.CompanyId = CompanyId;
-            Model.CompanyPhoneNumbers = await CompanyIntegrationDL.GetCompanyPhoneNumbers(CompanyId);
             Model.CompanyEmailAccounts = await CompanyIntegrationDL.GetCompanyEmailAccounts(Model.CompanyId);
            
             return Model;
@@ -91,7 +90,7 @@ namespace Web
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
 
-                Model.CurrentTab = "Integrations";
+                Model.CurrentTab = "Integration";
                 return View("Integration", Model);
             }
             catch (Exception ex)
@@ -109,30 +108,11 @@ namespace Web
 
                 if (Action == "Connect to my gmail account")
                 {
-                    if (ViewModel.LastSyncDate.HasValue)
-                    {
-                        HttpContext.Session.SetString("LastSyncDate", ViewModel.LastSyncDate.Value.ToString("o"));
-                    }
-                    if (ViewModel.AllStaffAccess)
-                        HttpContext.Session.SetInt32("AllStaffAccess", 1);
-                    else
-                        HttpContext.Session.SetInt32("AllStaffAccess", 0);
-
                     return RedirectToAction("GoogleAuthentication");
                 }
 
                 if (Action == "Connect to my microsoft account")
                 {
-
-                    if (ViewModel.LastSyncDate.HasValue)
-                    {
-                        HttpContext.Session.SetString("LastSyncDate", ViewModel.LastSyncDate.Value.ToString("o"));
-                    }
-                    if (ViewModel.AllStaffAccess)
-                        HttpContext.Session.SetInt32("AllStaffAccess", 1);
-                    else
-                        HttpContext.Session.SetInt32("AllStaffAccess", 0);
-
                     return RedirectToAction("MicrosoftAuthentication");
                 }
                 if (Action == "Reconnect Account")
@@ -154,11 +134,6 @@ namespace Web
                 {
                     // await CompanyDL.CreateCompanyEmailAccount(CompanyId, 3, ViewModel.OtherAccountName, ViewModel.OtherAccountEmail, null);
                 }
-                if (Action == "Connect to Phone Number")
-                {
-
-                    await CompanyIntegrationDL.CreateCompanyPhoneNumber(CompanyId, ViewModel.PhoneNumber, ViewModel.ContactName,ViewModel.AllStaffAccess);
-                }
                 if (Action == "Remove Email Account")
                 {
                     await CompanyIntegrationDL.DeleteEmailAccount(ViewModel.Param);
@@ -174,21 +149,7 @@ namespace Web
                     await CompanyIntegrationDL.SetDefaultEmail(ViewModel.Param);
                     return RedirectToAction("Index");
                 }
-                if (Action == "Set Default PhoneNumber")
-                {
-                    await CompanyIntegrationDL.SetDefaultPhoneNumber(ViewModel.Param);
-                    return RedirectToAction("Index");
-                }
-                if (Action == "Remove Default Phone Number")
-                {
-                    await CompanyIntegrationDL.DeletePhoneNumber(ViewModel.Param);
-                    return RedirectToAction("Index");
-                }
-                if (Action == "Remove Phone Number")
-                {
-                    await CompanyIntegrationDL.DeletePhoneNumber(ViewModel.Param);
-                    return RedirectToAction("Index");
-                }
+
                 if (Action == "Update Email Account")
                 {
                     var CompanyEmailAccount = await CompanyIntegrationDL.GetCompanyEmailAccount(ViewModel.Param);
@@ -206,16 +167,6 @@ namespace Web
                     await CompanyIntegrationDL.UpdateCompanyEmailAccount(CompanyEmailAccount);
 
                 }   
-                if (Action == "Update Phone Number")
-                {
-                    var CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.Param);
-
-                    CompanyPhoneNumber.Name = ViewModel.CompanyPhoneNumber.Name;
-                    CompanyPhoneNumber.PhoneNumber = ViewModel.CompanyPhoneNumber.PhoneNumber;
-                    CompanyPhoneNumber.AllStaffAccess = ViewModel.CompanyPhoneNumber.AllStaffAccess;
-                    await CompanyIntegrationDL.UpdateCompanyPhoneNUmber(CompanyPhoneNumber);
-
-                }
                 var Model = await getModel();
                 Model.Company = await CompanyDL.GetCompany(Model.Company.Id);
                 if (Action == "Add Access")
@@ -237,25 +188,6 @@ namespace Web
 
                    
                 }  
-                if (Action == "Add Access Phone")
-                {
-                    var CompanyUser = await CompanyDL.GetCompanyUser(ViewModel.CompanyUserId);
-                    var CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.CompanyPhoneNumber.Id);
-                    CompanyPhoneNumber.AllStaffAccess = false;
-                    await CompanyIntegrationDL.UpdateCompanyPhoneNUmber(CompanyPhoneNumber);
-                    CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.CompanyPhoneNumber.Id);
-                    await CompanyIntegrationDL.AddCompanyUserPhoneNumber(CompanyPhoneNumber.Id, CompanyUser.Id);
-                    // var VM = await GetProfileModel();
-                    Model.EditPhoneNumber = true;
-                    Model.CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.CompanyPhoneNumber.Id);
-                    Model.CompanyUserPhoneNumbers = await CompanyIntegrationDL.GetCompanyUserPhoneNumberByCompanyPhoneNumberId(ViewModel.CompanyPhoneNumber.Id) ?? new List<CompanyUserPhoneNumber>(); ;
-                    Model.CompanyUsers = await UserDL.GetCompanyUsers(Model.Company.Id) ?? new List<CompanyUser>();
-                    Model.CompanyUsers = Model.CompanyUsers
-                   .Where(user => !Model.CompanyUserPhoneNumbers.Any(email => email.CompanyUserId == user.Id))
-                  .ToList();
-
-    
-                }
                 if (Action == "Remove Access")
                 {
                     await CompanyIntegrationDL.DeleteCompanyUserEmailById(ViewModel.Param);
@@ -272,33 +204,11 @@ namespace Web
                   .ToList();
 
                 }  
-                if (Action == "Remove Access Phone")
-                {
-                    await CompanyIntegrationDL.DeleteCompanyUserPhoneNumberById(ViewModel.Param);
-                    var CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.CompanyPhoneNumber.Id);
-                    CompanyPhoneNumber.AllStaffAccess = false;
-                    await   CompanyIntegrationDL.UpdateCompanyPhoneNUmber(CompanyPhoneNumber);
-                    //var VM = await GetProfileModel();
-                    Model.EditPhoneNumber = true;
-                    Model.CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.CompanyPhoneNumber.Id);
-                    Model.CompanyUserPhoneNumbers = await CompanyIntegrationDL.GetCompanyUserPhoneNumberByCompanyPhoneNumberId(ViewModel.CompanyEmailAccount.Id) ?? new List<CompanyUserPhoneNumber>(); ;
-                    Model.CompanyUsers = await UserDL.GetCompanyUsers(Model.Company.Id) ?? new List<CompanyUser>();
-                    Model.CompanyUsers = Model.CompanyUsers
-                   .Where(user => !Model.CompanyUserEmails.Any(email => email.CompanyUserId == user.Id))
-                  .ToList();
-
-                }
                 if (Action == "Show Other Account Fields")
                 {
                     Model.ShowAddOtherAccount = true;
                     Model.CurrentTab = "Integrations";
 
-                }
-                if (Action == "Show Add Phone Number")
-                {
-                    Model.ShowAddPhoneNumber = true;
-                    Model.AllStaffAccess = true;
-                    Model.CurrentTab = "Integrations";
                 }
                 if (Action == "Edit Email Account")
                 {
@@ -310,32 +220,6 @@ namespace Web
                    .Where(user => !Model.CompanyUserEmails.Any(email => email.CompanyUserId == user.Id))
                   .ToList();
                 }     
-                if (Action == "Edit Phone Number")
-                {
-                    Model.EditPhoneNumber = true;
-                    Model.CompanyPhoneNumber = await CompanyIntegrationDL.GetCompanyPhoneNumberById(ViewModel.Param);
-                    Model.CompanyUserPhoneNumbers = await CompanyIntegrationDL.GetCompanyUserPhoneNumberByCompanyPhoneNumberId(ViewModel.Param) ?? new List<CompanyUserPhoneNumber>(); ;
-                    Model.CompanyUsers = await UserDL.GetCompanyUsers(Model.Company.Id) ?? new List<CompanyUser>();
-                    Model.CompanyUsers = Model.CompanyUsers
-                   .Where(user => !Model.CompanyUserPhoneNumbers.Any(email => email.CompanyUserId == user.Id))
-                  .ToList();
-                }
-                if (Action == "Show Add StartSyncDate Google")
-                {
-                    Model.ShowAddStartSyncDate = true;
-                    Model.ConnectGmailAccount = true;
-                    Model.AllStaffAccess = true;
-                    Model.CurrentTab = "Integrations";
-
-                }
-                if (Action == "Show Add StartSyncDate Microsoft")
-                {
-                    Model.ShowAddStartSyncDate = true;
-                    Model.ConnectMicrosoftAccount = true;
-                    Model.AllStaffAccess = true;
-                    Model.CurrentTab = "Integrations";
-
-                }
                 if (Action == "Cancel Add other Account")
                 {
                     Model.ShowAddOtherAccount = false;
@@ -388,10 +272,6 @@ namespace Web
             {
                 string redirectUri = Url.Action("GoogleCallback", "CompanyIntegration", null, HttpContext.Request.Scheme);
                 var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
-                var StoredDate = HttpContext.Session.GetString("LastSyncDate");
-                DateTime LastSyncDate = DateTime.Parse(StoredDate);
-                var AllStaffAccess = HttpContext.Session.GetInt32("AllStaffAccess");
-                bool StaffAccess = false;
 
                 // Get the authorization code flow and exchange the code for tokens
                 var refreshtoken = await GoogleAPI.GetRefreshToken(code, redirectUri);
@@ -408,12 +288,7 @@ namespace Web
                     }
                     else
                     {
-                        if (AllStaffAccess == 1)
-                            StaffAccess = true;                        
-                        else
-                            StaffAccess = false;
-
-                        await CompanyIntegrationDL.CreateCompanyEmailAccount(CompanyId, 1, userinfo.Name, userinfo.Email, LastSyncDate, refreshtoken,StaffAccess);
+                        await CompanyIntegrationDL.CreateCompanyEmailAccount(CompanyId, 1, userinfo.Name, userinfo.Email, refreshtoken);
                     }
                 }
                 return RedirectToAction("Index");
@@ -435,10 +310,7 @@ namespace Web
                 var refreshtoken = await MicrosoftAPI.GetAccessTokenAndRefreshFromCodeTokenAsync(code, redirectUri);
                 var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
 
-                var StoredDate = HttpContext.Session.GetString("LastSyncDate");
-                DateTime LastSyncDate = DateTime.Parse(StoredDate);
-                var AllStaffAccess = HttpContext.Session.GetInt32("AllStaffAccess");
-                bool StaffAccess = false;
+
                 if (refreshtoken != null)
                 {
                     var accesstoken = await MicrosoftAPI.GetAccessTokenAsync(refreshtoken);
@@ -450,12 +322,7 @@ namespace Web
                     }
                     else
                     {
-                        if (AllStaffAccess == 1)
-                           StaffAccess = true;
-                        else
-                           StaffAccess = false;
-
-                        await CompanyIntegrationDL.CreateCompanyEmailAccount(CompanyId, 2, userinfo.Name, userinfo.Email, LastSyncDate, refreshtoken,StaffAccess);
+                        await CompanyIntegrationDL.CreateCompanyEmailAccount(CompanyId, 2, userinfo.Name, userinfo.Email, refreshtoken);
                     }
 
                 }

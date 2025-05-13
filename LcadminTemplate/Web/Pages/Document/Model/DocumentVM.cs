@@ -55,6 +55,7 @@ namespace Web
         public string NewSubFolder { get; set; }
         public string SortBy { get; set; }
         public string SelectedUploadType { get; set; }
+        public string ErrorMsg { get; set; }
 
 
         /* dates */
