@@ -19,7 +19,7 @@ public partial class Source
     public string Lcsiteid { get; set; }
 
     public string Accesskey { get; set; }
-    public int CompanyId { get; set; }
+    public int? CompanyId { get; set; }
 
     public Company Company { get; set; }
     public virtual ICollection<Allocation> Allocations { get; set; } = new List<Allocation>();
@@ -31,4 +31,6 @@ public partial class Source
 
     [NotMapped]
     public int InactiveAllocationsCount { get; set; }
+    public int? oldId { get; set; }
+
 }

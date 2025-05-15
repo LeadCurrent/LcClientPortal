@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250514144055_Added_OldId_IN_Campus_And_Created_TblCampusIdMap")]
+    partial class Added_OldId_IN_Campus_And_Created_TblCampusIdMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,9 +286,6 @@ namespace Data.Migrations
                     b.Property<string>("Clientid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -308,8 +308,6 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("PortalStatesId");
 
@@ -4420,10 +4418,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Campus", b =>
                 {
-                    b.HasOne("Data.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
                     b.HasOne("Data.PortalStates", "PortalStates")
                         .WithMany("Campuses")
                         .HasForeignKey("PortalStatesId");
@@ -4437,8 +4431,6 @@ namespace Data.Migrations
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
 
                     b.Navigation("PortalStates");
 

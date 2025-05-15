@@ -50,10 +50,8 @@
     <Folder Include="EntityModelsAndLibraries\Area\Models\" />
     <Folder Include="EntityModelsAndLibraries\Campus\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Campus\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Campus\Models\" />
     <Folder Include="EntityModelsAndLibraries\Client\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Client\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Client\Models\" />
     <Folder Include="EntityModelsAndLibraries\Degreeprogram\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Degreeprogram\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Degreeprogram\Models\" />
@@ -83,13 +81,11 @@
     <Folder Include="EntityModelsAndLibraries\MasterSchool\Models\" />
     <Folder Include="EntityModelsAndLibraries\Offer\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Offer\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Offer\Models\" />
     <Folder Include="EntityModelsAndLibraries\Portal\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Portal\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Portal\Models\" />
     <Folder Include="EntityModelsAndLibraries\Postalcode\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Postalcode\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Postalcode\Models\" />
     <Folder Include="EntityModelsAndLibraries\PrepingLog\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\PrepingLog\Enums\" />
     <Folder Include="EntityModelsAndLibraries\PrepingLog\Models\" />
@@ -98,7 +94,6 @@
     <Folder Include="EntityModelsAndLibraries\Program\Models\" />
     <Folder Include="EntityModelsAndLibraries\School\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\School\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\School\Models\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\Models\" />

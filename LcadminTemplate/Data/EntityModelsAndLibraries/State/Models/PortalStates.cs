@@ -15,5 +15,7 @@ public partial class PortalStates
 
     public string Timezone { get; set; }
 
+    public int? oldId { get; set; }
+
     public virtual ICollection<Campus> Campuses { get; set; } = new List<Campus>();
 }

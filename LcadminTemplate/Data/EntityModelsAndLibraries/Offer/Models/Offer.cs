@@ -60,7 +60,7 @@ public partial class Offer
     public string DeliveryIdentifier { get; set; }
 
     public string DeliveryName { get; set; }
-    public int CompanyId { get; set; }
+    public int? CompanyId { get; set; }
     public Company Company { get; set; }
 
     public virtual ICollection<Allocation> Allocations { get; set; } = new List<Allocation>();
@@ -70,4 +70,6 @@ public partial class Offer
     public virtual ICollection<Offertargeting> Offertargetings { get; set; } = new List<Offertargeting>();
 
     public virtual School School { get; set; }
+
+    public int? oldId { get; set; }
 }

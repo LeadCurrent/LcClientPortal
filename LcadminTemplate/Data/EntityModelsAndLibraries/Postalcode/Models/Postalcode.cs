@@ -17,6 +17,8 @@ public partial class Postalcode
 
     public decimal Longitude { get; set; }
 
+    public int? oldId { get; set; }
+
     public virtual ICollection<Campus> Campuses { get; set; } = new List<Campus>();
 
     public virtual ICollection<Campuspostalcode> Campuspostalcodes { get; set; } = new List<Campuspostalcode>();

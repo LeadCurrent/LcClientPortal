@@ -473,7 +473,7 @@ namespace Web.Controllers
 
                 if (Action == "Create")
                 {
-                    if (uploadfile != null && uploadfile.Count() > 0)
+                    if (uploadfile != null && uploadfile.Count() > 0 || ViewModel.Document.FilePath != null || ViewModel.Document.LinkURL != null)
                     {
                         var DocumentVersion = new DocumentVersion();
                         int DocumentId = 0;

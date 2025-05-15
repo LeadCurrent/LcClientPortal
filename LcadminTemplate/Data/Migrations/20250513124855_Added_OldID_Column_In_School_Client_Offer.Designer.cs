@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250513124855_Added_OldID_Column_In_School_Client_Offer")]
+    partial class Added_OldID_Column_In_School_Client_Offer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,9 +286,6 @@ namespace Data.Migrations
                     b.Property<string>("Clientid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -304,12 +304,7 @@ namespace Data.Migrations
                     b.Property<int?>("Stateid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("oldId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("PortalStatesId");
 
@@ -318,22 +313,6 @@ namespace Data.Migrations
                     b.HasIndex("Schoolid");
 
                     b.ToTable("Campuses");
-                });
-
-            modelBuilder.Entity("Data.CampusIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("CampusIdMap");
                 });
 
             modelBuilder.Entity("Data.Campusdegree", b =>
@@ -403,7 +382,7 @@ namespace Data.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Direct")
@@ -420,22 +399,6 @@ namespace Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("Data.ClientIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("ClientIdMap");
                 });
 
             modelBuilder.Entity("Data.Company", b =>
@@ -1959,7 +1922,7 @@ namespace Data.Migrations
                     b.Property<int>("Clientid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Dcap")
@@ -2025,22 +1988,6 @@ namespace Data.Migrations
                     b.HasIndex("Schoolid");
 
                     b.ToTable("Offers");
-                });
-
-            modelBuilder.Entity("Data.OfferIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("OfferIdMap");
                 });
 
             modelBuilder.Entity("Data.Offertargeting", b =>
@@ -2264,9 +2211,6 @@ namespace Data.Migrations
                     b.Property<string>("Timezone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("oldId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("PortalStates");
@@ -2432,22 +2376,6 @@ namespace Data.Migrations
                     b.ToTable("Portaltargetings");
                 });
 
-            modelBuilder.Entity("Data.PostalCodeIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("PostalCodeIdMap");
-                });
-
             modelBuilder.Entity("Data.Postalcode", b =>
                 {
                     b.Property<int>("Id")
@@ -2469,9 +2397,6 @@ namespace Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stateid")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("oldId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -2640,7 +2565,7 @@ namespace Data.Migrations
                     b.Property<string>("Alert")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Disclosure")
@@ -2702,22 +2627,6 @@ namespace Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Schools");
-                });
-
-            modelBuilder.Entity("Data.SchoolIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("SchoolIdMap");
                 });
 
             modelBuilder.Entity("Data.Schoolgroup", b =>
@@ -2893,7 +2802,7 @@ namespace Data.Migrations
                     b.Property<string>("Apikey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Lcsiteid")
@@ -2905,30 +2814,11 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("oldId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Sources");
-                });
-
-            modelBuilder.Entity("Data.SourceIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("SourceIdMap");
                 });
 
             modelBuilder.Entity("Data.Sourceip", b =>
@@ -3099,22 +2989,6 @@ namespace Data.Migrations
                     b.HasIndex("CompanyUserId");
 
                     b.ToTable("StaffNote");
-                });
-
-            modelBuilder.Entity("Data.StateIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("StateIdMap");
                 });
 
             modelBuilder.Entity("Data.Submission", b =>
@@ -4420,10 +4294,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Campus", b =>
                 {
-                    b.HasOne("Data.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
                     b.HasOne("Data.PortalStates", "PortalStates")
                         .WithMany("Campuses")
                         .HasForeignKey("PortalStatesId");
@@ -4437,8 +4307,6 @@ namespace Data.Migrations
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
 
                     b.Navigation("PortalStates");
 
@@ -4481,7 +4349,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });
@@ -4761,7 +4631,9 @@ namespace Data.Migrations
 
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Data.School", "School")
                         .WithMany("Offers")
@@ -4873,7 +4745,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });
@@ -4945,7 +4819,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });

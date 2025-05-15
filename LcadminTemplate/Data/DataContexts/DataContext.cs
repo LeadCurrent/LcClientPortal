@@ -50,6 +50,17 @@ namespace Data
         /*Exception Log*/
         public DbSet<ExceptionLog> ExceptionLog { get; set; }
 
+        /* Mapping Tables*/
+
+        public DbSet<SchoolIdMap> SchoolIdMap { get; set; }
+        public DbSet<ClientIdMap> ClientIdMap { get; set; }
+        public DbSet<OfferIdMap> OfferIdMap { get; set; }
+        public DbSet<SourceIdMap> SourceIdMap { get; set; }
+        public DbSet<StateIdMap> StateIdMap { get; set; }
+        public DbSet<PostalCodeIdMap> PostalCodeIdMap {  get; set; }
+        public DbSet<CampusIdMap> CampusIdMap {  get; set; }
+
+
 
         /*Template*/
         public DbSet<Template> Template { get; set; }

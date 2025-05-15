@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250514115531_Added_ClmOldId_In_TblPostalCode")]
+    partial class Added_ClmOldId_In_TblPostalCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,9 +286,6 @@ namespace Data.Migrations
                     b.Property<string>("Clientid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -304,12 +304,7 @@ namespace Data.Migrations
                     b.Property<int?>("Stateid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("oldId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("PortalStatesId");
 
@@ -318,22 +313,6 @@ namespace Data.Migrations
                     b.HasIndex("Schoolid");
 
                     b.ToTable("Campuses");
-                });
-
-            modelBuilder.Entity("Data.CampusIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("CampusIdMap");
                 });
 
             modelBuilder.Entity("Data.Campusdegree", b =>
@@ -2432,22 +2411,6 @@ namespace Data.Migrations
                     b.ToTable("Portaltargetings");
                 });
 
-            modelBuilder.Entity("Data.PostalCodeIdMap", b =>
-                {
-                    b.Property<int>("OldId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
-
-                    b.Property<int>("NewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OldId");
-
-                    b.ToTable("PostalCodeIdMap");
-                });
-
             modelBuilder.Entity("Data.Postalcode", b =>
                 {
                     b.Property<int>("Id")
@@ -4420,10 +4383,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Campus", b =>
                 {
-                    b.HasOne("Data.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
                     b.HasOne("Data.PortalStates", "PortalStates")
                         .WithMany("Campuses")
                         .HasForeignKey("PortalStatesId");
@@ -4437,8 +4396,6 @@ namespace Data.Migrations
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
 
                     b.Navigation("PortalStates");
 

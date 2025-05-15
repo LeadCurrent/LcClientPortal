@@ -10,9 +10,9 @@ public partial class Client
     public string Name { get; set; }
 
     public bool Active { get; set; }
-
+    public int? oldId { get; set; }
     public bool Direct { get; set; }
-    public int CompanyId { get; set; }
+    public int? CompanyId { get; set; }
     public Company Company { get; set; }
     public virtual ICollection<Eduapi> Eduapis { get; set; } = new List<Eduapi>();
 
