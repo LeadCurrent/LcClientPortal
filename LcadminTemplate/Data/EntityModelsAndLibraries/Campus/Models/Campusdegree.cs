@@ -19,6 +19,10 @@ public partial class Campusdegree
 
     public string Clientid { get; set; }
 
+    public int? oldId { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
     public virtual ICollection<Allocationcampusdegree> Allocationcampusdegrees { get; set; } = new List<Allocationcampusdegree>();
 
     public virtual Degreeprogram Degree { get; set; }

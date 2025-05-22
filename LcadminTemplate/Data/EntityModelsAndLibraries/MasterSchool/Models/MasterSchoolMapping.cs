@@ -10,6 +10,10 @@ public partial class MasterSchoolMapping
     public int MasterSchoolsId { get; set; }
 
     public string Identifier { get; set; }
+    public int? oldId { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
 
     public virtual MasterSchool MasterSchools { get; set; }
 }

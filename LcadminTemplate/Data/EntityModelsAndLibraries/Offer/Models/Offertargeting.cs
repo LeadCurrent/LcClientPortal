@@ -106,4 +106,8 @@ public partial class Offertargeting
     public decimal CecCplG { get; set; }
 
     public virtual Offer Offer { get; set; }
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
+    public int? oldId { get; set; }
+
 }

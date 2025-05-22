@@ -12,7 +12,10 @@ public partial class Degreeprogram
     public int Programid { get; set; }
 
     public string Copy { get; set; }
+    public int? oldId { get; set; }
 
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
     public virtual ICollection<Campusdegree> Campusdegrees { get; set; } = new List<Campusdegree>();
 
     public virtual Level Level { get; set; }

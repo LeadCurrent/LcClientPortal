@@ -13,5 +13,5 @@ public partial class Schoolhighlight
 
     public string Text { get; set; }
 
-    public virtual School School { get; set; }
+    public virtual Scholls School { get; set; }
 }

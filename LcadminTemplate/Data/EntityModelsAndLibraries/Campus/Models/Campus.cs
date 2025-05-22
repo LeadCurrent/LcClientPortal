@@ -15,7 +15,7 @@ public partial class Campus
 
     public string City { get; set; }
 
-    public int? Stateid { get; set; }
+    public int? PortalStatesid { get; set; }
 
     public int? Postalcodeid { get; set; }
 
@@ -35,7 +35,7 @@ public partial class Campus
 
     public virtual Postalcode Postalcode { get; set; }
 
-    public virtual School School { get; set; }
+    public virtual Scholls School { get; set; }
 
     public virtual PortalStates PortalStates { get; set; }
 }

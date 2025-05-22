@@ -38,7 +38,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adminips");
+                    b.ToTable("Adminips", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocation", b =>
@@ -94,6 +94,9 @@ namespace Data.Migrations
                     b.Property<bool>("CecIncludeG")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Cpl")
                         .HasColumnType("decimal(18,2)");
 
@@ -127,13 +130,18 @@ namespace Data.Migrations
                     b.Property<int>("Wcapamt")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Offerid");
 
                     b.HasIndex("Sourceid");
 
-                    b.ToTable("Allocations");
+                    b.ToTable("Allocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocationcampus", b =>
@@ -175,7 +183,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Allocationid");
 
-                    b.ToTable("Allocationcampuses");
+                    b.ToTable("Allocationcampuses", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocationcampusdegree", b =>
@@ -219,7 +227,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Campusdegreeid");
 
-                    b.ToTable("Allocationcampusdegrees");
+                    b.ToTable("Allocationcampusdegrees", (string)null);
                 });
 
             modelBuilder.Entity("Data.Apilog", b =>
@@ -238,7 +246,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Apilogs");
+                    b.ToTable("Apilogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Area", b =>
@@ -249,15 +257,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Areas");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Areas", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campus", b =>
@@ -292,16 +308,13 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PortalStatesId")
+                    b.Property<int?>("PortalStatesid")
                         .HasColumnType("int");
 
                     b.Property<int?>("Postalcodeid")
                         .HasColumnType("int");
 
                     b.Property<int>("Schoolid")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Stateid")
                         .HasColumnType("int");
 
                     b.Property<int?>("oldId")
@@ -311,29 +324,37 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("PortalStatesId");
+                    b.HasIndex("PortalStatesid");
 
                     b.HasIndex("Postalcodeid");
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Campuses");
+                    b.ToTable("Campuses", (string)null);
                 });
 
             modelBuilder.Entity("Data.CampusIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("CampusIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CampusIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campusdegree", b =>
@@ -353,6 +374,9 @@ namespace Data.Migrations
                     b.Property<string>("Clientid")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -362,11 +386,16 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Degreeid");
 
-                    b.ToTable("Campusdegrees");
+                    b.ToTable("Campusdegrees", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campuspostalcode", b =>
@@ -380,16 +409,24 @@ namespace Data.Migrations
                     b.Property<int>("Campusid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Postalcodeid")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("oldId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Campusid");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("Postalcodeid");
 
-                    b.ToTable("Campuspostalcodes");
+                    b.ToTable("Campuspostalcodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.Client", b =>
@@ -419,23 +456,31 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Data.ClientIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("ClientIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ClientIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Company", b =>
@@ -496,7 +541,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyContact", b =>
@@ -537,7 +582,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyContact");
+                    b.ToTable("CompanyContact", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyEmailAccount", b =>
@@ -579,7 +624,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyEmailAccount");
+                    b.ToTable("CompanyEmailAccount", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyFolder", b =>
@@ -627,7 +672,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyFolder");
+                    b.ToTable("CompanyFolder", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyNote", b =>
@@ -666,7 +711,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyNote");
+                    b.ToTable("CompanyNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUser", b =>
@@ -701,7 +746,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CompanyUser");
+                    b.ToTable("CompanyUser", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUserEmail", b =>
@@ -727,7 +772,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyUserEmail");
+                    b.ToTable("CompanyUserEmail", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUserNote", b =>
@@ -766,7 +811,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyUserNote");
+                    b.ToTable("CompanyUserNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompayUserRole", b =>
@@ -789,7 +834,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("CompayUserRole");
+                    b.ToTable("CompayUserRole", (string)null);
                 });
 
             modelBuilder.Entity("Data.ContactUs", b =>
@@ -832,7 +877,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUs");
+                    b.ToTable("ContactUs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Customer", b =>
@@ -904,7 +949,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Data.CustomerNote", b =>
@@ -943,7 +988,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerNote");
+                    b.ToTable("CustomerNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CustomerUpload", b =>
@@ -998,7 +1043,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerUpload");
+                    b.ToTable("CustomerUpload", (string)null);
                 });
 
             modelBuilder.Entity("Data.Degreeprogram", b =>
@@ -1009,6 +1054,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1018,13 +1066,18 @@ namespace Data.Migrations
                     b.Property<int>("Programid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Levelid");
 
                     b.HasIndex("Programid");
 
-                    b.ToTable("Degreeprograms");
+                    b.ToTable("Degreeprograms", (string)null);
                 });
 
             modelBuilder.Entity("Data.Document", b =>
@@ -1100,7 +1153,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Document", (string)null);
                 });
 
             modelBuilder.Entity("Data.DocumentVersion", b =>
@@ -1148,7 +1201,7 @@ namespace Data.Migrations
 
                     b.HasIndex("DocumentId");
 
-                    b.ToTable("DocumentVersion");
+                    b.ToTable("DocumentVersion", (string)null);
                 });
 
             modelBuilder.Entity("Data.DownSellOffer", b =>
@@ -1163,6 +1216,9 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("Clientid")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Dcap")
@@ -1297,9 +1353,14 @@ namespace Data.Migrations
                     b.Property<DateTime>("WednesdayStartTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("DownSellOffers");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DownSellOffers", (string)null);
                 });
 
             modelBuilder.Entity("Data.DownSellOfferPostalCode", b =>
@@ -1310,15 +1371,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("DownSellOfferId")
                         .HasColumnType("int");
 
                     b.Property<int>("Postalcodeid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("DownSellOfferPostalCodes");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DownSellOfferPostalCodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.Eduapi", b =>
@@ -1366,7 +1435,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Clientid");
 
-                    b.ToTable("Eduapis");
+                    b.ToTable("Eduapis", (string)null);
                 });
 
             modelBuilder.Entity("Data.Eduapitargeting", b =>
@@ -1486,7 +1555,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Eduapiid");
 
-                    b.ToTable("Eduapitargetings");
+                    b.ToTable("Eduapitargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.EduspotsEduapiLog", b =>
@@ -1511,7 +1580,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EduspotsEduapiLogs");
+                    b.ToTable("EduspotsEduapiLogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailMessage", b =>
@@ -1571,7 +1640,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyEmailAccountId");
 
-                    b.ToTable("EmailMessage");
+                    b.ToTable("EmailMessage", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailNotifications", b =>
@@ -1590,7 +1659,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailNotifications");
+                    b.ToTable("EmailNotifications", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailRecipient", b =>
@@ -1617,7 +1686,463 @@ namespace Data.Migrations
 
                     b.HasIndex("EmailMessageId");
 
-                    b.ToTable("EmailRecipient");
+                    b.ToTable("EmailRecipient", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Allocation.Models.AllocationsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("AllocationsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Area.Models.AreasIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("AreasIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampusdegreeIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CampusdegreeIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampuspostalcodesIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CampuspostalcodesIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Degreeprogram.Models.DegreeprogramsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DegreeprogramsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOfferPostalCodesIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DownSellOfferPostalCodesIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOffersIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DownSellOffersIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Group.Models.GroupIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("GroupIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Interest.Models.InterestsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("InterestsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Leadpost.Models.LeadpostsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("LeadpostsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Level.Models.LevelsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("LevelsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_school_mappingsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Master_school_mappingsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_schoolsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Master_schoolsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Offer.Models.OffertargetingIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("OffertargetingIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.PrepingLog.Models.Ping_cacheIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Ping_cacheIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramareasIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ProgramareasIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.PrograminterestsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("PrograminterestsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ProgramsIdMap", (string)null);
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.School.Models.SchoolGroupsIdMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("SchoolGroupsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.ExceptionLog", b =>
@@ -1666,7 +2191,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExceptionLog");
+                    b.ToTable("ExceptionLog", (string)null);
                 });
 
             modelBuilder.Entity("Data.Extrarequirededucation", b =>
@@ -1680,15 +2205,23 @@ namespace Data.Migrations
                     b.Property<int>("Campusid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Degreeid")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Extrarequirededucations");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Extrarequirededucations", (string)null);
                 });
 
             modelBuilder.Entity("Data.FolderAccess", b =>
@@ -1726,7 +2259,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("FolderAccess");
+                    b.ToTable("FolderAccess", (string)null);
                 });
 
             modelBuilder.Entity("Data.Group", b =>
@@ -1737,15 +2270,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Data.Interest", b =>
@@ -1756,15 +2297,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Interests");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Interests", (string)null);
                 });
 
             modelBuilder.Entity("Data.Leadpost", b =>
@@ -1786,6 +2335,9 @@ namespace Data.Migrations
 
                     b.Property<string>("Clientname")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -1832,9 +2384,14 @@ namespace Data.Migrations
                     b.Property<string>("Zip")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Leadposts");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Leadposts", (string)null);
                 });
 
             modelBuilder.Entity("Data.Level", b =>
@@ -1845,15 +2402,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Levels");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Levels", (string)null);
                 });
 
             modelBuilder.Entity("Data.Log", b =>
@@ -1881,7 +2446,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Data.MasterSchool", b =>
@@ -1892,12 +2457,20 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("MasterSchools");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("MasterSchools", (string)null);
                 });
 
             modelBuilder.Entity("Data.MasterSchoolMapping", b =>
@@ -1908,17 +2481,25 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Identifier")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MasterSchoolsId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("MasterSchoolsId");
 
-                    b.ToTable("MasterSchoolMappings");
+                    b.ToTable("MasterSchoolMappings", (string)null);
                 });
 
             modelBuilder.Entity("Data.Offer", b =>
@@ -2024,23 +2605,31 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Data.OfferIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("OfferIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("OfferIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Offertargeting", b =>
@@ -2104,6 +2693,9 @@ namespace Data.Migrations
 
                     b.Property<bool>("CitizenIncludeUscitizens")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("FridayActive")
                         .HasColumnType("bit");
@@ -2198,11 +2790,16 @@ namespace Data.Migrations
                     b.Property<DateTime>("WednesdayStart")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Offerid");
 
-                    b.ToTable("Offertargetings");
+                    b.ToTable("Offertargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.PingCache", b =>
@@ -2237,11 +2834,16 @@ namespace Data.Migrations
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("PingCaches");
+                    b.HasIndex("SourceId");
+
+                    b.ToTable("PingCaches", (string)null);
                 });
 
             modelBuilder.Entity("Data.PortalStates", b =>
@@ -2269,7 +2871,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PortalStates");
+                    b.ToTable("PortalStates", (string)null);
                 });
 
             modelBuilder.Entity("Data.Portalclick", b =>
@@ -2309,7 +2911,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portalclicks");
+                    b.ToTable("Portalclicks", (string)null);
                 });
 
             modelBuilder.Entity("Data.Portaltargeting", b =>
@@ -2377,6 +2979,9 @@ namespace Data.Migrations
                     b.Property<DateTime>("SaturdayStart")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("SearchportalId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StudentMaxAge")
                         .HasColumnType("int");
 
@@ -2427,25 +3032,33 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Portalid");
+                    b.HasIndex("SearchportalId");
 
-                    b.ToTable("Portaltargetings");
+                    b.ToTable("Portaltargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.PostalCodeIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("PostalCodeIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("PostalCodeIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Postalcode", b =>
@@ -2476,7 +3089,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Postalcodes");
+                    b.ToTable("Postalcodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.PrepingLog", b =>
@@ -2504,7 +3117,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrepingLogs");
+                    b.ToTable("PrepingLogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Program", b =>
@@ -2515,15 +3128,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Programs");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Programarea", b =>
@@ -2537,16 +3158,24 @@ namespace Data.Migrations
                     b.Property<int>("Areaid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Programid")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("oldId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Areaid");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("Programid");
 
-                    b.ToTable("Programareas");
+                    b.ToTable("Programareas", (string)null);
                 });
 
             modelBuilder.Entity("Data.Programinterest", b =>
@@ -2557,19 +3186,27 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Interestid")
                         .HasColumnType("int");
 
                     b.Property<int>("Programid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Interestid");
 
                     b.HasIndex("Programid");
 
-                    b.ToTable("Programinterests");
+                    b.ToTable("Programinterests", (string)null);
                 });
 
             modelBuilder.Entity("Data.Role", b =>
@@ -2593,7 +3230,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("Data.RolePermission", b =>
@@ -2620,10 +3257,10 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermission");
+                    b.ToTable("RolePermission", (string)null);
                 });
 
-            modelBuilder.Entity("Data.School", b =>
+            modelBuilder.Entity("Data.Scholls", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2701,23 +3338,31 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Schools");
+                    b.ToTable("Schools", (string)null);
                 });
 
             modelBuilder.Entity("Data.SchoolIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("SchoolIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("SchoolIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolgroup", b =>
@@ -2728,19 +3373,27 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Groupid")
                         .HasColumnType("int");
 
                     b.Property<int>("Schoolid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("oldId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Groupid");
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolgroups");
+                    b.ToTable("Schoolgroups", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolhighlight", b =>
@@ -2764,7 +3417,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolhighlights");
+                    b.ToTable("Schoolhighlights", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolstart", b =>
@@ -2788,7 +3441,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolstarts");
+                    b.ToTable("Schoolstarts", (string)null);
                 });
 
             modelBuilder.Entity("Data.Searchportal", b =>
@@ -2819,7 +3472,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Searchportals");
+                    b.ToTable("Searchportals", (string)null);
                 });
 
             modelBuilder.Entity("Data.SendEmail", b =>
@@ -2849,7 +3502,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyEmailAccountId");
 
-                    b.ToTable("SendEmail");
+                    b.ToTable("SendEmail", (string)null);
                 });
 
             modelBuilder.Entity("Data.SendEmailRecipient", b =>
@@ -2873,7 +3526,7 @@ namespace Data.Migrations
 
                     b.HasIndex("SendEmailId");
 
-                    b.ToTable("SendEmailRecipient");
+                    b.ToTable("SendEmailRecipient", (string)null);
                 });
 
             modelBuilder.Entity("Data.Source", b =>
@@ -2912,23 +3565,31 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Sources");
+                    b.ToTable("Sources", (string)null);
                 });
 
             modelBuilder.Entity("Data.SourceIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("SourceIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("SourceIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Sourceip", b =>
@@ -2949,7 +3610,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Sourceid");
 
-                    b.ToTable("Sourceips");
+                    b.ToTable("Sourceips", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroup", b =>
@@ -2988,7 +3649,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("StaffGroup");
+                    b.ToTable("StaffGroup", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroupDivision", b =>
@@ -3021,7 +3682,7 @@ namespace Data.Migrations
 
                     b.HasIndex("StaffGroupId");
 
-                    b.ToTable("StaffGroupDivision");
+                    b.ToTable("StaffGroupDivision", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroupUser", b =>
@@ -3059,7 +3720,7 @@ namespace Data.Migrations
 
                     b.HasIndex("StaffGroupId");
 
-                    b.ToTable("StaffGroupUser");
+                    b.ToTable("StaffGroupUser", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffNote", b =>
@@ -3098,23 +3759,31 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("StaffNote");
+                    b.ToTable("StaffNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.StateIdMap", b =>
                 {
-                    b.Property<int>("OldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OldId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
-                    b.HasKey("OldId");
+                    b.Property<int>("OldId")
+                        .HasColumnType("int");
 
-                    b.ToTable("StateIdMap");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("StateIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Submission", b =>
@@ -3157,7 +3826,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Submissions");
+                    b.ToTable("Submissions", (string)null);
                 });
 
             modelBuilder.Entity("Data.TblConfigEducationLevel", b =>
@@ -3179,7 +3848,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TblConfigEducationLevels");
+                    b.ToTable("TblConfigEducationLevels", (string)null);
                 });
 
             modelBuilder.Entity("Data.Template", b =>
@@ -3255,7 +3924,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Template");
+                    b.ToTable("Template", (string)null);
                 });
 
             modelBuilder.Entity("Data.TemplateMultiSelect", b =>
@@ -3276,7 +3945,7 @@ namespace Data.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("TemplateMultiSelect");
+                    b.ToTable("TemplateMultiSelect", (string)null);
                 });
 
             modelBuilder.Entity("Data.UnreadEmailSummaryView", b =>
@@ -3318,7 +3987,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("UnreadEmailSummaryView");
+                    b.ToTable("UnreadEmailSummaryView", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserEmailAutoDelete", b =>
@@ -3337,7 +4006,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserEmailAutoDelete");
+                    b.ToTable("UserEmailAutoDelete", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserLoginHistory", b =>
@@ -3361,7 +4030,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLoginHistory");
+                    b.ToTable("UserLoginHistory", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserSignatures", b =>
@@ -3383,7 +4052,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserSignatures");
+                    b.ToTable("UserSignatures", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllSubmission", b =>
@@ -3408,7 +4077,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllSubmissions");
+                    b.ToTable("VwAllSubmissions", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllocation", b =>
@@ -3448,7 +4117,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllocations");
+                    b.ToTable("VwAllocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllocationsApi", b =>
@@ -3515,7 +4184,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllocationsApis");
+                    b.ToTable("VwAllocationsApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwFullOfferDetailsApi", b =>
@@ -3636,7 +4305,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwFullOfferDetailsApis");
+                    b.ToTable("VwFullOfferDetailsApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwOffer", b =>
@@ -3679,7 +4348,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwOffers");
+                    b.ToTable("VwOffers", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwOffersApi", b =>
@@ -3755,7 +4424,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwOffersApis");
+                    b.ToTable("VwOffersApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwPingsCacheDetail", b =>
@@ -3798,7 +4467,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwPingsCacheDetails");
+                    b.ToTable("VwPingsCacheDetails", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwSchoolGroup", b =>
@@ -3826,7 +4495,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwSchoolGroups");
+                    b.ToTable("VwSchoolGroups", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwVendorAllocation", b =>
@@ -4043,7 +4712,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwVendorAllocations");
+                    b.ToTable("VwVendorAllocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.VxFulfillmentApiv1", b =>
@@ -4107,7 +4776,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VxFulfillmentApiv1s");
+                    b.ToTable("VxFulfillmentApiv1s", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -4371,6 +5040,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Allocation", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Offer", "Offer")
                         .WithMany("Allocations")
                         .HasForeignKey("Offerid")
@@ -4382,6 +5055,8 @@ namespace Data.Migrations
                         .HasForeignKey("Sourceid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Offer");
 
@@ -4418,6 +5093,15 @@ namespace Data.Migrations
                     b.Navigation("Campusdegree");
                 });
 
+            modelBuilder.Entity("Data.Area", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.Campus", b =>
                 {
                     b.HasOne("Data.Company", "Company")
@@ -4426,13 +5110,13 @@ namespace Data.Migrations
 
                     b.HasOne("Data.PortalStates", "PortalStates")
                         .WithMany("Campuses")
-                        .HasForeignKey("PortalStatesId");
+                        .HasForeignKey("PortalStatesid");
 
                     b.HasOne("Data.Postalcode", "Postalcode")
                         .WithMany("Campuses")
                         .HasForeignKey("Postalcodeid");
 
-                    b.HasOne("Data.School", "School")
+                    b.HasOne("Data.Scholls", "School")
                         .WithMany("Campuses")
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4447,13 +5131,30 @@ namespace Data.Migrations
                     b.Navigation("School");
                 });
 
+            modelBuilder.Entity("Data.CampusIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.Campusdegree", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Degreeprogram", "Degree")
                         .WithMany("Campusdegrees")
                         .HasForeignKey("Degreeid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Degree");
                 });
@@ -4466,6 +5167,10 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Postalcode", "Postalcode")
                         .WithMany("Campuspostalcodes")
                         .HasForeignKey("Postalcodeid")
@@ -4473,6 +5178,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Campus");
+
+                    b.Navigation("Company");
 
                     b.Navigation("Postalcode");
                 });
@@ -4482,6 +5189,17 @@ namespace Data.Migrations
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.ClientIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });
@@ -4628,6 +5346,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Degreeprogram", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Level", "Level")
                         .WithMany("Degreeprograms")
                         .HasForeignKey("Levelid")
@@ -4639,6 +5361,8 @@ namespace Data.Migrations
                         .HasForeignKey("Programid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Level");
 
@@ -4675,6 +5399,24 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("Data.DownSellOffer", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.DownSellOfferPostalCode", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Data.Eduapi", b =>
@@ -4721,6 +5463,224 @@ namespace Data.Migrations
                     b.Navigation("EmailMessage");
                 });
 
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Allocation.Models.AllocationsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Area.Models.AreasIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampusdegreeIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampuspostalcodesIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Degreeprogram.Models.DegreeprogramsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOfferPostalCodesIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOffersIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Group.Models.GroupIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Interest.Models.InterestsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Leadpost.Models.LeadpostsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Level.Models.LevelsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_school_mappingsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_schoolsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Offer.Models.OffertargetingIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.PrepingLog.Models.Ping_cacheIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramareasIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.PrograminterestsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.School.Models.SchoolGroupsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Extrarequirededucation", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.FolderAccess", b =>
                 {
                     b.HasOne("Data.CompanyFolder", "CompanyFolder")
@@ -4740,13 +5700,64 @@ namespace Data.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Data.Group", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Interest", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Leadpost", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Level", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.MasterSchool", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.MasterSchoolMapping", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.MasterSchool", "MasterSchools")
                         .WithMany("MasterSchoolMappings")
                         .HasForeignKey("MasterSchoolsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("MasterSchools");
                 });
@@ -4763,7 +5774,7 @@ namespace Data.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("Data.School", "School")
+                    b.HasOne("Data.Scholls", "School")
                         .WithMany("Offers")
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4776,13 +5787,30 @@ namespace Data.Migrations
                     b.Navigation("School");
                 });
 
+            modelBuilder.Entity("Data.OfferIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.Offertargeting", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Offer", "Offer")
                         .WithMany("Offertargetings")
                         .HasForeignKey("Offerid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Offer");
                 });
@@ -4795,18 +5823,42 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Source", "Source")
+                        .WithMany()
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Company");
+
+                    b.Navigation("Source");
                 });
 
             modelBuilder.Entity("Data.Portaltargeting", b =>
                 {
-                    b.HasOne("Data.Searchportal", "Portal")
+                    b.HasOne("Data.Searchportal", null)
                         .WithMany("Portaltargetings")
-                        .HasForeignKey("Portalid")
+                        .HasForeignKey("SearchportalId");
+                });
+
+            modelBuilder.Entity("Data.PostalCodeIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Portal");
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Program", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Data.Programarea", b =>
@@ -4817,6 +5869,10 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Program", "Program")
                         .WithMany("Programareas")
                         .HasForeignKey("Programid")
@@ -4825,11 +5881,17 @@ namespace Data.Migrations
 
                     b.Navigation("Area");
 
+                    b.Navigation("Company");
+
                     b.Navigation("Program");
                 });
 
             modelBuilder.Entity("Data.Programinterest", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Interest", "Interest")
                         .WithMany("Programinterests")
                         .HasForeignKey("Interestid")
@@ -4841,6 +5903,8 @@ namespace Data.Migrations
                         .HasForeignKey("Programid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Interest");
 
@@ -4869,7 +5933,7 @@ namespace Data.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Data.School", b =>
+            modelBuilder.Entity("Data.Scholls", b =>
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
@@ -4878,19 +5942,36 @@ namespace Data.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("Data.SchoolIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.Schoolgroup", b =>
                 {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Data.Group", "Group")
                         .WithMany("Schoolgroups")
                         .HasForeignKey("Groupid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.School", "School")
+                    b.HasOne("Data.Scholls", "School")
                         .WithMany("Schoolgroups")
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Group");
 
@@ -4899,7 +5980,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Schoolhighlight", b =>
                 {
-                    b.HasOne("Data.School", "School")
+                    b.HasOne("Data.Scholls", "School")
                         .WithMany("Schoolhighlights")
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4910,7 +5991,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Schoolstart", b =>
                 {
-                    b.HasOne("Data.School", "School")
+                    b.HasOne("Data.Scholls", "School")
                         .WithMany("Schoolstarts")
                         .HasForeignKey("Schoolid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4946,6 +6027,17 @@ namespace Data.Migrations
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.SourceIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });
@@ -5011,6 +6103,17 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("CompanyUser");
+                });
+
+            modelBuilder.Entity("Data.StateIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Data.TemplateMultiSelect", b =>
@@ -5229,7 +6332,7 @@ namespace Data.Migrations
                     b.Navigation("RolePermissions");
                 });
 
-            modelBuilder.Entity("Data.School", b =>
+            modelBuilder.Entity("Data.Scholls", b =>
                 {
                     b.Navigation("Campuses");
 

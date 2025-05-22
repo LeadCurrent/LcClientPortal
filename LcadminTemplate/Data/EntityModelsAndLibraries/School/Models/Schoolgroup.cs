@@ -13,5 +13,9 @@ public partial class Schoolgroup
 
     public virtual Group Group { get; set; }
 
-    public virtual School School { get; set; }
+    public virtual Scholls School { get; set; }
+    public int? oldId { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
 }

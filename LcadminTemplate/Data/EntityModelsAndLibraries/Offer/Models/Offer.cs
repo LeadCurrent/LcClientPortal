@@ -69,7 +69,7 @@ public partial class Offer
 
     public virtual ICollection<Offertargeting> Offertargetings { get; set; } = new List<Offertargeting>();
 
-    public virtual School School { get; set; }
+    public virtual Scholls School { get; set; }
 
     public int? oldId { get; set; }
 }

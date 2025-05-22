@@ -98,4 +98,9 @@ public partial class DownSellOffer
     public int Minage { get; set; }
 
     public int Maxage { get; set; }
+
+    public int? oldId { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
 }

@@ -58,7 +58,10 @@ public partial class Allocation
     public decimal CecCplF { get; set; }
 
     public decimal CecCplG { get; set; }
+    public int? oldId { get; set; }
 
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
     public virtual ICollection<Allocationcampusdegree> Allocationcampusdegrees { get; set; } = new List<Allocationcampusdegree>();
 
     public virtual ICollection<Allocationcampus> Allocationcampuses { get; set; } = new List<Allocationcampus>();

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Data;
 
-public partial class School
+public partial class Scholls
 {
     public int Id { get; set; }
+
 
     public string Name { get; set; }
 
