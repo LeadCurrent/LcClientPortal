@@ -126,6 +126,9 @@ namespace DotNet5Template
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();
             services.AddScoped<AllocationDataLibrary, AllocationDataLibrary>();
+            services.AddScoped<SchoolsDataLibrary, SchoolsDataLibrary>();
+            services.AddScoped<CampusDataLibrary, CampusDataLibrary>();
+            services.AddScoped<GroupDataLibrary, GroupDataLibrary>();
 
             //NewDataLibrary
 
@@ -209,36 +212,36 @@ namespace DotNet5Template
                 var migrationService = scope.ServiceProvider.GetRequiredService<MigrationService>();
 
                 // Run your migrations
-                migrationService.MigrateClients();//done
-                migrationService.MigrateSchools();//done
-                migrationService.MigrateOffers();//done
-                migrationService.MigrateStates();//done
-                migrationService.MigratePostalCodes();//done
-                migrationService.MigrateCampuses();//done
-                migrationService.MigrateLevels();//done
-                migrationService.MigratePrograms();//done
-                migrationService.MigrateDegreePrograms();//done
-                migrationService.MigrateCampusDegrees();//done
-                migrationService.MigrateSources();//done
-                migrationService.MigrateAllocations();//done
+                //migrationService.MigrateClients();//done
+                //migrationService.MigrateSchools();//done
+                //migrationService.MigrateOffers();//done
+                //migrationService.MigrateStates();//done
+                //migrationService.MigratePostalCodes();//done
+                //migrationService.MigrateCampuses();//done
+                //migrationService.MigrateLevels();//done
+                //migrationService.MigratePrograms();//done
+                //migrationService.MigrateDegreePrograms();//done
+                //migrationService.MigrateCampusDegrees();//done
+                //migrationService.MigrateSources();//done
+                //migrationService.MigrateAllocations();//done
                 //migrationService.MigrateCampusPostalCodes();//remain
-                migrationService.MigrateDownSellOffers();//done             
+                //migrationService.MigrateDownSellOffers();//done             
                 //migrationService.MigrateDownSellOfferPostalCodes();//remain
-                migrationService.MigrateMasterSchools();//done
-                migrationService.MigrateMasterSchoolMappings();//done
-                migrationService.MigrateAreas();//done
-                migrationService.MigrateProgramAreas();//done
-                migrationService.MigrateInterests();//done
-                migrationService.MigrateProgramInterests();//done
-                migrationService.MigrateGroups();//done
-                migrationService.MigrateSchoolGroups();//done
-                migrationService.MigrateExtraRequiredEducation();//done
-                migrationService.MigrateLeadPosts();//done
-                migrationService.MigrateOfferTargeting();//done
-                migrationService.MigratePingCache();//done
-                migrationService.MigratePortalTargeting();//done
-                migrationService.MigrateSearchPortals();//done
-                migrationService.MigrateConfigEducationLevels();//done
+                //migrationService.MigrateMasterSchools();//done
+                //migrationService.MigrateMasterSchoolMappings();//done
+                //migrationService.MigrateAreas();//done
+                //migrationService.MigrateProgramAreas();//done
+                //migrationService.MigrateInterests();//done
+                //migrationService.MigrateProgramInterests();//done
+                //migrationService.MigrateGroups();//done
+                //migrationService.MigrateSchoolGroups();//done
+                //migrationService.MigrateExtraRequiredEducation();//done
+                //migrationService.MigrateLeadPosts();//done
+                //migrationService.MigrateOfferTargeting();//done
+                //migrationService.MigratePingCache();//done
+                //migrationService.MigratePortalTargeting();//done
+                //migrationService.MigrateSearchPortals();//done
+                //migrationService.MigrateConfigEducationLevels();//done
 
 
 

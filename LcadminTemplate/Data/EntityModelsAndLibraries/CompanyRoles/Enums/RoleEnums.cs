@@ -31,7 +31,8 @@ namespace Data
             Integration = 7,
             ContactForm = 8,
             CompanyAccount = 9,
-            Sources = 10
+            Sources = 10,
+            Schools = 11,
         }
 
         public static string PermissionDesc(Permission permission)
@@ -46,6 +47,7 @@ namespace Data
             else if (permission == Permission.ContactForm) return "Contact Form";
             else if (permission == Permission.CompanyAccount) return "Company Account";
             else if (permission == Permission.CompanyAccount) return "Sources";
+            else if (permission == Permission.CompanyAccount) return "Schools";
             else return "";
         }
 
@@ -62,6 +64,7 @@ namespace Data
             if (permission == Permission.ContactForm) return 8;
             if (permission == Permission.CompanyAccount) return 9;
             if (permission == Permission.Sources) return 10;
+            if (permission == Permission.Schools) return 11;
 
             else return 0;
         }
@@ -78,6 +81,7 @@ namespace Data
             if (permission == Permission.ContactForm && CommonClasses.Environment.CompanyProfile) return true;
             if (permission == Permission.Users && CommonClasses.Environment.CompanyProfile) return true;
             if (permission == Permission.Sources && CommonClasses.Environment.CompanyProfile) return true;
+            if (permission == Permission.Schools && CommonClasses.Environment.CompanyProfile) return true;
 
             else return false;
         }

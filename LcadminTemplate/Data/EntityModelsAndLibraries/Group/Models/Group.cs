@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data;
 
@@ -16,4 +17,7 @@ public partial class Group
 
     public int? CompanyId { get; set; }
     public Company Company { get; set; }
+
+    [NotMapped]
+    public bool IsChecked { get; set; }
 }

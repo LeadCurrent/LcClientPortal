@@ -47,7 +47,6 @@
     <Folder Include="EntityModelsAndLibraries\Apilog\Models\" />
     <Folder Include="EntityModelsAndLibraries\Area\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Area\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Campus\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Campus\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Client\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Client\Enums\" />
@@ -58,7 +57,6 @@
     <Folder Include="EntityModelsAndLibraries\Eduapi\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Eduapi\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Eduapi\Models\" />
-    <Folder Include="EntityModelsAndLibraries\Group\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Group\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Interest\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Interest\Enums\" />
@@ -82,7 +80,6 @@
     <Folder Include="EntityModelsAndLibraries\PrepingLog\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Program\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Program\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\School\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\School\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Searchportal\Enums\" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data;
 
@@ -18,4 +19,5 @@ public partial class Schoolgroup
 
     public int? CompanyId { get; set; }
     public Company Company { get; set; }
+
 }

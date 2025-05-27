@@ -1,13 +1,13 @@
 ﻿@using Data
 @using Web
-@model SourcesViewModel
+@model SchoolsViewModel
 @{
     if (Model.MobileApp)
         Layout = "~/Pages/Shared/NoNavLayout.cshtml";
     else
         Layout = "~/Pages/Shared/TemplateLayout.cshtml";
 }
-@using (Html.BeginForm("Create", "Sources", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create", "Schools", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
 {
     <div id="partialview">
         @{
@@ -16,5 +16,5 @@
     </div>
 }
 <script>
-    highlightcurrentpage('nav_Sources');
+    highlightcurrentpage('nav_Schools');
 </script>
