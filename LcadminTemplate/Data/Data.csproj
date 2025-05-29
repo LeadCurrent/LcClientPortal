@@ -62,7 +62,6 @@
     <Folder Include="EntityModelsAndLibraries\Interest\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Leadpost\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Leadpost\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Level\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Level\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Log\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Log\Enums\" />

@@ -122,6 +122,11 @@ namespace DotNet5Template
 
             //Customers
             services.AddScoped<CustomerDataLibrary, CustomerDataLibrary>();
+         
+            //Levels
+            services.AddScoped<DegreeLevelDataLibrary, DegreeLevelDataLibrary>();
+
+
 
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();

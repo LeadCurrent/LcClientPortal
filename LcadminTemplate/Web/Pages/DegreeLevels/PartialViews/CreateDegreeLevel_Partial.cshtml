@@ -1,0 +1,29 @@
+﻿@using Data
+@using Web
+@model Web.DegreeLevelVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">Create Degree Level</div>
+
+
+    <div class="form-800 input-form">
+        <div class="white-bg">
+
+        <table>
+            <tr>
+                <td class="formlabel">Name:</td>
+            </tr>
+            <tr>
+                <td>@Html.EditorFor(x => x.DegreeLevel.Name)</td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+             <button class="button" onclick="NonAjax('Create Degree Level')">Create</button>
+                    <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+    </div>

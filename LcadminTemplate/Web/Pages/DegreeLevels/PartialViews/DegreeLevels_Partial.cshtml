@@ -1,0 +1,80 @@
+﻿@using Data
+@using Web
+@model Web.DegreeLevelVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+@if (Model.ShowEditDegreeLevel)
+{
+    <div class="pagetitle">Edit Degree Level</div>
+
+    <div class="form-800 input-form">
+        <div class="white-bg">
+        @Html.HiddenFor(x => x.DegreeLevel.Id)
+        @Html.HiddenFor(x => x.DegreeLevel.CompanyId)
+
+        <table>
+            <tr>
+                <td class="formlabel">Name:</td>
+            </tr>
+            <tr>
+                <td>@Html.EditorFor(x => x.DegreeLevel.Name)</td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Update Degree Level')">Edit Degree Level</button>
+            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+    </div>
+}
+else
+{
+    <div class="pagetitle">Degree Level</div>
+
+    <div class="form-800">
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create New Degree Level')">Create New Degree Level</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+
+                @if (Model.DegreeLevels != null)
+                {
+                    foreach (var degreeLevel in Model.DegreeLevels)
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                <div><b class="secondary-text">Name:</b></div>
+                                <div>@degreeLevel.Name</div>
+                                <div class="buttons">
+                                    <button class="gridbutton" onclick="AjaxWithParam('Edit Degree Level', @degreeLevel.Id)">Edit</button>
+                                    <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete Degree Level', @degreeLevel.Id, 'Are you sure you want to delete this Degree Level?')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="desktop">
+                            <td>@degreeLevel.Name</td>
+                            <td class="text-right">
+                                <button class="gridbutton" onclick="AjaxWithParam('Edit Degree Level', @degreeLevel.Id)">Edit</button>
+                                <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete Degree Level', @degreeLevel.Id, 'Are you sure you want to delete this Degree Level?')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+
+<script>
+    highlightcurrentpage("nav_DegreeLevel");
+</script>
