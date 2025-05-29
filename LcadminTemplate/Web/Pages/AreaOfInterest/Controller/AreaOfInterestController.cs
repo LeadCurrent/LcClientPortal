@@ -10,64 +10,64 @@ using System.Threading.Tasks;
 
 namespace Web
 {
-    public class DegreeLevelController : Controller
+    public class AreaOfInterestController : Controller
     {
         private readonly RazorViewToStringRenderer viewRenderer;
         ExceptionLogger exceptionLogger { get; }
-        DegreeLevelDataLibrary DegreeLevelDL { get; set; }
-
-        public DegreeLevelController(
-            DegreeLevelDataLibrary DegreeLevelDataLibrary,
+        AreaOfInterestDataLibrary AreaOfIntrestDL { get; set; }
+        public AreaOfInterestController(
+           AreaOfInterestDataLibrary AreaOfIntrestDataLibrary,
             RazorViewToStringRenderer RazorViewToStringRenderer,
             ExceptionLogger ExceptionLogger)
         {
-            DegreeLevelDL = DegreeLevelDataLibrary;
+            AreaOfIntrestDL = AreaOfIntrestDataLibrary;
             viewRenderer = RazorViewToStringRenderer;
             exceptionLogger = ExceptionLogger;
         }
 
-        public async Task<DegreeLevelVM> getDegreeLevelList()
+
+        public async Task<AreaOfInterestVM> getAreaOfInterestList()
         {
-            var Model = new DegreeLevelVM();
-            Model.DegreeLevels = await DegreeLevelDL.GetDegreeLevels();
+            var Model = new AreaOfInterestVM();
+            Model.AreaOfInterests = await AreaOfIntrestDL.GetAreaOfIntrestList();
             return Model;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = await getDegreeLevelList();
-            return View("~/Pages/DegreeLevels/DegreeLevels.cshtml", model);
+            var model = await getAreaOfInterestList();
+            return View("~/Pages/AreaOfInterest/AreaOfInterestList.cshtml", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DegreeLevel(DegreeLevelVM ViewModel, string Action)
+        public async Task<IActionResult> AreaOfInterest(AreaOfInterestVM ViewModel, string Action)
         {
             try
             {
-                var Model = new DegreeLevelVM();
+                var Model = new AreaOfInterestVM();
 
-                if (Action == "Update Degree Level")
+                if (Action == "Update")
                 {
-                    await DegreeLevelDL.UpdateDegreeLevel(ViewModel.DegreeLevel);
+                    await AreaOfIntrestDL.UpdateAreaOfIntrest(ViewModel.AreaOfInterest);
                 }
 
-                if (Action == "Create New Degree Level")
+                if (Action == "Create")
                 {
-                    return RedirectToAction("Create", new { Id = ViewModel.Param });
+                    return RedirectToAction("Create");
                 }
 
-                if (Action == "Delete Degree Level")
+                if (Action == "Delete")
                 {
-                    await DegreeLevelDL.DeleteDegreeLevel(ViewModel.Param);
+                    await AreaOfIntrestDL.DeleteAreaOfIntrest(ViewModel.Param);
                 }
 
-                if (Action == "Edit Degree Level")
+                if (Action == "Show Update")
                 {
-                    Model.DegreeLevel = await DegreeLevelDL.GetDegreeLevel(ViewModel.Param);
-                    Model.ShowEditDegreeLevel = true;
+                    Model.AreaOfInterest = await AreaOfIntrestDL.GetAreaOfIntrest(ViewModel.Param);
+                    Model.ShowEditAreaOfInterest = true;
 
-                    var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("DegreeLevels/PartialViews/DegreeLevels_Partial", Model)).Result;
+                    var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("AreaOfInterest/PartialViews/AreaOfInterestList_Partial", Model)).Result;
                     return Json(new { isValid = true, html = HTML });
                 }
 
@@ -89,13 +89,13 @@ namespace Web
 
             try
             {
-                var Model = new DegreeLevelVM();
-                Model.DegreeLevel = new Level();
+                var Model = new AreaOfInterestVM();
+                Model.AreaOfInterest = new Area();
 
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
 
-                return View("~/Pages/DegreeLevels/CreateDegreeLevel.cshtml", Model);
+                return View("~/Pages/AreaOfInterest/CreateAreaOfInterest.cshtml", Model);
             }
             catch (Exception ex)
             {
@@ -104,13 +104,13 @@ namespace Web
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(DegreeLevelVM ViewModel, string Action)
+        public async Task<IActionResult> Create(AreaOfInterestVM ViewModel, string Action)
         {
             try
             {
-                if (Action == "Create Degree Level")
+                if (Action == "Create")
                 {
-                    await DegreeLevelDL.CreateDegreeLevel(ViewModel.DegreeLevel);
+                    await AreaOfIntrestDL.CreateAreaOfIntrest(ViewModel.AreaOfInterest);
                 }
 
                 return RedirectToAction("Index");

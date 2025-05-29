@@ -7,55 +7,55 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    public class DegreeLevelDataLibrary
+    public class AreaOfInterestDataLibrary
     {
         public DataContext context { get; }
 
-        public DegreeLevelDataLibrary(DataContext Context)
+        public AreaOfInterestDataLibrary(DataContext Context)
         {
             context = Context;
         }
 
-        public async Task<Level> GetDegreeLevel(int Id)
+        public async Task<Area> GetAreaOfIntrest(int Id)
         {
-            return await context.Levels
+            return await context.Areas
                 .Where(x => x.Id == Id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Level>> GetDegreeLevels()
+        public async Task<List<Area>> GetAreaOfIntrestList()
         {
-            return await context.Levels
+            return await context.Areas
                 .ToListAsync();
         }
 
 
-        public async Task<bool> DeleteDegreeLevel(int id)
+        public async Task<bool> DeleteAreaOfIntrest(int id)
         {
-            var level = await context.Levels
+            var level = await context.Areas
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (level == null)
                 return false;
 
-            context.Levels.Remove(level);
+            context.Areas.Remove(level);
             var result = await context.SaveChangesAsync();
             return result > 0;
         }
 
-        public async Task<bool> CreateDegreeLevel(Level level)
+        public async Task<bool> CreateAreaOfIntrest(Area Area)
         {
-            await context.Levels.AddAsync(level);
+            await context.Areas.AddAsync(Area);
             var result = await context.SaveChangesAsync();
             return result > 0;
         }
 
-        public async Task<bool> UpdateDegreeLevel(Level level)
+        public async Task<bool> UpdateAreaOfIntrest(Area Area)
         {
-            if (level == null)
+            if (Area == null)
                 return false;
 
-            context.Levels.Update(level);
+            context.Areas.Update(Area);
             await context.SaveChangesAsync();
             return true;
         }

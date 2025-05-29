@@ -1,25 +1,23 @@
-﻿using Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Data;
 
 namespace Web
 {
-    public class DegreeLevelVM
+    public class AreaOfInterestVM
     {
-
         /* Ajax */
         public string Action { get; set; }
         public bool AjaxUpdate { get; set; }
         public bool MobileApp { get; set; }
-        public bool ShowEditDegreeLevel { get; set; }
         public int Param { get; set; }
 
         /* Properties */
         public int CompanyId { get; set; }
+        public bool ShowEditAreaOfInterest { get; set; }
 
         //Model
-        public Level DegreeLevel { get; set; }
-        public List<Level> DegreeLevels { get; set; }
+        public Area AreaOfInterest { get; set; }
+        public List<Area> AreaOfInterests { get; set; }
         public Company Company { get; set; }
-
     }
 }

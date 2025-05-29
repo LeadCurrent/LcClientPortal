@@ -13,7 +13,6 @@
     <div class="form-800 input-form">
         <div class="white-bg">
         @Html.HiddenFor(x => x.DegreeLevel.Id)
-        @Html.HiddenFor(x => x.DegreeLevel.CompanyId)
 
         <table>
             <tr>
@@ -44,7 +43,7 @@ else
             <table class="tablestyle">
                 <tr class="desktop roundheader">
                     <th>Name</th>
-                    <th></th>
+                    <th style="width:20%"></th>
                 </tr>
 
                 @if (Model.DegreeLevels != null)
@@ -63,7 +62,7 @@ else
                         </tr>
                         <tr class="desktop">
                             <td>@degreeLevel.Name</td>
-                            <td class="text-right">
+                            <td>
                                 <button class="gridbutton" onclick="AjaxWithParam('Edit Degree Level', @degreeLevel.Id)">Edit</button>
                                 <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete Degree Level', @degreeLevel.Id, 'Are you sure you want to delete this Degree Level?')">Delete</button>
                             </td>

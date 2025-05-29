@@ -45,7 +45,6 @@
     <Folder Include="EntityModelsAndLibraries\Apilog\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Apilog\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Apilog\Models\" />
-    <Folder Include="EntityModelsAndLibraries\Area\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Area\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Campus\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Client\DataLibrary\" />

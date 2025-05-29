@@ -1,0 +1,85 @@
+﻿@using Data
+@using Web
+@model Web.AreaOfInterestVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+@if (Model.ShowEditAreaOfInterest)
+{
+    <div class="pagetitle">Edit Area Of Intrest</div>
+
+    <div class="form-800 input-form">
+        <div class="white-bg">
+        @Html.HiddenFor(x => x.AreaOfInterest.Id)
+
+        <table>
+            <tr>
+                <td class="formlabel">Name:</td>
+            </tr>
+            <tr>
+                <td>@Html.EditorFor(x => x.AreaOfInterest.Name)</td>
+            </tr>
+             <tr>
+                            <td  class="formlabel">Copy:</td>  
+            </tr>
+            <tr>
+                <td>@Html.TextAreaFor(x => x.AreaOfInterest.Copy)</td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Update')">Update</button>
+            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+    </div>
+}
+else
+{
+    <div class="pagetitle">Manage Area Of Intrest</div>
+
+    <div class="form-800">
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Create New Area</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>Name</th>
+                    <th style="width:20%"> Manage</th>
+                </tr>
+
+                @if (Model.AreaOfInterests != null)
+                {
+                    foreach (var AreaofInterest in Model.AreaOfInterests)
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                <div><b class="secondary-text">Name:</b></div>
+                                <div>@AreaofInterest.Name</div>
+                                <div class="buttons">
+                                    <button class="gridbutton" onclick="AjaxWithParam('Show Update', @AreaofInterest.Id)">Edit</button>
+                                    <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @AreaofInterest.Id, 'Are you sure you want to delete this Area of Interest?')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="desktop">
+                            <td>@AreaofInterest.Name</td>
+                            <td>
+                                <button class="gridbutton" onclick="AjaxWithParam('Show Update', @AreaofInterest.Id)">Edit</button>
+                                <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @AreaofInterest.Id, 'Are you sure you want to delete this Area of Interest?')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+
+<script>
+    highlightcurrentpage("nav_AreaofInterest");
+</script>

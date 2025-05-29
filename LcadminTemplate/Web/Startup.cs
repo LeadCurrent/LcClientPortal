@@ -126,6 +126,9 @@ namespace DotNet5Template
             //Levels
             services.AddScoped<DegreeLevelDataLibrary, DegreeLevelDataLibrary>();
 
+            //AreaOfInterest
+            services.AddScoped<AreaOfInterestDataLibrary, AreaOfInterestDataLibrary>();
+
 
 
             //Sources

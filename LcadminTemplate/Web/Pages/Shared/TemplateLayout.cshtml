@@ -97,11 +97,33 @@
                     }
                     @* @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("DegreeLevels")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     { *@
-                        <li>
+                       
+                          <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">Degree Programs</span>
+                                </span>
+                                <span class="arrow-func"></span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                   
+                                    <li>
                             <a href="~/DegreeLevel" id="nav_DegreeLevel">
                                 <span class="title">Degree Level</span>
                             </a>
                         </li>
+                         <li>
+                            <a href="~/AreaOfInterest" id="nav_AreaOfInterest">
+                                <span class="title">Area Of Interest</span>
+                            </a>
+                        </li>
+
+                              
+                                </ul>
+                            </div>
+                        </li>
+
                     @* } *@
 
                     @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
