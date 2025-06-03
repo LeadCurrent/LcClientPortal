@@ -18,4 +18,6 @@ public partial class Programinterest
 
     public int? CompanyId { get; set; }
     public Company Company { get; set; }
+
+
 }

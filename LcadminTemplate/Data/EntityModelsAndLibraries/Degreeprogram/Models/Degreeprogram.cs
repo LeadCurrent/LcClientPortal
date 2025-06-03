@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Math;
+using System;
 using System.Collections.Generic;
 
 namespace Data;
@@ -8,7 +9,6 @@ public partial class Degreeprogram
     public int Id { get; set; }
 
     public int Levelid { get; set; }
-
     public int Programid { get; set; }
 
     public string Copy { get; set; }

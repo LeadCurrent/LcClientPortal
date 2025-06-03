@@ -1,0 +1,53 @@
+﻿@using Data
+@using Web
+@model Web.ProgramVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+    <div class="pagetitle">Programs</div>
+
+    <div class="form-800">
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Create New Program</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>Name</th>
+                    <th style="width:20%">Manage</th>
+                </tr>
+
+                @if (Model.Programs != null)
+                {
+                    foreach (var Program in Model.Programs)
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                <div><b class="secondary-text">Name:</b></div>
+                                <div>@Program.Name</div>
+                                <div class="buttons">
+                                    <button class="gridbutton" onclick="NonAjaxWithParam('Show Update', @Program.Id)">Edit</button>
+                                    <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @Program.Id, 'Are you sure you want to delete this Area of Interest?')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="desktop">
+                            <td>@Program.Name</td>
+                            <td>
+                            <button class="gridbutton" onclick="NonAjaxWithParam('Show Update', @Program.Id)">Edit</button>
+                                <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @Program.Id, 'Are you sure you want to delete this Area of Interest?')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+
+<script>
+    highlightcurrentpage("nav_Programs");
+</script>

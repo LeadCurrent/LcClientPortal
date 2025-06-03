@@ -129,7 +129,11 @@ namespace DotNet5Template
             //AreaOfInterest
             services.AddScoped<AreaOfInterestDataLibrary, AreaOfInterestDataLibrary>();
 
+            //StudentInterest
+            services.AddScoped<StudentInterestDataLibrary, StudentInterestDataLibrary>();
 
+            //Program
+            services.AddScoped<ProgramDataLibrary, ProgramDataLibrary>();
 
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();
