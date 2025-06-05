@@ -90,9 +90,9 @@ namespace Web
                 var Model = new ProgramVM();
                 Model.Program = new Program();
 
-                Model.Program.Areas = await AreaOfInterestDL.GetAreaOfIntrestList();
+                Model.Program.Areas = await AreaOfInterestDL.GetAreaOfInterestList();
                 Model.Program.Levels = await DegreeLevelDL.GetDegreeLevels();
-                Model.Program.Interests = await StudentInterestDL.GetStudentIntrestList();
+                Model.Program.Interests = await StudentInterestDL.GetStudentInterestList();
 
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
@@ -131,9 +131,9 @@ namespace Web
             {
                 var Model = new ProgramVM();
                 Model.Program = await ProgramDL.GetProgramById(ProgramId);
-                Model.Program.Areas = await AreaOfInterestDL.GetAreaOfIntrestList();
+                Model.Program.Areas = await AreaOfInterestDL.GetAreaOfInterestList();
                 Model.Program.Levels = await DegreeLevelDL.GetDegreeLevels();
-                Model.Program.Interests = await StudentInterestDL.GetStudentIntrestList();
+                Model.Program.Interests = await StudentInterestDL.GetStudentInterestList();
 
                 var selectedAreaIds = Model.Program.ProgramAreas.Select(x => x.Areaid).ToHashSet();
                 var selectedLevelIds = Model.Program.Degreeprograms.Select(x => x.Levelid).ToHashSet();

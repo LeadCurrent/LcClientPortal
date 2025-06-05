@@ -16,21 +16,21 @@ namespace Data
             context = Context;
         }
 
-        public async Task<Area> GetAreaOfIntrest(int Id)
+        public async Task<Area> GetAreaOfInterest(int Id)
         {
             return await context.Areas
                 .Where(x => x.Id == Id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Area>> GetAreaOfIntrestList()
+        public async Task<List<Area>> GetAreaOfInterestList()
         {
             return await context.Areas
                 .ToListAsync();
         }
 
 
-        public async Task<bool> DeleteAreaOfIntrest(int id)
+        public async Task<bool> DeleteAreaOfInterest(int id)
         {
             var level = await context.Areas
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -43,14 +43,14 @@ namespace Data
             return result > 0;
         }
 
-        public async Task<bool> CreateAreaOfIntrest(Area Area)
+        public async Task<bool> CreateAreaOfInterest(Area Area)
         {
             await context.Areas.AddAsync(Area);
             var result = await context.SaveChangesAsync();
             return result > 0;
         }
 
-        public async Task<bool> UpdateAreaOfIntrest(Area Area)
+        public async Task<bool> UpdateAreaOfInterest(Area Area)
         {
             if (Area == null)
                 return false;

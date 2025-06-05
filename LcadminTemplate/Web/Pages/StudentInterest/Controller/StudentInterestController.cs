@@ -10,46 +10,46 @@ using System.Threading.Tasks;
 
 namespace Web
 {
-    public class AreaOfInterestController : Controller
+    public class StudentInterestController : Controller
     {
         private readonly RazorViewToStringRenderer viewRenderer;
         ExceptionLogger exceptionLogger { get; }
-        AreaOfInterestDataLibrary AreaOfInterestDL { get; set; }
-        public AreaOfInterestController(
-           AreaOfInterestDataLibrary AreaOfInterestDataLibrary,
+        StudentInterestDataLibrary StudentInterestDL { get; set; }
+        public StudentInterestController(
+           StudentInterestDataLibrary StudentInterestDataLibrary,
             RazorViewToStringRenderer RazorViewToStringRenderer,
             ExceptionLogger ExceptionLogger)
         {
-            AreaOfInterestDL = AreaOfInterestDataLibrary;
+            StudentInterestDL = StudentInterestDataLibrary;
             viewRenderer = RazorViewToStringRenderer;
             exceptionLogger = ExceptionLogger;
         }
 
 
-        public async Task<AreaOfInterestVM> getAreaOfInterestList()
+        public async Task<StudentInterestVM> getStudentIntereststList()
         {
-            var Model = new AreaOfInterestVM();
-            Model.AreaOfInterests = await AreaOfInterestDL.GetAreaOfInterestList();
+            var Model = new StudentInterestVM();
+            Model.StudentInterests = await StudentInterestDL.GetStudentInterestList();
             return Model;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = await getAreaOfInterestList();
-            return View("~/Pages/AreaOfInterest/AreaOfInterestList.cshtml", model);
+            var model = await getStudentIntereststList();
+            return View("~/Pages/StudentInterest/StudentInterestList.cshtml", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AreaOfInterest(AreaOfInterestVM ViewModel, string Action)
+        public async Task<IActionResult> StudentInterest(StudentInterestVM ViewModel, string Action)
         {
             try
             {
-                var Model = new AreaOfInterestVM();
+                var Model = new StudentInterestVM();
 
                 if (Action == "Update")
                 {
-                    await AreaOfInterestDL.UpdateAreaOfInterest(ViewModel.AreaOfInterest);
+                    await StudentInterestDL.UpdateStudentInterest(ViewModel.StudentInterest);
                 }
 
                 if (Action == "Create")
@@ -59,15 +59,15 @@ namespace Web
 
                 if (Action == "Delete")
                 {
-                    await AreaOfInterestDL.DeleteAreaOfInterest(ViewModel.Param);
+                    await StudentInterestDL.DeleteStudentInterest(ViewModel.Param);
                 }
 
                 if (Action == "Show Update")
                 {
-                    Model.AreaOfInterest = await AreaOfInterestDL.GetAreaOfInterest(ViewModel.Param);
-                    Model.ShowEditAreaOfInterest = true;
+                    Model.StudentInterest = await StudentInterestDL.GetStudentInterest(ViewModel.Param);
+                    Model.ShowEditStudentInterest = true;
 
-                    var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("AreaOfInterest/PartialViews/AreaOfInterestList_Partial", Model)).Result;
+                    var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("StudentInterest/PartialViews/StudentInterestList_Partial", Model)).Result;
                     return Json(new { isValid = true, html = HTML });
                 }
 
@@ -86,16 +86,15 @@ namespace Web
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-
             try
             {
-                var Model = new AreaOfInterestVM();
-                Model.AreaOfInterest = new Area();
+                var Model = new StudentInterestVM();
+                Model.StudentInterest = new Interest();
 
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;
 
-                return View("~/Pages/AreaOfInterest/CreateAreaOfInterest.cshtml", Model);
+                return View("~/Pages/StudentInterest/Create.cshtml", Model);
             }
             catch (Exception ex)
             {
@@ -104,13 +103,13 @@ namespace Web
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(AreaOfInterestVM ViewModel, string Action)
+        public async Task<IActionResult> Create(StudentInterestVM ViewModel, string Action)
         {
             try
             {
                 if (Action == "Create")
                 {
-                    await AreaOfInterestDL.CreateAreaOfInterest(ViewModel.AreaOfInterest);
+                    await StudentInterestDL.CreateStudentInterest(ViewModel.StudentInterest);
                 }
 
                 return RedirectToAction("Index");
