@@ -84,7 +84,6 @@ namespace Data.DataContexts
                         Name = sourceClient.Name,
                         Active = sourceClient.Active,
                         Direct = sourceClient.Direct,
-                        CompanyId = companyId, // Assign first company
                         oldId = sourceClient.Id
                     };
 
@@ -154,8 +153,8 @@ namespace Data.DataContexts
                         Militaryfriendly = sourceClient.Militaryfriendly,
                         Disclosure = sourceClient.Disclosure,
                         Schoolgroup = sourceClient.Schoolgroup,
-                        TcpaText = sourceClient.Tcpa_Text,
-                        CompanyId = companyId
+                        TcpaText = sourceClient.Tcpa_Text
+                       
 
                     };
 

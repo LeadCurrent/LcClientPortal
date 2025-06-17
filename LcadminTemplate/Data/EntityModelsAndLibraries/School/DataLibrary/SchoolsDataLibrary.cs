@@ -24,7 +24,6 @@ namespace Data
                 return new List<Scholls>();
 
             return await context.Schools
-                .Where(x => x.CompanyId == companyId)
                 .Include(s => s.Schoolgroups)
                 .OrderBy(x => x.Name)
                 .ToListAsync();

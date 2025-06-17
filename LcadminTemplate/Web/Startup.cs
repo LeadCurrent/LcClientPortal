@@ -135,6 +135,9 @@ namespace DotNet5Template
             //Program
             services.AddScoped<ProgramDataLibrary, ProgramDataLibrary>();
 
+            //Offers
+            services.AddScoped<OffersDataLibrary, OffersDataLibrary>();
+
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();
             services.AddScoped<AllocationDataLibrary, AllocationDataLibrary>();

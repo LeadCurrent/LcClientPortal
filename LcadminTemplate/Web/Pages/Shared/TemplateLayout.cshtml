@@ -142,6 +142,15 @@
                             </a>
                         </li>
                     }
+                    @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Offers" id="nav_Offers">
+                                <span class="title">Offers</span>
+                            </a>
+                        </li>
+                    }
+
                     @if (CommonClasses.Environment.Sources && (User.Claims.Where(c => c.Type.Contains("Sources")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
                         <li>

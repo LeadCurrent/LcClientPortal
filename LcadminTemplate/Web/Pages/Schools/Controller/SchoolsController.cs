@@ -140,8 +140,8 @@ namespace Web
             {
                 if (Action == "Create")
                 {
-                    var companyClaimID = User.Claims.FirstOrDefault(x => x.Type == "CompanyId");
-                    ViewModel.Scholl.CompanyId = Convert.ToInt32(companyClaimID.Value);
+                    //var companyClaimID = User.Claims.FirstOrDefault(x => x.Type == "CompanyId");
+                    //ViewModel.Scholl.CompanyId = Convert.ToInt32(companyClaimID.Value);
                     var SchoolsId = await SchoolDL.CreateSchool(ViewModel.Scholl);
                     return RedirectToAction("EditSchools", new { SchoolId = SchoolsId });
                 }
@@ -168,8 +168,8 @@ namespace Web
             try
             {
                 Model = await GetEditModel(SchoolId);
-                Model.Schools = await SchoolDL.SchoolsByCompanyId(Model.Scholl.CompanyId);
-                Model.Groups = await GroupDL.GroupByCompanyId(Model.Scholl.CompanyId);
+                Model.Schools = await SchoolDL.SchoolsByCompanyId(null /*Model.Scholl.CompanyId*/);
+                Model.Groups = await GroupDL.GroupByCompanyId(null /*Model.Scholl.CompanyId*/);
                 foreach (var group in Model.Groups)
                 {
                     group.IsChecked = Model.Scholl.Schoolgroups.Any(g => g.Groupid == group.Id);
@@ -192,7 +192,7 @@ namespace Web
                 if (Action == "Edit School")
                 {
                     ViewModel.Scholl = await SchoolDL.GetSchool(ViewModel.Scholl.Id);
-                    ViewModel.Groups = await GroupDL.GroupByCompanyId(ViewModel.Scholl.CompanyId);
+                    ViewModel.Groups = await GroupDL.GroupByCompanyId(null /*ViewModel.Scholl.CompanyId*/);
                     foreach (var group in ViewModel.Groups)
                     {
                         group.IsChecked = ViewModel.Scholl.Schoolgroups.Any(g => g.Groupid == group.Id);
@@ -203,7 +203,7 @@ namespace Web
                 }
                 if (Action == "Update School")
                 {
-                    await SchoolDL.UpdateSchoolGroups(ViewModel.Scholl.Id, ViewModel.Groups, ViewModel.Scholl.oldId, ViewModel.Scholl.CompanyId);
+                    await SchoolDL.UpdateSchoolGroups(ViewModel.Scholl.Id, ViewModel.Groups, ViewModel.Scholl.oldId, null/*ViewModel.Scholl.CompanyId*/);
                     bool status = await SchoolDL.UpdateSchool(ViewModel.Scholl);
                     
                     var HTML1 = await viewRenderer.RenderViewToStringAsync("Schools/PartialViews/Sections/SchoolsDetails", ViewModel);

@@ -1,0 +1,18 @@
+﻿@using Data
+@using Web
+@model Web.OfferVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="form-1600">
+    <div class="pagetitle">
+        Edit Offer
+    </div>
+    <div class="white-bg">
+        @{
+            await Html.RenderPartialAsync("Sections/OfferFields.cshtml");
+        }
+    </div>
+</div>

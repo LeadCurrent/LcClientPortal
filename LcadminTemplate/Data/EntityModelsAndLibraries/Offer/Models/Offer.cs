@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data;
 
@@ -35,6 +36,15 @@ public partial class Offer
 
     public bool Nomilitary { get; set; }
 
+    [NotMapped]
+    public bool IsChecked { get; set; }
+    [NotMapped]
+    public string DayHtml { get; set; }
+    [NotMapped]
+    public string WeekHtml { get; set; }
+    [NotMapped]
+    public string MonthHtml { get; set; }
+
     public string Transferphone { get; set; }
 
     public string Lccampaignid { get; set; }
@@ -66,6 +76,8 @@ public partial class Offer
     public virtual ICollection<Allocation> Allocations { get; set; } = new List<Allocation>();
 
     public virtual Client Client { get; set; }
+    [NotMapped]
+    public virtual Offertargeting Targeting { get; set; }
 
     public virtual ICollection<Offertargeting> Offertargetings { get; set; } = new List<Offertargeting>();
 

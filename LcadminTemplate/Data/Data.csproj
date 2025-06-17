@@ -66,7 +66,6 @@
     <Folder Include="EntityModelsAndLibraries\Log\Models\" />
     <Folder Include="EntityModelsAndLibraries\MasterSchool\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\MasterSchool\Enums\" />
-    <Folder Include="EntityModelsAndLibraries\Offer\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Offer\Enums\" />
     <Folder Include="EntityModelsAndLibraries\Portal\DataLibrary\" />
     <Folder Include="EntityModelsAndLibraries\Portal\Enums\" />
