@@ -12,4 +12,8 @@ public partial class Extrarequirededucation
     public string Value { get; set; }
 
     public int Campusid { get; set; }
+
+    public int? oldId { get; set; }
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
 }

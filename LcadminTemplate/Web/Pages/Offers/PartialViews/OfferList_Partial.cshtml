@@ -1,0 +1,341 @@
+﻿@using Data
+@using Web
+@model Web.OfferVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<!-- Responsive CSS Styling -->
+<style>
+    body {
+        overflow-x: hidden;
+    }
+
+    .pagetitle {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    .form-container {
+        max-width: 100%;
+        padding: 20px;
+        margin: auto;
+    }
+
+    .filter-box {
+        background: #f4f6f9;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .filter-box .form-control {
+            flex: 1 1 200px;
+            min-width: 200px;
+        }
+
+    .filter-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .custom-btn {
+        background-color: var(--TableHeaderBackgroundColor);
+        border: none;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+        .custom-btn:hover {
+            background-color: var(--TableHeaderBackgroundColor);
+        }
+
+    .table-wrapper {
+        overflow-x: auto;
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .table thead {
+        background-color: var(--TableHeaderBackgroundColor);
+        color: white;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .pagination.custom-pagination {
+        display: flex;
+        justify-content: center;
+        padding: 5px 0;
+        flex-wrap: wrap;
+    }
+
+    .pagination .page-link {
+        color: var(--TableHeaderBackgroundColor);
+        border-radius: 6px;
+        margin: 0 5px;
+        padding: 8px 14px;
+        border: 1px solid #dee2e6;
+        transition: 0.2s;
+    }
+
+        .pagination .page-link:hover {
+            background-color: var(--TableHeaderBackgroundColor);
+            color: #fff;
+        }
+
+    .pagination .active .page-link {
+        background-color: var(--TableHeaderBackgroundColor);
+        color: #fff;
+        pointer-events: none;
+        font-weight: bold;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        font-weight: 500;
+        color: #777;
+    }
+</style>
+
+<div class="pagetitle">Manage Offers</div>
+
+<div class="form-1600">
+
+    <!-- Filter & Search Box -->
+    <div class="filter-box">
+        <div class="form-group flex-grow-1">
+            <label for="SchoolName">School Name:</label>
+            @Html.TextBoxFor(m => m.SchoolName, new {
+                        @class = "form-control",
+                        placeholder = "Search by School"
+                        })
+        </div>
+
+        <div class="form-group flex-grow-1">
+            <label for="StatusFilter">Status:</label>
+            @Html.DropDownListFor(
+                        x => x.StatusFilter,
+                        Model.StatusFilterDropdown,
+                        new { @class = "form-control", onchange = "document.getElementById('Filter').click();" })
+        </div>
+
+        <div class="form-group flex-grow-1">
+            <label for="RecordPerPage">Records Per Page:</label>
+            @Html.DropDownListFor(
+                        x => x.RecordPerPage,
+                        Model.PageRecordNumberDropdown,
+                        new { @class = "form-control", onchange = "document.getElementById('Filter').click();" })
+        </div>
+
+        <div class="filter-actions mt-3">
+            <button class="button" onclick="Ajax('Search')">Search</button>
+            <button class="button" onclick="Ajax('Clear Search')">Clear</button>
+            <button class="button" onclick="Ajax('Activate Selected')">Activate Selected</button>
+            <button class="button" onclick="Ajax('Deactivate Selected')">Deactivate Selected</button>
+
+
+            <!-- Hidden Filter Trigger -->
+            <button id="Filter" onclick="Ajax('Filter')" style="display:none;"></button>
+
+    </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="pagination custom-pagination">
+            <ul class="pagination">
+                @if (Model.CurrentPageNumber > 1)
+                {
+                    <li class="page-item">
+                        @Html.ActionLink("❮ Previous", "Index", "Offers", new { page = Model.CurrentPageNumber - 1 }, new { @class = "page-link" })
+                    </li>
+                }
+
+                @{
+                    int totalPages = Model.TotalPages;
+                    int currentPage = Model.CurrentPageNumber;
+                    int range = 1;
+
+                    List<int> visiblePages = new List<int> { 1 };
+                    for (int i = currentPage - range; i <= currentPage + range; i++)
+                    {
+                        if (i > 1 && i < totalPages)
+                            visiblePages.Add(i);
+                    }
+
+                    if (!visiblePages.Contains(totalPages))
+                        visiblePages.Add(totalPages);
+
+                    visiblePages = visiblePages.Distinct().OrderBy(x => x).ToList();
+
+                    int prev = 0;
+                    foreach (var page in visiblePages)
+                    {
+                        if (prev != 0 && page - prev > 1)
+                        {
+                            <li class="page-item"><span class="page-link">…</span></li>
+                        }
+
+                        <li class="page-item @(page == currentPage ? "active" : "")">
+                            @Html.ActionLink(page.ToString(), "Index", "Offers", new { page = page }, new { @class = "page-link" })
+                        </li>
+
+                        prev = page;
+                    }
+                }
+
+                @if (Model.CurrentPageNumber < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        @Html.ActionLink("Next ❯", "Index", "Offers", new { page = Model.CurrentPageNumber + 1 }, new { @class = "page-link" })
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+
+    <!-- Hidden Filter Trigger -->
+    <button id="Filter" onclick="Ajax('Filter')" style="display:none;"></button>
+
+    <!-- Table -->
+    <div class="tablestyle">
+        <table class="table table-bordered table-striped w-100">
+            <thead>
+                <tr>
+                    <th style="width:2%">Select</th>
+                    <th>School</th>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Allocation</th>
+                    <th>OS Delivery</th>
+                    <th>Day</th>
+                    <th>Week</th>
+                    <th>Month</th>
+                    <th style="width: 7%;">Manage</th>
+                    <th style="width: 7%;">Action</th>
+                    <th style="width:10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Offers != null && Model.Offers.Any())
+                {@for (int i = 0; i < Model.Offers.Count; i++)
+                    {
+                        var tdStyle = Model.Offers[i].Active ? "" : "background-color: #e89678;";
+
+                        @Html.HiddenFor(x => x.Offers[i].Id)
+
+                        <tr>
+                            <td style="@tdStyle">@Html.CheckBoxFor(x => x.Offers[i].IsChecked)</td>
+                            <td style="@tdStyle">@Model.Offers[i].School?.Name</td>
+                            <td style="@tdStyle">@Model.Offers[i].Client?.Name</td>
+                            <td style="@tdStyle">@Model.Offers[i].Type</td>
+                            <td style="@tdStyle"></td>
+                            <td style="@tdStyle">@Model.Offers[i].DeliveryName</td>
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].DayHtml)</td> <!-- This renders the HTML -->
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].WeekHtml)</td> <!-- This renders the HTML -->
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].MonthHtml)</td> <!-- This renders the HTML -->
+                            <td style="@tdStyle">
+                                <button class="buttonaslink" onclick="NonAjaxWithParam('Edit', @Model.Offers[i].Id)">Edit</button>
+                            </td>
+                            <td style="@tdStyle">
+                                <button class="buttonaslink" onclick="NonAjaxWithParam('Send Test Lead', @Model.Offers[i].Id)">Send Test Lead</button>
+                            </td>
+                            <td style="@tdStyle">
+                                <button class="button" onclick="AjaxWithParam('Filter', @Model.Offers[i].Id)">
+                                    @(Model.Offers[i].Active ? "Deactivate Offer" : "Activate Offer")
+                                </button>
+                            </td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="no-data">No offers found.</td>
+                    </tr>
+                }
+     
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="pagination custom-pagination">
+            <ul class="pagination">
+                @if (Model.CurrentPageNumber > 1)
+                {
+                    <li class="page-item">
+                        @Html.ActionLink("❮ Previous", "Index", "Offers", new { page = Model.CurrentPageNumber - 1 }, new { @class = "page-link" })
+                    </li>
+                }
+
+                @{
+                    int totalPages = Model.TotalPages;
+                    int currentPage = Model.CurrentPageNumber;
+                    int range = 1;
+
+                    List<int> visiblePages = new List<int> { 1 };
+                    for (int i = currentPage - range; i <= currentPage + range; i++)
+                    {
+                        if (i > 1 && i < totalPages)
+                            visiblePages.Add(i);
+                    }
+
+                    if (!visiblePages.Contains(totalPages))
+                        visiblePages.Add(totalPages);
+
+                    visiblePages = visiblePages.Distinct().OrderBy(x => x).ToList();
+
+                    int prev = 0;
+                    foreach (var page in visiblePages)
+                    {
+                        if (prev != 0 && page - prev > 1)
+                        {
+                            <li class="page-item"><span class="page-link">…</span></li>
+                        }
+
+                        <li class="page-item @(page == currentPage ? "active" : "")">
+                            @Html.ActionLink(page.ToString(), "Index", "Offers", new { page = page }, new { @class = "page-link" })
+                        </li>
+
+                        prev = page;
+                    }
+                }
+
+                @if (Model.CurrentPageNumber < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        @Html.ActionLink("Next ❯", "Index", "Offers", new { page = Model.CurrentPageNumber + 1 }, new { @class = "page-link" })
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+
+</div>

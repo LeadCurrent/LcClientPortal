@@ -95,6 +95,62 @@
                             </a>
                         </li>
                     }
+                    @* @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("DegreeLevels")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    { *@
+                       
+                          <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">Degree Programs</span>
+                                </span>
+                                <span class="arrow-func"></span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                   
+                                    <li>
+                            <a href="~/DegreeLevel" id="nav_DegreeLevel">
+                                <span class="title">Degree Level</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="~/AreaOfInterest" id="nav_AreaOfInterest">
+                                <span class="title">Area Of Interest</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="~/Program" id="nav_Programs">
+                                <span class="title">Programs</span>
+                            </a>
+                        </li>
+                                <li>
+                                    <a href="~/StudentInterest" id="nav_StudentInterest">
+                                        <span class="title">Student Interest</span>
+                                    </a>
+                                </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                    @* } *@
+
+                    @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Schools" id="nav_Schools">
+                                <span class="title">Schools</span>
+                            </a>
+                        </li>
+                    }
+                    @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                    {
+                        <li>
+                            <a href="~/Offers" id="nav_Offers">
+                                <span class="title">Offers</span>
+                            </a>
+                        </li>
+                    }
+
                     @if (CommonClasses.Environment.Sources && (User.Claims.Where(c => c.Type.Contains("Sources")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
                         <li>
@@ -229,6 +285,11 @@
                                     <li>
                                         <a href="~/SystemAdminUser" id="nav_SystemAdminUser">
                                             <span class="title">System Admins</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/MigrateData" id="nav_MigrateData">
+                                            <span class="title">Migrate data</span>
                                         </a>
                                     </li>
                                 </ul>

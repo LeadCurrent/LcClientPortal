@@ -1,4 +1,20 @@
 using Data;
+using Data.EntityModelsAndLibraries.Allocation.Models;
+using Data.EntityModelsAndLibraries.Area.Models;
+using Data.EntityModelsAndLibraries.Campus.Models;
+using Data.EntityModelsAndLibraries.Degreeprogram.Models;
+using Data.EntityModelsAndLibraries.DownSellOffer.Models;
+using Data.EntityModelsAndLibraries.Group.Models;
+using Data.EntityModelsAndLibraries.Interest.Models;
+using Data.EntityModelsAndLibraries.Leadpost.Models;
+using Data.EntityModelsAndLibraries.Level.Models;
+using Data.EntityModelsAndLibraries.MasterSchool.Models;
+using Data.EntityModelsAndLibraries.Offer.Models;
+using Data.EntityModelsAndLibraries.PrepingLog.Models;
+using Data.EntityModelsAndLibraries.Program.Models;
+using Data.EntityModelsAndLibraries.School.Models;
+using Data.EntityModelsAndLibraries.TblConfigEducationLevel.Models;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -49,6 +65,39 @@ namespace Data
 
         /*Exception Log*/
         public DbSet<ExceptionLog> ExceptionLog { get; set; }
+
+        /* Mapping Tables*/
+
+        public DbSet<SchoolIdMap> SchoolIdMap { get; set; }
+        public DbSet<ClientIdMap> ClientIdMap { get; set; }
+        public DbSet<OfferIdMap> OfferIdMap { get; set; }
+        public DbSet<SourceIdMap> SourceIdMap { get; set; }
+        public DbSet<StateIdMap> StateIdMap { get; set; }
+        public DbSet<PostalCodeIdMap> PostalCodeIdMap { get; set; }
+        public DbSet<CampusIdMap> CampusIdMap { get; set; }
+        public DbSet<LevelsIdMap> LevelsIdMap { get; set; }
+        public DbSet<ProgramsIdMap> ProgramsIdMap { get; set; }
+        public DbSet<DegreeprogramsIdMap> DegreeprogramsIdMap { get; set; }
+        public DbSet<CampusdegreeIdMap> CampusdegreeIdMap { get; set; }
+        public DbSet<SourceIdMap> SourcesIdMap { get; set; }
+        public DbSet<AllocationsIdMap> AllocationsIdMap { get; set; }
+        public DbSet<CampuspostalcodesIdMap> CampuspostalcodesIdMap { get; set; }
+        public DbSet<DownSellOffersIdMap> DownSellOffersIdMap { get; set; }
+        public DbSet<DownSellOfferPostalCodesIdMap> DownSellOfferPostalCodesIdMap { get; set; }
+        public DbSet<Master_schoolsIdMap> Master_schoolsIdMap { get; set; }
+        public DbSet<Master_school_mappingsIdMap> Master_school_mappingsIdMap { get; set; }
+        public DbSet<AreasIdMap> AreasIdMap { get; set; }
+        public DbSet<ProgramareasIdMap> ProgramareasIdMap { get; set; }
+        public DbSet<InterestsIdMap> InterestsIdMap { get; set; }
+        public DbSet<PrograminterestsIdMap> PrograminterestsIdMap { get; set; }
+        public DbSet<GroupIdMap> GroupIdMap { get; set; }
+        public DbSet<SchoolGroupsIdMap> SchoolGroupsIdMap { get; set; }
+        //public DbSet<ExtrarequirededucationIdMap> ExtrarequirededucationIdMap { get; set; }
+        public DbSet<LeadpostsIdMap> LeadpostsIdMap { get; set; }
+        public DbSet<OffertargetingIdMap> OffertargetingIdMap { get; set; }
+        public DbSet<Ping_cacheIdMap> Ping_cacheIdMap { get; set; }
+
+
 
 
         /*Template*/
@@ -135,7 +184,7 @@ namespace Data
 
         public virtual DbSet<Programinterest> Programinterests { get; set; }
 
-        public virtual DbSet<School> Schools { get; set; }
+        public virtual DbSet<Scholls> Schools { get; set; }
 
         public virtual DbSet<Schoolgroup> Schoolgroups { get; set; }
 

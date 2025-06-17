@@ -13,5 +13,5 @@ public partial class Schoolstart
 
     public string Name { get; set; }
 
-    public virtual School School { get; set; }
+    public virtual Scholls School { get; set; }
 }

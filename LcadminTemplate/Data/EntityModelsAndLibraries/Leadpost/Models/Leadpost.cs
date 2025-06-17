@@ -44,4 +44,8 @@ public partial class Leadpost
     public string Offername { get; set; }
 
     public string Agent { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
+    public int? oldId { get; set; }
 }

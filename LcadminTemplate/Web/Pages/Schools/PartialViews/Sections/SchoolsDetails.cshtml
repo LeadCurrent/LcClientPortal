@@ -1,0 +1,437 @@
+﻿@model SchoolsViewModel
+@using Data;
+@using Web
+@using static Data.GeneralEnums
+@using static Web.GeneralEnumDDLs
+<div class="white-bg">
+    <div class="sectionheader">School Details</div>
+
+    @Html.HiddenFor(m => m.AjaxUpdate)
+    @Html.HiddenFor(m => m.Param)
+    @Html.HiddenFor(m => m.Action)
+    @Html.HiddenFor(m => m.Scholl.Id)
+
+    @if (Model.ShowEditSchools)
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Name:
+                            <span id="Scholl_Name_Invalid" class="required">*</span>
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Name, new { htmlattributes = new { @class = "requiredfield", onkeyup = "ValidateForm();" } })
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Abbr:
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Scholl.Abbr, new { onkeyup = "ValidateForm();" })
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Logo URL:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Logo100)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Website:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Website)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Shortcopy:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Shortcopy)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            
+                        </div>
+                        <div>
+                            
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Notes:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Notes)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Highlights:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Highlights)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Alert:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Alert)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Targeting:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Targeting)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Minage:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Minage)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Maxage:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Maxage)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Minhs:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Minhs)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Maxhs
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Maxhs)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            TcpaText:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.TcpaText)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Scoreadjustment
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(m => m.Scholl.Scoreadjustment,
+                                              new SelectList(Enumerable.Range(-6, 17).Select(i => i * 5), Model.Scholl.Scoreadjustment),
+                                              "-- Select --",
+                                              new { @class = "form-control" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Disclosure:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Disclosure)
+                        </div>
+                    </td>
+                    <td class="col-6">
+                        <div class="formlabel">
+                            Startdate:
+                        </div>
+                        <div>
+                            @Html.EditorFor(m => m.Scholl.Startdate)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td >
+                        <div class="formlabel">
+                            Militaryfriendly:
+                        </div>
+                        <div>
+                            @Html.CheckBoxFor(m => m.Scholl.Militaryfriendly)
+                        </div>
+                    </td>
+                    <td class="col-12">
+                        <div class="formlabel">Select Groups:</div>
+                        <div class="container-fluid">
+                            @for (int i = 0; i < Model.Groups.Count; i++)
+                            {
+                                <label style="display:block;">
+                                    @Html.HiddenFor(m => m.Groups[i].Id)
+                                    @Html.CheckBoxFor(m => m.Groups[i].IsChecked)
+                                    @Model.Groups[i].Name
+                                </label>
+                            }
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+            <div class="center">
+                <div class="validation-message" id="Invalid">
+                    <i>Fill in all required fields</i>
+                </div>
+            </div>
+            <div class="center">
+                @if (Model.Scholl.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="NonAjax('Create')">Create School</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Update School','SchoolsDetails')">Save Changes</button>
+                    <button class="button-white" onclick="AjaxPartialUpdate('Cancel Edit','SchoolsDetails');">Cancel</button>
+                }
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="input-form">
+            <table>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Name: @Model.Scholl.Name
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Abbr:
+                        </div>
+                        <div>
+                            @Model.Scholl.Abbr
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Website:
+                        </div>
+                        <div>
+                            @Model.Scholl.Website
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Militaryfriendly:
+                        </div>
+                        <div>
+                            @Model.Scholl.Militaryfriendly
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Schoolgroup:
+                        </div>
+                       
+                          <div>
+                                    @string.Join(" ~ ", Model.Scholl.Schoolgroups.Select(g => g.Group.Name))
+                          </div>
+                         
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Logo:
+                        </div>
+                        <div>
+                            @Model.Scholl.Logo100
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Minhs:
+                        </div>
+                        <div>
+                            @Model.Scholl.Minhs
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Maxhs:
+                        </div>
+                        <div>
+                            @Model.Scholl.Maxhs
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Minage:
+                        </div>
+                        <div>
+                            @Model.Scholl.Minage
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Maxage:
+                        </div>
+                        <div>
+                            @Model.Scholl.Maxage
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Notes:
+                        </div>
+                        <div>
+                            @Model.Scholl.Notes
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Shortcopy:
+                        </div>
+                        <div>
+                            @Model.Scholl.Shortcopy
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Targeting:
+                        </div>
+                        <div>
+                            @Model.Scholl.Targeting
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Accreditation:
+                        </div>
+                        <div>
+                            @Model.Scholl.Accreditation
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Highlights:
+                        </div>
+                        <div>
+                            @Model.Scholl.Highlights
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Alert:
+                        </div>
+                        <div>
+                            @Model.Scholl.Alert
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            Startdate:
+                        </div>
+                        <div>
+                            @Model.Scholl.Startdate
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Scoreadjustment:
+                        </div>
+                        <div>
+                            @Model.Scholl.Scoreadjustment
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="formlabel">
+                            TcpaText:
+                        </div>
+                        <div>
+                            @Model.Scholl.TcpaText
+                        </div>
+                    </td>
+                    <td>
+                        <div class="formlabel">
+                            Disclosure:
+                        </div>
+                        <div>
+                            @Model.Scholl.Disclosure
+                        </div>
+                    </td>
+                </tr>
+
+
+            </table>
+
+            <div class="center">
+                @if (Model.Scholl.Id == 0)
+                {
+                    <button id="Valid" class="button" style="display:none;" onclick="AjaxPartialUpdate('Create','SchoolsDetails')">Create Source</button>
+                    <button class="filterbutton m-0" onclick="NonAjax('Cancel')">Cancel</button>
+                }
+                else
+                {
+                    <button id="Valid" class="button" onclick="AjaxPartialUpdate('Edit School','SchoolsDetails')">Edit</button>
+                    <button class="button-white" onclick="NonAjax('Cancel');">Go Back</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+<script>
+    ValidateForm();
+</script>

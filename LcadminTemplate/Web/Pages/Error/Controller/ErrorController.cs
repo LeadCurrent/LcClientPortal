@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
 
     public class ErrorController : Controller
     {

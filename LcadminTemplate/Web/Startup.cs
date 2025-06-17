@@ -22,6 +22,7 @@ using DinkToPdf.Contracts;
 using DinkToPdf;
 using static Data.RoleEnums;
 using System.Linq;
+using Data.DataContexts;
 
 
 namespace DotNet5Template
@@ -70,6 +71,26 @@ namespace DotNet5Template
             services.AddSingleton<IConverter, SynchronizedConverter>(
              provider => new SynchronizedConverter(new PdfTools())
             );
+
+            //test
+            services.AddDbContext<CMGContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("CMG"), sql => sql.CommandTimeout(300)));
+            services.AddDbContext<MSContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MS"), sql => sql.CommandTimeout(300)));
+            services.AddDbContext<ADHEREContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ADHERE"), sql => sql.CommandTimeout(300)));
+            services.AddDbContext<ACMEDIAContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ACMEDIA"), sql => sql.CommandTimeout(300)));
+            services.AddDbContext<PROMKTContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("PROMKT"), sql => sql.CommandTimeout(300)));
+            services.AddDbContext<CMContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("CM"), sql => sql.CommandTimeout(300)));
+
+            services.AddDbContext<TargetDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("TargetDb"), sql => sql.CommandTimeout(300)));
+
+            //test
+
             /* Helpers */
             GoogleAPI.Initialize();
             MicrosoftAPI.Initialize();
@@ -101,15 +122,48 @@ namespace DotNet5Template
 
             //Customers
             services.AddScoped<CustomerDataLibrary, CustomerDataLibrary>();
+         
+            //Levels
+            services.AddScoped<DegreeLevelDataLibrary, DegreeLevelDataLibrary>();
+
+            //AreaOfInterest
+            services.AddScoped<AreaOfInterestDataLibrary, AreaOfInterestDataLibrary>();
+
+            //StudentInterest
+            services.AddScoped<StudentInterestDataLibrary, StudentInterestDataLibrary>();
+
+            //Program
+            services.AddScoped<ProgramDataLibrary, ProgramDataLibrary>();
+
+            //Offers
+            services.AddScoped<OffersDataLibrary, OffersDataLibrary>();
 
             //Sources
             services.AddScoped<SourcesDataLibrary, SourcesDataLibrary>();
             services.AddScoped<AllocationDataLibrary, AllocationDataLibrary>();
+            services.AddScoped<SchoolsDataLibrary, SchoolsDataLibrary>();
+            services.AddScoped<CampusDataLibrary, CampusDataLibrary>();
+            services.AddScoped<GroupDataLibrary, GroupDataLibrary>();
+            services.AddHostedService<MigrationHostedService>();
 
             //NewDataLibrary
 
-            services.AddDbContextPool<DataContext>(options => options.UseSqlServer(CommonClasses.Environment.DBConnection()));
+            services.AddDbContextPool<DataContext>(options =>
+                options.UseSqlServer(
+                    CommonClasses.Environment.DBConnection(),
+                    sql => sql
+                        .EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(10),
+                            errorNumbersToAdd: null
+                        )
+                        .CommandTimeout(300)
+                )
+            );
 
+            //test
+            services.AddTransient<MigrationService>();
+            //test
 
 
             services.AddIdentity<User, IdentityRole>(options =>
@@ -180,6 +234,47 @@ namespace DotNet5Template
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
+            //test
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var migrationService = scope.ServiceProvider.GetRequiredService<MigrationService>();
+
+                // Run your migrations
+                //migrationService.MigrateClients();//done
+                //migrationService.MigrateSchools();//done
+                //migrationService.MigrateOffers();//done
+                //migrationService.MigrateStates();//done
+                //migrationService.MigratePostalCodes();//done
+                //migrationService.MigrateCampuses();//done
+                //migrationService.MigrateLevels();//done
+                //migrationService.MigratePrograms();//done
+                //migrationService.MigrateDegreePrograms();//done
+                //migrationService.MigrateCampusDegrees();//done
+                //migrationService.MigrateSources();//done
+                //migrationService.MigrateAllocations();//done
+                //migrationService.MigrateCampusPostalCodes();//remain
+                //migrationService.MigrateDownSellOffers();//done             
+                //migrationService.MigrateDownSellOfferPostalCodes();//remain
+                //migrationService.MigrateMasterSchools();//done
+                //migrationService.MigrateMasterSchoolMappings();//done
+                //migrationService.MigrateAreas();//done
+                //migrationService.MigrateProgramAreas();//done
+                //migrationService.MigrateInterests();//done
+                //migrationService.MigrateProgramInterests();//done
+                //migrationService.MigrateGroups();//done
+                //migrationService.MigrateSchoolGroups();//done
+                //migrationService.MigrateExtraRequiredEducation();//done
+                //migrationService.MigrateLeadPosts();//done
+                //migrationService.MigrateOfferTargeting();//done
+                //migrationService.MigratePingCache();//done
+                //migrationService.MigratePortalTargeting();//done
+                //migrationService.MigrateSearchPortals();//done
+                //migrationService.MigrateConfigEducationLevels();//done
+
+
+
+            }
+            //test
             app.UseExceptionHandler("/Error");
             app.UseHsts();
 

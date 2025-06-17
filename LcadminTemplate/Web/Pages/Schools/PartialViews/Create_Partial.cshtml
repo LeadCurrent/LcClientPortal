@@ -1,0 +1,16 @@
+﻿@using Data
+@using Web
+@model SchoolsViewModel
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.Scholl.Id)
+
+<div class="form-1000">
+    <div id="SchoolsDetails">
+        @{
+            await Html.RenderPartialAsync("Sections/SchoolsDetails.cshtml");
+        }
+    </div>
+</div>

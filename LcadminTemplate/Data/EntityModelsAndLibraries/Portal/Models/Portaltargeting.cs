@@ -77,5 +77,5 @@ public partial class Portaltargeting
 
     public DateTime SundayEnd { get; set; }
 
-    public virtual Searchportal Portal { get; set; }
+    //public virtual Searchportal Portal { get; set; }
 }

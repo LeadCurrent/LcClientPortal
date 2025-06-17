@@ -1,0 +1,138 @@
+﻿@using Data
+@using Web
+@model Web.SchoolsViewModel
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle"> Schools</div>
+<div>
+    <div class="form-1400">
+
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Create New School</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>Name</th>                   
+                  
+                    <th>Website</th>
+                   
+                    <th>SchoolsGroup</th>
+                    <th>Campuses</th>
+                    <th></th>
+                </tr>
+
+                @if (Model.Schools != null)
+                {
+                    if (!Model.ShowNoListAvailable)
+                    {
+                        @foreach (var school in Model.Schools)
+                        {
+                            <tr class="mobileportrait-mobilewide">
+                                <td>
+                                    <div><b class="secondary-text">School:</b></div>
+                                    <div>@Html.ActionLink(school?.Name ?? "No Name", "EditSchools", "Schools", new { SchoolId = school.Id })</div>
+
+                                   
+
+                                    <div><b class="secondary-text">Website:</b></div>
+                                    <div>@school.Website</div>
+
+                                   
+
+                                    <div><b class="secondary-text">SchoolsGroup:</b></div>
+                                    <div>
+                                        @{
+                                            var groupNames = Model.Groups
+                                            .Where(g => school.Schoolgroups.Any(sg => sg.Groupid == g.Id))
+                                            .Select(g => g.Name);
+                                        }
+                                        @string.Join("~", groupNames)
+                                    </div>
+                                    <div><b class="secondary-text">Campuses:</b></div>
+                                    <div>@Html.ActionLink(school?.Name ?? "No Name", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</div>
+
+                                    <div>
+                                        <button class="gridbutton" onclick="NonAjaxWithParam('Edit', @school.Id)">View</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="desktop">
+                                <td>@Html.ActionLink(school?.Name ?? "No Name", "EditSchools", "Schools", new { SchoolId = school.Id })</td>
+                               
+                              
+                                <td>@school.Website</td>
+                                
+                                <td>@school.Schoolgroup</td>                                
+                                <td>@Html.ActionLink(school?.Name ?? "No Name", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</td>
+                                <td>
+                                    <button class="gridbutton" onclick="NonAjaxWithParam('Edit', @school.Id)">View</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.Company?.Name))
+                                {
+                                    <span>Schools are not available for @Model.Company.Name Company</span>
+                                }
+                                else
+                                {
+                                    <span>Schools are not available</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr class="desktop">
+                            <td colspan="6">
+                                @if (!string.IsNullOrEmpty(Model.Company?.Name))
+                                {
+                                    <span>Schools are not available for @Model.Company.Name Company</span>
+                                }
+                                else
+                                {
+                                    <span>Schools are not available</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    highlightcurrentpage("nav_Schools");
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            liveSearch: true,
+            showSubtext: true
+        });
+    });
+</script>
+
+<script>
+    var schoolNamesArray = [];
+    @if (Model.Schools != null)
+    {
+        @foreach (var s in Model.Schools)
+        {
+            @:schoolNamesArray.push("@s.Name");
+        }
+    }
+
+    AutoCompleteSuggestions($('#SelectedSchoolName'), schoolNamesArray);
+</script>

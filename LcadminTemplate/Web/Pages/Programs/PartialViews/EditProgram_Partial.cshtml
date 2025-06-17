@@ -1,0 +1,27 @@
+﻿@using Data
+@using Web
+@model Web.ProgramVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Program.Id)
+
+
+    <div class="pagetitle">Edit Program</div>
+
+    <div class="form-1000">
+    <div class="white-bg">
+        @{
+            await Html.RenderPartialAsync("Sections/ProgramFields.cshtml");
+        }
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Update')">Save</button>
+            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+    </div>
+
+<script>
+    highlightcurrentpage("nav_Programs");
+</script>

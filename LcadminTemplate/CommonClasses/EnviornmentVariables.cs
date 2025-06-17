@@ -33,12 +33,24 @@ namespace CommonClasses
         public static string DBConnection()
         {
             if (environment == "Dev")
-                return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
-            else if (environment == "Test")
-                return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
+                return "Server=tcp:lcdotnet.database.windows.net,1433;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;User Id=lc-dotnet2024;Password=wQ7emaILDcxfw7q;max pool size=5000;";
+            else if (environment == "Prod")
+                return "Server=tcp:lcdotnet.database.windows.net,1433;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;User Id=lc-dotnet2024;Password=wQ7emaILDcxfw7q;max pool size=5000;TransparentNetworkIPResolution=False;";
+
             else
                 return "";
         }
+
+        //public static string DBConnection()
+        //{
+        //    if (environment == "Dev")
+        //        return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
+        //    else if (environment == "Test")
+        //        return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
+        //    else
+        //        return "";
+        //}
+
 
         public static string MicrosoftClientId()
         {
@@ -154,6 +166,13 @@ namespace CommonClasses
             }
         }
         public static bool Sources
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public static bool Schools
         {
             get
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data;
 
@@ -106,4 +107,99 @@ public partial class Offertargeting
     public decimal CecCplG { get; set; }
 
     public virtual Offer Offer { get; set; }
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
+    public int? oldId { get; set; }
+
+    // --- Monday ---
+    [NotMapped]
+    public int MondayStartHour => MondayStart.Hour;
+
+    [NotMapped]
+    public int MondayStartMinute => MondayStart.Minute;
+
+    [NotMapped]
+    public int MondayEndHour => MondayEnd.Hour;
+
+    [NotMapped]
+    public int MondayEndMinute => MondayEnd.Minute;
+
+    // --- Tuesday ---
+    [NotMapped]
+    public int TuesdayStartHour => TuesdayStart.Hour;
+
+    [NotMapped]
+    public int TuesdayStartMinute => TuesdayStart.Minute;
+
+    [NotMapped]
+    public int TuesdayEndHour => TuesdayEnd.Hour;
+
+    [NotMapped]
+    public int TuesdayEndMinute => TuesdayEnd.Minute;
+
+    // --- Wednesday ---
+    [NotMapped]
+    public int WednesdayStartHour => WednesdayStart.Hour;
+
+    [NotMapped]
+    public int WednesdayStartMinute => WednesdayStart.Minute;
+
+    [NotMapped]
+    public int WednesdayEndHour => WednesdayEnd.Hour;
+
+    [NotMapped]
+    public int WednesdayEndMinute => WednesdayEnd.Minute;
+
+    // --- Thursday ---
+    [NotMapped]
+    public int ThursdayStartHour => ThursdayStart.Hour;
+
+    [NotMapped]
+    public int ThursdayStartMinute => ThursdayStart.Minute;
+
+    [NotMapped]
+    public int ThursdayEndHour => ThursdayEnd.Hour;
+
+    [NotMapped]
+    public int ThursdayEndMinute => ThursdayEnd.Minute;
+
+    // --- Friday ---
+    [NotMapped]
+    public int FridayStartHour => FridayStart.Hour;
+
+    [NotMapped]
+    public int FridayStartMinute => FridayStart.Minute;
+
+    [NotMapped]
+    public int FridayEndHour => FridayEnd.Hour;
+
+    [NotMapped]
+    public int FridayEndMinute => FridayEnd.Minute;
+
+    // --- Saturday ---
+    [NotMapped]
+    public int SaturdayStartHour => SaturdayStart.Hour;
+
+    [NotMapped]
+    public int SaturdayStartMinute => SaturdayStart.Minute;
+
+    [NotMapped]
+    public int SaturdayEndHour => SaturdayEnd.Hour;
+
+    [NotMapped]
+    public int SaturdayEndMinute => SaturdayEnd.Minute;
+
+    // --- Sunday ---
+    [NotMapped]
+    public int SundayStartHour => SundayStart.Hour;
+
+    [NotMapped]
+    public int SundayStartMinute => SundayStart.Minute;
+
+    [NotMapped]
+    public int SundayEndHour => SundayEnd.Hour;
+
+    [NotMapped]
+    public int SundayEndMinute => SundayEnd.Minute;
+
 }

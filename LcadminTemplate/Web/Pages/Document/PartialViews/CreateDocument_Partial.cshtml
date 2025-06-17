@@ -19,6 +19,7 @@
     }
 </script>
 
+
 <div class="pagetitle">Create Document</div>
 
 <div class="form-800">
@@ -39,7 +40,7 @@
 
                 @if (!String.IsNullOrEmpty(Model.ErrorMsg))
                 {
-                    <div style="color: var(--ErrorText); text-align: center;font-weight: bold;">
+                    <div id="errorMessage" style="color: var(--ErrorText); text-align: center;font-weight: bold;">
                         <i>@Model.ErrorMsg</i>
                     </div>
                 }
@@ -63,4 +64,12 @@
 
 <script>
     ValidateForm();
+</script>
+<script>
+    document.addEventListener("click", function () {
+        const errorDiv = document.getElementById("errorMessage");
+        if (errorDiv) {
+            errorDiv.style.display = "none";
+        }
+    });
 </script>

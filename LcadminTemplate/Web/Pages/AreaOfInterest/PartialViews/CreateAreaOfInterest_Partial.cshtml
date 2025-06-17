@@ -1,0 +1,34 @@
+﻿@using Data
+@using Web
+@model Web.AreaOfInterestVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">Create Area Of Interest</div>
+
+
+    <div class="form-800 input-form">
+        <div class="white-bg">
+        <table>
+            <tr>
+                <td class="formlabel">Name:</td>
+            </tr>
+            <tr>
+                <td>@Html.EditorFor(x => x.AreaOfInterest.Name)</td>
+            </tr>
+            <tr>
+              <td  class="formlabel">Copy:</td>  
+            </tr>
+            <tr>
+                <td>@Html.TextAreaFor(x => x.AreaOfInterest.Copy)</td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+             <button class="button" onclick="NonAjax('Create')">Create</button>
+             <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+    </div>

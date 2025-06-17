@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Data;
 
-public partial class School
+public partial class Scholls
 {
     public int Id { get; set; }
+
 
     public string Name { get; set; }
 
@@ -45,10 +46,9 @@ public partial class School
 
     public string Schoolgroup { get; set; }
 
+    public int? oldId { get; set; }
     public string TcpaText { get; set; }
 
-    public int CompanyId { get; set; }
-    public Company Company { get; set; }
     public virtual ICollection<Campus> Campuses { get; set; } = new List<Campus>();
 
     public virtual ICollection<Offer> Offers { get; set; } = new List<Offer>();

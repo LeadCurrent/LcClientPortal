@@ -1,0 +1,248 @@
+﻿@using Data
+@using Web
+@model Web.OfferVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="input-form">
+    <table>
+        <tr>
+            <td>Client</td>
+            <td>
+                @Html.DropDownListFor(x => x.SelectedClientId, Model.ClientDropdown, new { @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>School</td>
+            <td>
+                @Html.DropDownListFor(x => x.SelectedSchoolId, Model.SchoolDropdown, new { @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>Offer Type</td>
+            <td>
+                @Html.DropDownListFor(x => x.SelectedOfferType, Model.OfferTypeList, new { @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>Data Lead URL</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Url, new { @class = "" })
+            </td>
+        </tr>
+        <tr>
+            <td>Warm Transfer Phone</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Transferphone, new { @class = "" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Lead Conduit Campaign ID</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Lccampaignid, new { @class = "" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>OneSearch Delivery Profile</td>
+            <td>
+                @Html.DropDownListFor(x => x.SelectedOfferType, Model.DeliveryDropDownList, new { @class = "form-control" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Revenue per lead (RPL)</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Rpl, new { @class = "" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Daily Cap</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Dcap, new { @class = "" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Weekly Cap (Sun-Sat)</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Wcap, new { @class = "" })
+            </td>
+        </tr>
+        <tr>
+            <td>Monthly Cap</td>
+            <td>
+                @Html.EditorFor(x => x.Offer.Mcap, new { @class = "" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Military Only</td>
+            <td>
+                <label> Military Only</label>
+                @Html.CheckBoxFor(x => x.Offer.Militaryonly)
+
+                <label>No Military</label>
+                @Html.CheckBoxFor(x => x.Offer.Nomilitary)
+
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>
+                @Html.CheckBoxFor(x => x.Offer.Active)
+            </td>
+        </tr>
+    </table>
+
+    <div class="sectiontitle center">
+        Time and Date Targeting
+    </div>
+
+    <div class="day-targeting container mt-3">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.MondayActive, new { @class = "form-check-input", id = "mondayCheck" })
+                    <label class="form-check-label" for="mondayCheck">Monday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.MondayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.MondayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.MondayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.MondayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.TuesdayActive, new { @class = "form-check-input", id = "tuesdayCheck" })
+                    <label class="form-check-label" for="tuesdayCheck">Tuesday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.TuesdayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.TuesdayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.TuesdayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.TuesdayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.WednesdayActive, new { @class = "form-check-input", id = "wednesdayCheck" })
+                    <label class="form-check-label" for="wednesdayCheck">Wednesday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.WednesdayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.WednesdayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.WednesdayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.WednesdayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.ThursdayActive, new { @class = "form-check-input", id = "thursdayCheck" })
+                    <label class="form-check-label" for="thursdayCheck">Thursday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.ThursdayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.ThursdayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.ThursdayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.ThursdayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.FridayActive, new { @class = "form-check-input", id = "fridayCheck" })
+                    <label class="form-check-label" for="fridayCheck">Friday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.FridayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.FridayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.FridayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.FridayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.SaturdayActive, new { @class = "form-check-input", id = "saturdayCheck" })
+                    <label class="form-check-label" for="saturdayCheck">Saturday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.SaturdayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.SaturdayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.SaturdayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.SaturdayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="form-check">
+                    @Html.CheckBoxFor(x => x.Offer.Targeting.SundayActive, new { @class = "form-check-input", id = "sundayCheck" })
+                    <label class="form-check-label" for="sundayCheck">Sunday</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="me-2">Start Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.SundayStartHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.SundayStartMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+            <div class="col-md-5">
+                <label class="me-2">End Time:</label>
+                @Html.EditorFor(x => x.Offer.Targeting.SundayEndHour, new { htmlAttributes = new { @class = "form-control d-inline-block me-1", style = "width:60px;" } }) :
+                @Html.EditorFor(x => x.Offer.Targeting.SundayEndMinute, new { htmlAttributes = new { @class = "form-control d-inline-block", style = "width:60px;" } })
+            </div>
+        </div>
+    </div>
+
+
+    <div class="buttons">
+        <button type="submit">Save</button>
+        <button type="button">Save And Add Another</button>
+        <button type="button">Cancel</button>
+    </div>
+
+</div>

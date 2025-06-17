@@ -1,0 +1,117 @@
+﻿@model Web.SchoolCampusesViewModel
+@{
+    if (false)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+<div>
+    
+    <div class="pagetitle"> Campuses for @Model.School?.Name</div>
+    <div class="form-1400">        
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Address</th>
+                    <th>Type</th>
+                    <th>Clientid</th>
+                    <th>Copy</th>
+                </tr>
+
+                @if (Model.School != null)
+                {
+                    if (Model.Campuses != null && Model.Campuses.Any())
+                    {
+                        @foreach (var c in Model.Campuses)
+                        {
+                            <tr class="mobileportrait-mobilewide">
+                            
+                                <td>@c.Name</td>
+                                <td>@c.City</td>
+                                <td>@c.Address</td>
+                                <td>@c.Campustype</td>
+                                <td>@c.Clientid</td>
+                                <td>@c.Copy</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", "Campus", new { id = c.Id }, new { @class = "gridbutton" })
+                                </td>
+                            </tr>
+                           
+
+                            <tr class="desktop">
+                                <td>@c.Name</td>
+                                <td>@c.City</td>
+                                <td>@c.Address</td>
+                                <td>@c.Campustype</td>
+                                <td>@c.Copy</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", "Campus", new { id = c.Id }, new { @class = "gridbutton" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.School?.Name))
+                                {
+                                    <span>Campuses are not available for @Model.School.Name </span>
+                                }
+                                else
+                                {
+                                    <span>Campuses are not available</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr class="desktop">
+                            <td colspan="6">
+                                @if (!string.IsNullOrEmpty(Model.School?.Name))
+                                {
+                                    <span>Campuses are not available for @Model.School.Name </span>
+                                }
+                                else
+                                {
+                                    <span>Campuses are not available</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    highlightcurrentpage("nav_Schools");
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            liveSearch: true,
+            showSubtext: true
+        });
+    });
+</script>
+
+<script>
+    var schoolNamesArray = [];
+    @if (Model.Campuses != null)
+    {
+        @foreach (var s in Model.Campuses)
+        {
+            @:schoolNamesArray.push("@s.Name");
+        }
+    }
+
+    AutoCompleteSuggestions($('#SelectedSchoolName'), schoolNamesArray);
+</script>
+

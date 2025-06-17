@@ -10,6 +10,10 @@ public partial class Campuspostalcode
     public int Campusid { get; set; }
 
     public int Postalcodeid { get; set; }
+    public int? oldId { get; set; }
+
+    public int? CompanyId { get; set; }
+    public Company Company { get; set; }
 
     public virtual Campus Campus { get; set; }
 

@@ -1,0 +1,82 @@
+﻿@using Data
+@using Web
+@model Web.StudentInterestVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+@if (Model.ShowEditStudentInterest)
+{
+    <div class="pagetitle">Edit Student Interest</div>
+
+    <div class="form-800 input-form">
+        <div class="white-bg">
+            @Html.HiddenFor(x => x.StudentInterest.Id)
+
+            <table>
+                <tr>
+                    <td class="formlabel">Name:</td>
+                </tr>
+                <tr>
+                    <td>@Html.EditorFor(x => x.StudentInterest.Name)</td>
+                </tr>
+                <tr>
+                    <td class="formlabel">Copy:</td>
+                </tr>
+                <tr>
+                    <td>@Html.TextAreaFor(x => x.StudentInterest.Copy)</td>
+                </tr>
+            </table>
+
+            <div class="buttons">
+                <button class="button" onclick="NonAjax('Update')">Update</button>
+                <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="pagetitle">Manage Student Interest</div>
+
+    <div class="form-800">
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Create New Interest</button>
+        </div>
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr class="desktop roundheader">
+                    <th>Name</th>
+                    <th style="width:20%"> Manage</th>
+                </tr>
+
+                @if (Model.StudentInterests != null)
+                {
+                    foreach (var StudentInterest in Model.StudentInterests)
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                <div><b class="secondary-text">Name:</b></div>
+                                <div>@StudentInterest.Name</div>
+                                <div class="buttons">
+                                    <button class="gridbutton" onclick="AjaxWithParam('Show Update', @StudentInterest.Id)">Edit</button>
+                                    <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @StudentInterest.Id, 'Are you sure you want to delete this Student Interest?')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="desktop">
+                            <td>@StudentInterest.Name</td>
+                            <td>
+                                <button class="gridbutton" onclick="AjaxWithParam('Show Update', @StudentInterest.Id)">Edit</button>
+                                <button class="gridbutton" onclick="NonAjaxWithParamAndConfirmation('Delete', @StudentInterest.Id, 'Are you sure you want to delete this Student Interest?')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+

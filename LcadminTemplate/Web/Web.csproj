@@ -93,6 +93,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\CompanyAdmin\CompanyProfile\PartialViews\Sections\" />
+    <Folder Include="Pages\MigrateData\PartialViews\Sections\" />
     <Folder Include="Pages\Sources\EnumDDL\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
