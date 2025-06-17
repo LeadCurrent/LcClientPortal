@@ -44,9 +44,9 @@ namespace CommonClasses
         public static string DBConnection()
         {
             if (environment == "Dev")
-                return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
+                return "Server=(localdb)\\MSSQLLocalDB;Database=LcAdminBkp27-05-2025;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;max pool size=5000; Pooling=true";
             else if (environment == "Test")
-                return "Server=(localdb)\\MSSQLLocalDB;Database=LcClientPortal;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
+                return "Server=(localdb)\\MSSQLLocalDB;Database=LcAdminBkp27-05-2025;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;";
             else
                 return "";
         }

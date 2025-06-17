@@ -1,0 +1,57 @@
+﻿@using Data
+@using Web
+@model Web.MigrateDataVM
+@using static Web.GeneralEnumDDLs
+
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.AjaxUpdate)
+
+<div class="pagetitle">Migrate Data</div>
+
+<div class="form-800">
+    <div class="white-bg">
+        <table class="tablestyle">
+            <tr class="roundheader">
+                <th>
+                    Button
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <button id="clientbutton" class="gridbutton" onclick="Ajax('Clients');">Clients,schools&offers</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="states" class="gridbutton" onclick="Ajax('States');">States,PostalCodes</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="Campuseslevels" class="gridbutton" onclick="Ajax('Campuses');">Campuses,Levels&Programs</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="degree" class="gridbutton" onclick="Ajax('Degree');">Degree</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="Allocations" class="gridbutton" onclick="Ajax('Allocations');">Allocations</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="Downsell" class="gridbutton" onclick="Ajax('Downsell');">Downsell</button>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <button id="ExtraRequiredEducation" class="gridbutton" onclick="Ajax('ExtraRequiredEducation');">ExtraRequiredEducation</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+

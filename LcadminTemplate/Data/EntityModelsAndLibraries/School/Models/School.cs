@@ -48,9 +48,6 @@ public partial class Scholls
 
     public int? oldId { get; set; }
     public string TcpaText { get; set; }
-
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
     public virtual ICollection<Campus> Campuses { get; set; } = new List<Campus>();
 
     public virtual ICollection<Offer> Offers { get; set; } = new List<Offer>();
