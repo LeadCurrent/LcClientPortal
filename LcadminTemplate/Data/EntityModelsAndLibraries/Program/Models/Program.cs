@@ -13,9 +13,6 @@ public partial class Program
     public string Copy { get; set; }
 
     public int? oldId { get; set; }
-
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
     public virtual ICollection<Degreeprogram> Degreeprograms { get; set; } = new List<Degreeprogram>();
 
     public virtual ICollection<Programarea> ProgramAreas { get; set; } = new List<Programarea>();

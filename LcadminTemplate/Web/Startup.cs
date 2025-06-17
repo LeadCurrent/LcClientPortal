@@ -144,10 +144,23 @@ namespace DotNet5Template
             services.AddScoped<SchoolsDataLibrary, SchoolsDataLibrary>();
             services.AddScoped<CampusDataLibrary, CampusDataLibrary>();
             services.AddScoped<GroupDataLibrary, GroupDataLibrary>();
+            services.AddHostedService<MigrationHostedService>();
 
             //NewDataLibrary
 
-            services.AddDbContextPool<DataContext>(options => options.UseSqlServer(CommonClasses.Environment.DBConnection()));
+            services.AddDbContextPool<DataContext>(options =>
+                options.UseSqlServer(
+                    CommonClasses.Environment.DBConnection(),
+                    sql => sql
+                        .EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(10),
+                            errorNumbersToAdd: null
+                        )
+                        .CommandTimeout(300)
+                )
+            );
+
             //test
             services.AddTransient<MigrationService>();
             //test

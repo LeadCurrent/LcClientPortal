@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250529080835_removecompanyid")]
+    partial class removecompanyid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1932,6 +1935,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
@@ -1939,6 +1945,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("LevelsIdMap");
                 });
@@ -2095,6 +2103,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("NewId")
                         .HasColumnType("int");
 
@@ -2102,6 +2113,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("ProgramsIdMap");
                 });
@@ -2387,6 +2400,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -2397,6 +2413,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Levels");
                 });
@@ -3108,6 +3126,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Copy")
                         .HasColumnType("nvarchar(max)");
 
@@ -3118,6 +3139,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Programs");
                 });
@@ -5534,6 +5557,17 @@ namespace Data.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Level.Models.LevelsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_school_mappingsIdMap", b =>
                 {
                     b.HasOne("Data.Company", "Company")
@@ -5590,6 +5624,17 @@ namespace Data.Migrations
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.PrograminterestsIdMap", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramsIdMap", b =>
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
@@ -5658,6 +5703,15 @@ namespace Data.Migrations
                 });
 
             modelBuilder.Entity("Data.Leadpost", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Level", b =>
                 {
                     b.HasOne("Data.Company", "Company")
                         .WithMany()
@@ -5778,6 +5832,15 @@ namespace Data.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Data.Program", b =>
+                {
+                    b.HasOne("Data.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
                 });
