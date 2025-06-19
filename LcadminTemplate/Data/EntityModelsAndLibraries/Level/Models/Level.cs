@@ -13,9 +13,6 @@ public partial class Level
     public string Copy { get; set; }
     public int? oldId { get; set; }  
 
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
-
     [NotMapped]
     public bool IsChecked{ get; set; }
 

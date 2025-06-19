@@ -1,4 +1,7 @@
-﻿using Data.EntityModelsAndLibraries.Allocation.Models;
+﻿// MigrationService
+
+
+using Data.EntityModelsAndLibraries.Allocation.Models;
 using Data.EntityModelsAndLibraries.Area.Models;
 using Data.EntityModelsAndLibraries.Campus.Models;
 using Data.EntityModelsAndLibraries.Degreeprogram.Models;
@@ -62,6 +65,7 @@ namespace Data.DataContexts
 
             var globalClients = new Dictionary<string, Client>();
             var globalSchools = new Dictionary<string, Scholls>();
+            var globalGroups = new Dictionary<string, Group>();
 
             Parallel.ForEach(sourceConnections, kvp =>
             {
@@ -79,14 +83,10 @@ namespace Data.DataContexts
 
                 try
                 {
-                    // Insert client into target
-                    var newClient = new Client
-                    {
-                        Name = sourceClient.Name,
-                        Active = sourceClient.Active,
-                        Direct = sourceClient.Direct,
-                        oldId = sourceClient.Id
-                    };
+                    // Always create a fresh DbContext per thread
+                    var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+                    optionsBuilder.UseSqlServer(_configuration.GetConnectionString("TargetDb"));
+                    using var targetContext = new DataContext(optionsBuilder.Options);
 
                     using var source = new SourceDbContext(connectionString);
 
@@ -99,6 +99,8 @@ namespace Data.DataContexts
                     //localMigrationService.MigrateClients(source, companyId, globalClients);
                     //localMigrationService.MigrateSchools(source, companyId, globalSchools);
                     //localMigrationService.MigrateOffers(source, companyId);
+                    //localMigrationService.MigrateGroups(source, companyId, globalGroups);
+                    //localMigrationService.MigrateSchoolGroups(source, companyId);
                     //localMigrationService.MigrateCampuses(source, companyId);
 
                     Console.WriteLine($"Finished migrating: {dbName}");
@@ -110,15 +112,15 @@ namespace Data.DataContexts
             });
 
             // Run once after all parallel tasks
-            //MigrateStates();
+            MigrateStates();
             //MigratePostalCodes();
             //MigrateLevelsProgramsAndDegreePrograms();
             //MigrateCampusDegrees();
             //MigrateSources();
             //MigrateAllocations();
             //MigrateCampusPostalCodes();
-            MigrateDownSellOffers();
-            MigrateDownSellOfferPostalCodes();
+            //MigrateDownSellOffers();
+            //MigrateDownSellOfferPostalCodes();
             //MigrateMasterSchools();
             //MigrateMasterSchoolMappings();
             //MigrateAreas();
@@ -149,29 +151,10 @@ namespace Data.DataContexts
                 {
                     var newClient = new Client
                     {
-                        Name = sourceClient.Name,
-                        Abbr = sourceClient.Abbr,
-                        oldId = sourceClient.Id,
-                        Website = sourceClient.Website,
-                        Logo100 = sourceClient.Logo100,
-                        Maxage = sourceClient.Maxage,
-                        Minage = sourceClient.Minage,
-                        Minhs = sourceClient.Minhs,
-                        Maxhs = sourceClient.Maxhs,
-                        Notes = sourceClient.Notes,
-                        Shortcopy = sourceClient.Shortcopy,
-                        Targeting = sourceClient.Targeting,
-                        Accreditation = sourceClient.Accreditation,
-                        Highlights = sourceClient.Highlights,
-                        Alert = sourceClient.Alert,
-                        Startdate = sourceClient.Startdate,
-                        Scoreadjustment = sourceClient.Scoreadjustment,
-                        Militaryfriendly = sourceClient.Militaryfriendly,
-                        Disclosure = sourceClient.Disclosure,
-                        Schoolgroup = sourceClient.Schoolgroup,
-                        TcpaText = sourceClient.Tcpa_Text,
-                        CompanyId = companyId
-
+                        Name = src.Name,
+                        Active = src.Active,
+                        Direct = src.Direct,
+                        oldId = src.Id
                     };
                     _target.Clients.Add(newClient);
                     _target.SaveChanges();
@@ -188,7 +171,6 @@ namespace Data.DataContexts
             }
             _target.SaveChanges();
         }
-
         private void MigrateSchools(SourceDbContext source, int companyId, Dictionary<string, Scholls> globalSchools)
         {
             foreach (var src in source.Schools.ToList())
@@ -238,6 +220,109 @@ namespace Data.DataContexts
             _target.SaveChanges();
         }
 
+        private static readonly object _groupLock = new object();
+
+        public void MigrateGroups(SourceDbContext source, int companyId, Dictionary<string, Group> globalGroups)
+        {
+            var sourceGroups = source.groups.AsNoTracking().ToList();
+            var newGroupIdMaps = new List<GroupIdMap>();
+
+            foreach (var src in sourceGroups)
+            {
+                var key = src.Name?.Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(key)) continue;
+
+                Group existing;
+
+                lock (_groupLock)
+                {
+                    // Double-check inside the lock to prevent duplicates
+                    if (!globalGroups.TryGetValue(key, out existing))
+                    {
+                        existing = new Group
+                        {
+                            Name = src.Name,
+                            Copy = src.Copy,
+                            CompanyId = companyId,
+                            oldId = src.Id
+                        };
+
+                        _target.Groups.Add(existing);
+                        _target.SaveChanges();
+
+                        globalGroups[key] = existing;
+                    }
+                }
+
+                // Add mapping
+                newGroupIdMaps.Add(new GroupIdMap
+                {
+                    OldId = src.Id,
+                    NewId = existing.Id,
+                    CompanyId = companyId
+                });
+            }
+
+            if (newGroupIdMaps.Any())
+            {
+                _target.GroupIdMap.AddRange(newGroupIdMaps);
+                _target.SaveChanges();
+            }
+        }
+        public void MigrateSchoolGroups(SourceDbContext source, int companyId)
+        {
+            var schoolMap = _target.SchoolIdMap
+                .Where(x => x.CompanyId == companyId)
+                .ToDictionary(x => x.OldId, x => x.NewId);
+
+            var groupMap = _target.GroupIdMap
+                .Where(x => x.CompanyId == companyId)
+                .ToDictionary(x => x.OldId, x => x.NewId);
+
+            var sourceGroups = source.schoolgroups.AsNoTracking().ToList();
+
+            var newSchoolGroups = new List<Schoolgroup>();
+            var schoolGroupIdMappings = new List<SchoolGroupsIdMap>(); // Use dedicated IdMap
+
+            foreach (var src in sourceGroups)
+            {
+                if (!schoolMap.TryGetValue(src.Schoolid, out var newSchoolId)) continue;
+                if (!groupMap.TryGetValue(src.Groupid, out var newGroupId)) continue;
+
+                var newSchoolGroup = new Schoolgroup
+                {
+                    Schoolid = newSchoolId,
+                    Groupid = newGroupId,
+                    CompanyId = companyId,
+                    oldId = src.Id
+                };
+
+                newSchoolGroups.Add(newSchoolGroup);
+            }
+
+            if (newSchoolGroups.Any())
+            {
+                _target.Schoolgroups.AddRange(newSchoolGroups);
+                _target.SaveChanges();
+
+                // After saving, IDs are populated
+                foreach (var sg in newSchoolGroups)
+                {
+                    schoolGroupIdMappings.Add(new SchoolGroupsIdMap
+                    {
+                        OldId = sg.oldId ?? 0,
+                        NewId = sg.Id,
+                        CompanyId = companyId
+                    });
+                }
+
+                _target.SchoolGroupsIdMap.AddRange(schoolGroupIdMappings); // Use correct map
+                _target.SaveChanges();
+                _target.ChangeTracker.Clear();
+            }
+
+            Console.WriteLine($"✅ Migrated {newSchoolGroups.Count} Schoolgroups for CompanyId {companyId}");
+        }
         private void MigrateOffers(SourceDbContext source, int companyId)
         {
             var schoolMap = _target.SchoolIdMap.Where(x => x.CompanyId == companyId).ToList();
@@ -295,47 +380,51 @@ namespace Data.DataContexts
             }
             _target.SaveChanges();
         }
-
         public void MigrateStates()
         {
-            // Step 1: Get all companies from the target DB
+            // Get all companies
             var companies = _target.Company.ToList();
 
-            // Step 2: Get source connection strings (excluding the target)
+            // Get all source DB connections except target
             var sourceConnections = _configuration
                 .GetSection("ConnectionStrings")
                 .GetChildren()
                 .Where(cs => cs.Key != "TargetDb")
                 .ToDictionary(cs => cs.Key, cs => cs.Value);
 
+            // Track already inserted state names
+            var existingStateNames = new HashSet<string>(
+                _target.PortalStates.Select(s => s.Name).ToList(),
+                StringComparer.OrdinalIgnoreCase
+            );
+
             foreach (var kvp in sourceConnections)
             {
                 var dbName = kvp.Key;
                 var connectionString = kvp.Value;
 
-                // Step 3: Match the DB name to a company
                 var company = companies.FirstOrDefault(c => c.Name == dbName);
                 if (company == null)
-                {
-
                     continue;
-                }
 
                 var companyId = company.Id;
 
                 using var source = new SourceDbContext(connectionString);
-                var sourceStates = source.States.ToList();
+                var sourceStates = source.States.AsNoTracking().ToList();
 
                 foreach (var sourceState in sourceStates)
                 {
+                    // Skip if this Name already exists (case-insensitive)
+                    if (existingStateNames.Contains(sourceState.Name))
+                        continue;
+
                     var newState = new PortalStates
                     {
                         Name = sourceState.Name,
                         Abbr = sourceState.Abbr,
                         Country = sourceState.Country,
                         Timezone = sourceState.Timezone,
-                        oldId = sourceState.Id,
-
+                        oldId = sourceState.Id
                     };
 
                     _target.PortalStates.Add(newState);
@@ -349,12 +438,11 @@ namespace Data.DataContexts
                     });
 
                     _target.SaveChanges();
+
+                    // Track this name as inserted
+                    existingStateNames.Add(sourceState.Name);
                 }
-
-
             }
-
-
         }
 
         public void MigratePostalCodes()
@@ -441,7 +529,6 @@ namespace Data.DataContexts
 
 
         }
-
         private void MigrateCampuses(SourceDbContext source, int companyId)
         {
             var schoolMap = _target.SchoolIdMap.Where(x => x.CompanyId == companyId).ToList();
@@ -500,7 +587,6 @@ namespace Data.DataContexts
                 }
             }
         }
-
         public void MigrateLevelsProgramsAndDegreePrograms()
         {
             var sourceConnections = _configuration
@@ -623,7 +709,6 @@ namespace Data.DataContexts
                 Console.WriteLine("Completed Levels, Programs, DegreePrograms migration for CMG.");
             }
         }
-
         public void MigrateCampusDegrees()
         {
             var companies = _target.Company.ToList();
@@ -693,7 +778,6 @@ namespace Data.DataContexts
             }
 
         }
-
         public void MigrateSources()
         {
             var companies = _target.Company.ToList();
@@ -753,7 +837,6 @@ namespace Data.DataContexts
             }
 
         }
-
         public void MigrateAllocations()
         {
             var companies = _target.Company.ToList();
@@ -847,7 +930,6 @@ namespace Data.DataContexts
             }
 
         }
-
         public void MigrateCampusPostalCodes()
         {
             const int batchSize = 20000;
@@ -936,10 +1018,1410 @@ namespace Data.DataContexts
                 Console.WriteLine($"🎯 {dbName}: Completed MigrateCampusPostalCodes");
             }
         }
+        public void MigrateDownSellOffers()
+        {
+            const int batchSize = 5000;
 
+            var companies = _target.Company.AsNoTracking().ToList();
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            // Build global uniqueness key: key = name|clientid
+            var globalKeyToOfferId = new Dictionary<string, int>();
+            var globalKeyToOfferEntity = new Dictionary<string, DownSellOffer>();
+            var allIdMaps = new List<DownSellOffersIdMap>();
+
+            // STEP 1: Load already existing DownSellOffers from DB to prevent duplicates
+            var existingOffers = _target.DownSellOffers
+                .AsNoTracking()
+                .Select(o => new { o.Id, o.Name, o.Clientid })
+                .ToList();
+
+            foreach (var existing in existingOffers)
+            {
+                var key = $"{existing.Name?.Trim().ToLower()}|{existing.Clientid}";
+                globalKeyToOfferId[key] = existing.Id;
+            }
+
+            // STEP 2: Collect new unique DownSellOffers from all sources
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null) continue;
+
+                using var source = new SourceDbContext(connectionString);
+
+                var clientMap = _target.ClientIdMap
+                    .Where(x => x.CompanyId == company.Id)
+                    .ToDictionary(x => x.OldId, x => x.NewId);
+
+                var offers = source.DownSellOffers.AsNoTracking().ToList();
+
+                foreach (var src in offers)
+                {
+                    if (!clientMap.TryGetValue(src.Clientid, out var newClientId))
+                        continue;
+
+                    var key = $"{src.Name?.Trim().ToLower()}|{newClientId}";
+                    if (globalKeyToOfferId.ContainsKey(key)) continue;
+
+                    var entity = new DownSellOffer
+                    {
+                        Clientid = newClientId,
+                        Formurl = src.Formurl,
+                        Priority = src.Priority,
+                        Dcap = src.Dcap,
+                        Active = src.Active,
+                        Dcapamt = src.Dcapamt,
+                        Mcap = src.Mcap,
+                        Mcapamt = src.Mcapamt,
+                        Wcap = src.Wcap,
+                        Wcapamt = src.Wcapamt,
+                        Type = src.Type,
+                        Transferphone = src.Transferphone,
+                        IncludeUscitizens = src.IncludeUscitizens,
+                        IncludePermanentResidents = src.IncludePermanentResidents,
+                        IncludeGreenCardHolders = src.IncludeGreenCardHolders,
+                        IncludeNonCitizens = src.IncludeNonCitizens,
+                        IncludeInternet = src.IncludeInternet,
+                        IncludeNoInternet = src.IncludeNoInternet,
+                        IncludeMilitary = src.IncludeMilitary,
+                        IncludeNonMilitary = src.IncludeNonMilitary,
+                        Name = src.Name,
+                        Description = src.Description,
+                        MondayActive = src.MondayActive,
+                        MondayStartTime = src.MondayStartTime,
+                        MondayEndTime = src.MondayEndTime,
+                        TuesdayActive = src.TuesdayActive,
+                        TuesdayStartTime = src.TuesdayStartTime,
+                        TuesdayEndTime = src.TuesdayEndTime,
+                        WednesdayActive = src.WednesdayActive,
+                        WednesdayStartTime = src.WednesdayStartTime,
+                        WednesdayEndTime = src.WednesdayEndTime,
+                        ThursdayActive = src.ThursdayActive,
+                        ThursdayStartTime = src.ThursdayStartTime,
+                        ThursdayEndTime = src.ThursdayEndTime,
+                        FridayActive = src.FridayActive,
+                        FridayStartTime = src.FridayStartTime,
+                        FridayEndTime = src.FridayEndTime,
+                        SaturdayActive = src.SaturdayActive,
+                        SaturdayStartTime = src.SaturdayStartTime,
+                        SaturdayEndTime = src.SaturdayEndTime,
+                        SundayActive = src.SundayActive,
+                        SundayStartTime = src.SundayStartTime,
+                        SundayEndTime = src.SundayEndTime,
+                        Identifier = src.Identifier,
+                        Maxage = src.Maxage,
+                        Minage = src.Minage
+                    };
+
+                    globalKeyToOfferEntity[key] = entity;
+                }
+            }
+
+            // STEP 3: Save new entities and capture their IDs
+            if (globalKeyToOfferEntity.Any())
+            {
+                _target.DownSellOffers.AddRange(globalKeyToOfferEntity.Values);
+                _target.SaveChanges();
+
+                foreach (var kvp in globalKeyToOfferEntity)
+                    globalKeyToOfferId[kvp.Key] = kvp.Value.Id;
+
+                Console.WriteLine($"✅ Inserted {globalKeyToOfferEntity.Count} new DownSellOffers.");
+            }
+
+            // STEP 4: Now generate DownSellOffersIdMap from all companies
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null) continue;
+
+                using var source = new SourceDbContext(connectionString);
+
+                var clientMap = _target.ClientIdMap
+                    .Where(x => x.CompanyId == company.Id)
+                    .ToDictionary(x => x.OldId, x => x.NewId);
+
+                var offers = source.DownSellOffers.AsNoTracking().ToList();
+
+                foreach (var src in offers)
+                {
+                    if (!clientMap.TryGetValue(src.Clientid, out var newClientId))
+                        continue;
+
+                    var key = $"{src.Name?.Trim().ToLower()}|{newClientId}";
+                    if (globalKeyToOfferId.TryGetValue(key, out var newId))
+                    {
+                        allIdMaps.Add(new DownSellOffersIdMap
+                        {
+                            OldId = src.Id,
+                            NewId = newId
+                        });
+                    }
+                }
+
+                Console.WriteLine($"📦 Mapped DownSellOffers for company {company.Id}");
+            }
+
+            _target.DownSellOffersIdMap.AddRange(allIdMaps);
+            _target.SaveChanges();
+            Console.WriteLine($"🎯 Inserted {allIdMaps.Count} rows into DownSellOffersIdMap.");
+        }
+        public void MigrateDownSellOfferPostalCodes()
+        {
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            // Get all existing DownSellOfferId + Postalcodeid combinations to avoid duplicates globally
+            var existingEntries = _target.DownSellOfferPostalCodes
+                .Select(e => new { e.DownSellOfferId, e.Postalcodeid })
+                .ToHashSet();
+
+            var allIdMaps = new List<DownSellOfferPostalCodesIdMap>();
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.DownSellOfferPostalCodes.AsNoTracking().ToList();
+
+                if (!sourceRows.Any())
+                    continue;
+
+                var newEntries = new List<DownSellOfferPostalCode>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (existingEntries.Contains(new { row.DownSellOfferId, row.Postalcodeid }))
+                        continue;
+
+                    var entry = new DownSellOfferPostalCode
+                    {
+                        DownSellOfferId = row.DownSellOfferId,
+                        Postalcodeid = row.Postalcodeid,
+                        oldId = row.Id
+                    };
+
+                    newEntries.Add(entry);
+                }
+
+                if (newEntries.Count > 0)
+                {
+                    _target.DownSellOfferPostalCodes.AddRange(newEntries);
+                    _target.SaveChanges();
+
+                    // Now generate ID mappings
+                    foreach (var entry in newEntries)
+                    {
+                        allIdMaps.Add(new DownSellOfferPostalCodesIdMap
+                        {
+                            OldId = entry.oldId ?? 0,
+                            NewId = entry.Id,
+                        });
+
+                        // Update deduplication set
+                        existingEntries.Add(new { entry.DownSellOfferId, entry.Postalcodeid });
+                    }
+
+                    _target.ChangeTracker.Clear();
+                    if (allIdMaps.Any())
+                    {
+                        _target.DownSellOfferPostalCodesIdMap.AddRange(allIdMaps);
+                        _target.SaveChanges();
+                        Console.WriteLine($"🎯 Inserted {allIdMaps.Count} rows into DownSellOfferPostalCodesIdMap.");
+                    }
+                }
+
+                Console.WriteLine($"✅ {dbName}: Migrated {newEntries.Count} DownSellOfferPostalCodes.");
+            }
+
+
+        }
+        public void MigrateMasterSchools()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.master_schools.AsNoTracking().ToList();
+
+                var newEntities = new List<MasterSchool>();
+                var idMaps = new List<Master_schoolsIdMap>();
+
+                foreach (var sourceItem in sourceRows)
+                {
+                    var newItem = new MasterSchool
+                    {
+                        Name = sourceItem.Name,
+                        oldId = sourceItem.Id
+                    };
+
+                    newEntities.Add(newItem);
+                }
+
+                // Insert new records
+                _target.MasterSchools.AddRange(newEntities);
+                _target.SaveChanges();
+
+                // Map old IDs to new IDs
+                idMaps.AddRange(newEntities.Select(x => new Master_schoolsIdMap
+                {
+                    OldId = x.oldId ?? 0,
+                    NewId = x.Id
+                }));
+
+                _target.Master_schoolsIdMap.AddRange(idMaps);
+                _target.SaveChanges();
+                _target.ChangeTracker.Clear();
+
+                Console.WriteLine($"✅ {dbName}: Inserted {newEntities.Count} MasterSchools and {idMaps.Count} ID maps.");
+
+                // 🚪 Exit after first source
+                Console.WriteLine($"⏹️ Exiting after first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine("⚠️ No valid sources processed.");
+        }
+        public void MigrateMasterSchoolMappings()
+        {
+            var companies = _target.Company.AsNoTracking().ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            var existingMappingKeys = _target.MasterSchoolMappings
+                .AsNoTracking()
+                .Select(x => new { x.MasterSchoolsId, x.Identifier })
+                .ToHashSet();
+
+            var existingMappedIds = _target.Master_school_mappingsIdMap
+                .AsNoTracking()
+                .Select(m => m.OldId)
+                .ToHashSet();
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null) continue;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.master_school_mappings.AsNoTracking().ToList();
+
+                var masterSchoolIdMap = _target.Master_schoolsIdMap
+                    .AsNoTracking()
+                    .GroupBy(x => x.OldId)
+                    .ToDictionary(g => g.Key, g => g.First().NewId);
+
+                var newMappings = new List<MasterSchoolMapping>();
+                var localIdMap = new List<Master_school_mappingsIdMap>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (existingMappedIds.Contains(row.Id))
+                        continue;
+
+                    if (!masterSchoolIdMap.TryGetValue(row.master_schools_id, out var newMasterSchoolId))
+                        continue;
+
+                    if (existingMappingKeys.Contains(new { MasterSchoolsId = newMasterSchoolId, row.Identifier }))
+                        continue;
+
+                    var mapping = new MasterSchoolMapping
+                    {
+                        MasterSchoolsId = newMasterSchoolId,
+                        Identifier = row.Identifier,
+                        oldId = row.Id
+                    };
+
+                    newMappings.Add(mapping);
+                    existingMappingKeys.Add(new { MasterSchoolsId = newMasterSchoolId, row.Identifier });
+                }
+
+                if (newMappings.Any())
+                {
+                    _target.MasterSchoolMappings.AddRange(newMappings);
+                    _target.SaveChanges();
+
+                    localIdMap.AddRange(newMappings.Select(m => new Master_school_mappingsIdMap
+                    {
+                        OldId = m.oldId ?? 0,
+                        NewId = m.Id
+                    }));
+
+                    _target.Master_school_mappingsIdMap.AddRange(localIdMap);
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+
+                    Console.WriteLine($"✅ {dbName}: Migrated {newMappings.Count} MasterSchoolMappings.");
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No new mappings to migrate.");
+                }
+
+                // Exit the method after processing the first source
+                Console.WriteLine($"⏹️ Stopping after processing first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine($"🔁 No sources processed (this should not be reached if at least one source exists).");
+        }
+        public void MigrateAreas()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceAreas = source.Areas.AsNoTracking().ToList();
+
+                if (!sourceAreas.Any())
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No areas found to migrate.");
+                    return;
+                }
+
+                var newAreas = new List<Area>();
+                var idMaps = new List<AreasIdMap>();
+
+                foreach (var sourceArea in sourceAreas)
+                {
+                    var newArea = new Area
+                    {
+                        Name = sourceArea.Name,
+                        Copy = sourceArea.Copy,
+                        oldId = sourceArea.Id
+                    };
+
+                    newAreas.Add(newArea);
+                }
+
+                _target.Areas.AddRange(newAreas);
+                _target.SaveChanges();
+
+                idMaps.AddRange(newAreas.Select(x => new AreasIdMap
+                {
+                    OldId = x.oldId ?? 0,
+                    NewId = x.Id
+                }));
+
+                _target.AreasIdMap.AddRange(idMaps);
+                _target.SaveChanges();
+                _target.ChangeTracker.Clear();
+
+                Console.WriteLine($"✅ {dbName}: Inserted {newAreas.Count} Areas and {idMaps.Count} ID maps.");
+
+                // 🚪 Exit after first source
+                Console.WriteLine($"⏹️ Exiting after first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine("⚠️ No valid sources processed.");
+        }
+        public void MigrateProgramAreas()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.programareas.AsNoTracking().ToList();
+
+                if (!sourceRows.Any())
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No ProgramAreas to migrate.");
+                    return;
+                }
+
+                var programIdMap = _target.ProgramsIdMap
+                    .AsNoTracking()
+                    .GroupBy(x => x.OldId)
+                    .ToDictionary(g => g.Key, g => g.First().NewId);
+
+                var areaIdMap = _target.AreasIdMap
+                    .AsNoTracking()
+                    .GroupBy(x => x.OldId)
+                    .ToDictionary(g => g.Key, g => g.First().NewId);
+
+                var newProgramAreas = new List<Programarea>();
+                var newIdMaps = new List<ProgramareasIdMap>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (!programIdMap.TryGetValue(row.Programid, out var newProgramId) ||
+                        !areaIdMap.TryGetValue(row.Areaid, out var newAreaId))
+                    {
+                        continue;
+                    }
+
+                    var newEntry = new Programarea
+                    {
+                        Programid = newProgramId,
+                        Areaid = newAreaId,
+                        oldId = row.Id
+                    };
+
+                    newProgramAreas.Add(newEntry);
+                }
+
+                if (newProgramAreas.Any())
+                {
+                    _target.Programareas.AddRange(newProgramAreas);
+                    _target.SaveChanges();
+
+                    newIdMaps.AddRange(newProgramAreas.Select(p => new ProgramareasIdMap
+                    {
+                        OldId = p.oldId ?? 0,
+                        NewId = p.Id
+                    }));
+
+                    _target.ProgramareasIdMap.AddRange(newIdMaps);
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+
+                    Console.WriteLine($"✅ {dbName}: Inserted {newProgramAreas.Count} ProgramAreas and {newIdMaps.Count} ID mappings.");
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No valid mappings found.");
+                }
+
+                // 🚪 Stop after first source is processed
+                Console.WriteLine($"⏹️ Exiting after first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine("⚠️ No valid sources processed.");
+        }
+        public void MigrateInterests()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceInterests = source.interests.AsNoTracking().ToList();
+
+                if (!sourceInterests.Any())
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No interests to migrate.");
+                    return;
+                }
+
+                // Load existing interests in the target to avoid duplicates
+                var existingInterestKeys = _target.Interests
+                    .AsNoTracking()
+                    .Select(i => i.Name.Trim().ToLower()) // or use a composite key if needed
+                    .ToHashSet();
+
+                var newInterests = new List<Interest>();
+                var idMaps = new List<InterestsIdMap>();
+
+                foreach (var interest in sourceInterests)
+                {
+                    var normalizedName = interest.Name?.Trim().ToLower();
+
+                    if (string.IsNullOrWhiteSpace(normalizedName) || existingInterestKeys.Contains(normalizedName))
+                        continue;
+
+                    var newInterest = new Interest
+                    {
+                        Name = interest.Name,
+                        Copy = interest.Copy,
+                        oldId = interest.Id
+                    };
+
+                    newInterests.Add(newInterest);
+                    existingInterestKeys.Add(normalizedName); // add to set to avoid dupes within the same batch
+                }
+
+                if (newInterests.Any())
+                {
+                    _target.Interests.AddRange(newInterests);
+                    _target.SaveChanges();
+
+                    idMaps.AddRange(newInterests.Select(i => new InterestsIdMap
+                    {
+                        OldId = i.oldId ?? 0,
+                        NewId = i.Id
+                    }));
+
+                    _target.InterestsIdMap.AddRange(idMaps);
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+
+                    Console.WriteLine($"✅ {dbName}: Inserted {newInterests.Count} Interests and {idMaps.Count} ID maps.");
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ {dbName}: All interests were duplicates. Nothing inserted.");
+                }
+
+                // 🚪 Exit after first source is processed
+                Console.WriteLine($"⏹️ Exiting after first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine("⚠️ No valid sources processed.");
+        }
+        public void MigrateProgramInterests()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.programinterests.AsNoTracking().ToList();
+
+                if (!sourceRows.Any())
+                {
+                    Console.WriteLine($"⚠️ {dbName}: No programinterests to migrate.");
+                    return;
+                }
+
+                var programIdMap = _target.ProgramsIdMap
+                    .AsNoTracking()
+                    .GroupBy(x => x.OldId)
+                    .ToDictionary(g => g.Key, g => g.First().NewId);
+
+                var interestIdMap = _target.InterestsIdMap
+                    .AsNoTracking()
+                    .GroupBy(x => x.OldId)
+                    .ToDictionary(g => g.Key, g => g.First().NewId);
+
+                var existingKeys = _target.Programinterests
+                    .AsNoTracking()
+                    .Select(p => new { p.Programid, p.Interestid })
+                    .ToHashSet();
+
+                var newEntries = new List<Programinterest>();
+                var newIdMaps = new List<PrograminterestsIdMap>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (!programIdMap.TryGetValue(row.Programid, out var newProgramId) ||
+                        !interestIdMap.TryGetValue(row.Interestid, out var newInterestId))
+                        continue;
+
+                    var key = new { Programid = newProgramId, Interestid = newInterestId };
+                    if (existingKeys.Contains(key))
+                        continue;
+
+                    var newEntry = new Programinterest
+                    {
+                        Programid = newProgramId,
+                        Interestid = newInterestId,
+                        oldId = row.Id
+                    };
+
+                    newEntries.Add(newEntry);
+                    existingKeys.Add(key);
+                }
+
+                if (newEntries.Any())
+                {
+                    _target.Programinterests.AddRange(newEntries);
+                    _target.SaveChanges();
+
+                    newIdMaps.AddRange(newEntries.Select(p => new PrograminterestsIdMap
+                    {
+                        OldId = p.oldId ?? 0,
+                        NewId = p.Id
+                    }));
+
+                    _target.PrograminterestsIdMap.AddRange(newIdMaps);
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+
+                    Console.WriteLine($"✅ {dbName}: Inserted {newEntries.Count} ProgramInterests and {newIdMaps.Count} ID maps.");
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ {dbName}: All programinterests were duplicates or unresolvable.");
+                }
+
+                // 🚪 Exit after first source
+                Console.WriteLine($"⏹️ Exiting after first source: {dbName}");
+                return;
+            }
+
+            Console.WriteLine("⚠️ No valid sources processed.");
+        }
+        public void MigrateGroups()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null) continue;
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceGroups = source.groups.AsNoTracking().ToList();
+
+                // Existing group names for this company
+                var existingGroupNames = _target.Groups
+                    .Where(g => g.CompanyId == companyId)
+                    .Select(g => g.Name)
+                    .ToHashSet();
+
+                var newGroups = new List<Group>();
+                var idMaps = new List<GroupIdMap>();
+
+                foreach (var group in sourceGroups)
+                {
+                    if (existingGroupNames.Contains(group.Name))
+                    {
+                        // Get existing group's ID to map
+                        var existingGroupId = _target.Groups
+                            .FirstOrDefault(g => g.CompanyId == companyId && g.Name == group.Name)?.Id ?? 0;
+
+                        if (existingGroupId > 0)
+                        {
+                            idMaps.Add(new GroupIdMap
+                            {
+                                OldId = group.Id,
+                                NewId = existingGroupId,
+                                CompanyId = companyId
+                            });
+                        }
+
+                        continue; // Skip insert
+                    }
+
+                    var newGroup = new Group
+                    {
+                        Name = group.Name,
+                        Copy = group.Copy,
+                        CompanyId = companyId,
+                        oldId = group.Id
+                    };
+
+                    newGroups.Add(newGroup);
+                }
+
+                // Insert new groups
+                if (newGroups.Any())
+                {
+                    _target.Groups.AddRange(newGroups);
+                    _target.SaveChanges();
+                }
+
+                // Map new inserts
+                idMaps.AddRange(newGroups.Select(g => new GroupIdMap
+                {
+                    OldId = g.oldId ?? 0,
+                    NewId = g.Id,
+                    CompanyId = companyId
+                }));
+
+                // Save maps
+                if (idMaps.Any())
+                {
+                    _target.GroupIdMap.AddRange(idMaps);
+                    _target.SaveChanges();
+                }
+
+                _target.ChangeTracker.Clear();
+                Console.WriteLine($"✅ {dbName}: Inserted {newGroups.Count} groups, mapped {idMaps.Count}.");
+            }
+        }
+        public void MigrateSchoolGroups()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.schoolgroups.AsNoTracking().ToList();
+
+                foreach (var row in sourceRows)
+                {
+                    var newSchoolId = _target.SchoolIdMap
+                        .FirstOrDefault(x => x.OldId == row.Schoolid && x.CompanyId == companyId)
+                        ?.NewId;
+
+                    var newGroupId = _target.GroupIdMap
+                        .FirstOrDefault(x => x.OldId == row.Groupid && x.CompanyId == companyId)
+                        ?.NewId;
+
+                    if (newSchoolId == null || newGroupId == null)
+                    {
+                        continue;
+                    }
+
+                    var newEntry = new Schoolgroup
+                    {
+                        Schoolid = newSchoolId.Value,
+                        Groupid = newGroupId.Value,
+                        CompanyId = companyId,
+                        oldId = row.Id
+                    };
+
+                    _target.Schoolgroups.Add(newEntry);
+                    _target.SaveChanges();
+
+                    _target.SchoolGroupsIdMap.Add(new SchoolGroupsIdMap
+                    {
+                        OldId = row.Id,
+                        NewId = newEntry.Id,
+                        CompanyId = companyId
+                    });
+
+                    _target.SaveChanges();
+                }
+
+            }
+
+        }
+        public void MigrateExtraRequiredEducation()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)//run only for one company becouse the data is same
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.extrarequirededucation.AsNoTracking().ToList();
+
+                foreach (var row in sourceRows)
+                {
+                    //var newDegreeId = _target.DegreeprogramsIdMap
+                    //    .FirstOrDefault(x => x.OldId == row.Degreeid && x.CompanyId == companyId)
+                    //    ?.NewId;
+
+                    //var newCampusId = _target.CampusIdMap
+                    //    .FirstOrDefault(x => x.OldId == row.Campusid && x.CompanyId == companyId)
+                    //    ?.NewId;                    
+
+
+
+                    var newEntry = new Extrarequirededucation
+                    {
+                        Degreeid = row.Degreeid,
+                        Campusid = row.Campusid,
+                        Value = row.Value,
+                        CompanyId = companyId,
+                        oldId = row.Id
+                    };
+
+                    _target.Extrarequirededucations.Add(newEntry);
+                    _target.SaveChanges();
+
+
+                }
+                break;//run only for one company becouse the data is same
+
+            }
+
+        }
+        public void MigrateLeadPosts()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.leadposts.AsNoTracking().ToList();
+
+                foreach (var row in sourceRows)
+                {
+                    var newSchoolId = _target.SchoolIdMap
+                        .FirstOrDefault(x => x.OldId == row.Schoolid && x.CompanyId == companyId)
+                        ?.NewId ?? row.Schoolid;//add same when null only for this tbl
+
+                    var newSourceId = _target.SourceIdMap
+                        .FirstOrDefault(x => x.OldId == row.Sourceid && x.CompanyId == companyId)
+                        ?.NewId ?? row.Sourceid;//add same when null only for this tbl
+
+                    var newOfferId = _target.OfferIdMap
+                       .FirstOrDefault(x => x.OldId == row.Offerid && x.CompanyId == companyId)
+                       ?.NewId ?? row.Offerid;//add same when null only for this tbl
+
+                    var newProgramId = _target.ProgramsIdMap
+                       .FirstOrDefault(x => x.OldId == row.Programid)
+                       ?.NewId ?? row.Programid;//add same when null only for this tbl
+
+                    var newCampusId = _target.CampusIdMap
+                       .FirstOrDefault(x => x.OldId == row.Campusid && x.CompanyId == companyId)
+                       ?.NewId ?? row.Campusid;//add same when null only for this tbl
+
+
+                    if (newSchoolId == null || newSourceId == null)
+                    {
+                        continue;
+                    }
+
+                    var newEntry = new Leadpost
+                    {
+                        Schoolid = newSchoolId.Value,
+                        Sourceid = newSourceId.Value,
+                        Offerid = newOfferId.Value,
+                        Programid = newProgramId.Value,
+                        Campusid = newCampusId.Value,
+
+                        Parameterstring = row.Parameterstring,
+                        Serverresponse = row.Serverresponse,
+                        Testflag = row.Testflag,
+                        Testparameter = row.Testparameter,
+                        Success = row.Success,
+                        Ipaddress = row.Ipaddress,
+                        Date = row.Date,
+                        Vamidentifier = row.Vamidentifier,
+                        Zip = row.Zip,
+                        Campusname = row.Campusname,
+                        Programname = row.Programname,
+                        Clientname = row.Clientname,
+                        Offername = row.Offername,
+                        Agent = row.Agent,
+
+
+                        CompanyId = companyId,
+                        oldId = row.Id
+                    };
+
+                    _target.Leadposts.Add(newEntry);
+                    _target.SaveChanges();
+
+                    _target.LeadpostsIdMap.Add(new LeadpostsIdMap
+                    {
+                        OldId = row.Id,
+                        NewId = newEntry.Id,
+                        CompanyId = companyId
+                    });
+
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+                    _target.SaveChanges();
+                }
+
+            }
+
+        }
+        public void MigrateOfferTargeting()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.offertargeting.AsNoTracking().ToList();
+
+                foreach (var row in sourceRows)
+                {
+                    var newOfferId = _target.OfferIdMap
+                        .FirstOrDefault(x => x.OldId == row.Offerid && x.CompanyId == companyId)
+                        ?.NewId ?? row.Offerid; // fallback if mapping not found
+
+                    var newEntry = new Offertargeting
+                    {
+                        Offerid = newOfferId,
+                        CitizenIncludeUscitizens = row.Citizen_IncludeUscitizens,
+                        CitizenIncludePermanentResidents = row.Citizen_IncludePermanentResidents,
+                        CitizenIncludeGreenCardHolders = row.Citizen_IncludeGreenCardHolders,
+                        CitizenIncludeOther = row.Citizen_IncludeOther,
+                        InternetIncludeInternet = row.Internet_IncludeInternet,
+                        InternetIncludeNoInternet = row.Internet_IncludeNoInternet,
+                        MilitaryIncludeMilitary = row.Military_IncludeMilitary,
+                        MilitaryIncludeNonMilitary = row.Military_IncludeNonMilitary,
+                        StudentMinHighSchoolGradYear = row.Student_MinHighSchoolGradYear,
+                        StudentMaxHighSchoolGradYear = row.Student_MaxHighSchoolGradYear,
+                        StudentMinAge = row.Student_MinAge,
+                        StudentMaxAge = row.Student_MaxAge,
+                        LeadIpAddressRequired = row.Lead_IpAddressRequired,
+                        MondayActive = row.Monday_Active,
+                        TuesdayActive = row.Tuesday_Active,
+                        WednesdayActive = row.Wednesday_Active,
+                        ThursdayActive = row.Thursday_Active,
+                        FridayActive = row.Friday_Active,
+                        SaturdayActive = row.Saturday_Active,
+                        SundayActive = row.Sunday_Active,
+                        MondayStart = row.Monday_Start,
+                        TuesdayStart = row.Tuesday_Start,
+                        WednesdayStart = row.Wednesday_Start,
+                        ThursdayStart = row.Thursday_Start,
+                        FridayStart = row.Friday_Start,
+                        SaturdayStart = row.Saturday_Start,
+                        SundayStart = row.Sunday_Start,
+                        MondayEnd = row.Monday_End,
+                        TuesdayEnd = row.Tuesday_End,
+                        WednesdayEnd = row.Wednesday_End,
+                        ThursdayEnd = row.Thursday_End,
+                        FridayEnd = row.Friday_End,
+                        SaturdayEnd = row.Saturday_End,
+                        SundayEnd = row.Sunday_End,
+                        CecIncludeA = row.Cec_IncludeA,
+                        CecIncludeB = row.Cec_IncludeB,
+                        CecIncludeC = row.Cec_IncludeC,
+                        CecIncludeD = row.Cec_IncludeD,
+                        CecIncludeE = row.Cec_IncludeE,
+                        CecIncludeF = row.Cec_IncludeF,
+                        CecIncludeG = row.Cec_IncludeG,
+                        CecCplA = row.Cec_CplA,
+                        CecCplB = row.Cec_CplB,
+                        CecCplC = row.Cec_CplC,
+                        CecCplD = row.Cec_CplD,
+                        CecCplE = row.Cec_CplE,
+                        CecCplF = row.Cec_CplF,
+                        CecCplG = row.Cec_CplG,
+                        CompanyId = companyId,
+                        oldId = row.Id
+                    };
+
+                    _target.Offertargetings.Add(newEntry);
+                    _target.SaveChanges();
+
+                    _target.OffertargetingIdMap.Add(new OffertargetingIdMap
+                    {
+                        OldId = row.Id,
+                        NewId = newEntry.Id,
+                        CompanyId = companyId
+                    });
+
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+                    _target.SaveChanges();
+                }
+
+            }
+
+        }
+        public void MigratePingCache()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.ping_cache.AsNoTracking().ToList();
+
+                foreach (var row in sourceRows)
+                {
+                    var newOfferId = _target.SourceIdMap
+                        .FirstOrDefault(x => x.OldId == row.Source_Id && x.CompanyId == companyId)
+                        ?.NewId;
+
+                    if (newOfferId == null)
+                    {
+                        continue;
+                    }
+
+                    var newEntry = new PingCache
+                    {
+                        SourceId = newOfferId.Value,
+                        PingSignature = row.Ping_Signature,
+                        PingResponse = row.Ping_Response,
+                        Allowed = row.Allowed,
+                        Date = row.Date,
+                        Email = row.Email,
+                        Phone = row.Phone,
+
+                        CompanyId = companyId,
+                        oldId = row.Id
+                    };
+
+                    _target.PingCaches.Add(newEntry);
+                    _target.SaveChanges();
+
+                    _target.Ping_cacheIdMap.Add(new Ping_cacheIdMap
+                    {
+                        OldId = row.Id,
+                        NewId = newEntry.Id,
+                        CompanyId = companyId
+                    });
+
+                    _target.SaveChanges();
+                    _target.ChangeTracker.Clear();
+                    _target.SaveChanges();
+                }
+
+            }
+
+        }
+        public void MigratePortalTargeting()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                    continue;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.portaltargeting.AsNoTracking().ToList();
+
+                // Get existing target portal IDs to avoid duplicates (based on your logic)
+                var existingPortalIds = _target.Portaltargetings
+                    .Select(p => p.Portalid)
+                    .ToHashSet();
+
+                var newEntries = new List<Portaltargeting>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (existingPortalIds.Contains(row.Portalid))
+                        continue;
+
+                    newEntries.Add(new Portaltargeting
+                    {
+                        Portalid = row.Portalid,
+                        CitizenIncludeUscitizens = row.Citizen_IncludeUscitizens,
+                        CitizenIncludePermanentResidents = row.Citizen_IncludePermanentResidents,
+                        CitizenIncludeGreenCardHolders = row.Citizen_IncludeGreenCardHolders,
+                        CitizenIncludeOther = row.Citizen_IncludeOther,
+                        InternetIncludeInternet = row.Internet_IncludeInternet,
+                        InternetIncludeNoInternet = row.Internet_IncludeNoInternet,
+                        MilitaryIncludeMilitary = row.Military_IncludeMilitary,
+                        MilitaryIncludeNonMilitary = row.Military_IncludeNonMilitary,
+                        StudentMinHighSchoolGradYear = row.Student_MinHighSchoolGradYear,
+                        StudentMaxHighSchoolGradYear = row.Student_MaxHighSchoolGradYear,
+                        StudentMinAge = row.Student_MinAge,
+                        StudentMaxAge = row.Student_MaxAge,
+                        LeadIpAddressRequired = row.Lead_IpAddressRequired,
+                        MondayActive = row.Monday_Active,
+                        MondayStart = row.Monday_Start,
+                        MondayEnd = row.Monday_End,
+                        TuesdayActive = row.Tuesday_Active,
+                        TuesdayStart = row.Tuesday_Start,
+                        TuesdayEnd = row.Tuesday_End,
+                        WednesdayActive = row.Wednesday_Active,
+                        WednesdayStart = row.Wednesday_Start,
+                        WednesdayEnd = row.Wednesday_End,
+                        ThursdayActive = row.Thursday_Active,
+                        ThursdayStart = row.Thursday_Start,
+                        ThursdayEnd = row.Thursday_End,
+                        FridayActive = row.Friday_Active,
+                        FridayStart = row.Friday_Start,
+                        FridayEnd = row.Friday_End,
+                        SaturdayActive = row.Saturday_Active,
+                        SaturdayStart = row.Saturday_Start,
+                        SaturdayEnd = row.Saturday_End,
+                        SundayActive = row.Sunday_Active,
+                        SundayStart = row.Sunday_Start,
+                        SundayEnd = row.Sunday_End
+                    });
+                }
+
+                if (newEntries.Any())
+                {
+                    _target.Portaltargetings.AddRange(newEntries);
+                    _target.SaveChanges();
+                }
+
+                // Exit after processing the first valid source
+                break;
+            }
+        }
+        public void MigrateSearchPortals()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.searchportals.AsNoTracking().ToList();
+
+                // Get existing portal names + URLs to avoid duplicates
+                var existing = _target.Searchportals
+                    .Select(p => new { p.Name, p.Url })
+                    .ToHashSet();
+
+                var newEntries = new List<Searchportal>();
+
+                foreach (var row in sourceRows)
+                {
+                    // Skip duplicates
+                    if (existing.Contains(new { row.Name, row.Url }))
+                        continue;
+
+                    newEntries.Add(new Searchportal
+                    {
+                        Name = row.Name,
+                        Url = row.Url,
+                        Active = row.Active,
+                        Transfers = row.Transfers,
+                        Leads = row.Leads,
+                        Rank = row.Rank
+                    });
+                }
+
+                if (newEntries.Any())
+                {
+                    _target.Searchportals.AddRange(newEntries);
+                    _target.SaveChanges();
+                }
+
+                // Only process the first valid source
+                break;
+            }
+        }
+        public void MigrateConfigEducationLevels()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null)
+                {
+                    continue;
+                }
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceRows = source.tblConfigEducationLevels.AsNoTracking().ToList();
+
+                // Create a HashSet of existing Identifier+Value pairs to avoid duplicates
+                var existingEntries = _target.TblConfigEducationLevels
+                    .Select(x => new { x.Identifier, x.Value })
+                    .ToHashSet();
+
+                var newEntries = new List<TblConfigEducationLevel>();
+
+                foreach (var row in sourceRows)
+                {
+                    if (existingEntries.Contains(new { row.Identifier, row.Value }))
+                        continue;
+
+                    newEntries.Add(new TblConfigEducationLevel
+                    {
+                        Identifier = row.Identifier,
+                        Value = row.Value,
+                        Label = row.Label
+                    });
+                }
+
+                if (newEntries.Any())
+                {
+                    _target.TblConfigEducationLevels.AddRange(newEntries);
+                    _target.SaveChanges();
+                }
+
+                break; // process only the first matching source
+            }
+        }
 
         #endregion
-
 
         //public void MigrateCampusPostalCodes()
         //{
@@ -1170,7 +2652,7 @@ namespace Data.DataContexts
         //            _target.DownSellOfferPostalCodes.Add(newEntry);
         //            _target.SaveChanges();
 
-        //            _target.DownSellOfferPostalCodesIdMap.Add(new DownSellOfferPostalCodesIdMap
+        //          _target.DownSellOfferPostalCodesIdMap.Add(new DownSellOfferPostalCodesIdMap
         //            {
         //                OldId = row.Id,
         //                NewId = newEntry.Id,
@@ -1186,1250 +2668,9 @@ namespace Data.DataContexts
         //    }
 
         //}
-        public void MigrateDownSellOffers()
-        {
-            const int batchSize = 5000;
-
-            var companies = _target.Company.AsNoTracking().ToList();
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            // Global: uniqueKey => DownSellOffer (with ID set post-save)
-            var globalUniqueKeyToEntity = new Dictionary<string, DownSellOffer>();
-
-            // Final map collection
-            var allDownSellOffersIdMaps = new List<DownSellOffersIdMap>();
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null) continue;
-
-                var companyId = company.Id;
-                using var source = new SourceDbContext(connectionString);
-
-                var clientMap = _target.ClientIdMap
-                    .Where(x => x.CompanyId == companyId)
-                    .ToDictionary(x => x.OldId, x => x.NewId);
-
-                int total = source.DownSellOffers.Count();
-
-                for (int offset = 0; offset < total; offset += batchSize)
-                {
-                    var batch = source.DownSellOffers
-                        .AsNoTracking()
-                        .OrderBy(x => x.Id)
-                        .Skip(offset)
-                        .Take(batchSize)
-                        .ToList();
-
-                    var newEntities = new List<DownSellOffer>();
-                    var mapsForThisCompany = new List<DownSellOffersIdMap>();
-                    var pendingKeys = new List<string>();
-
-                    foreach (var src in batch)
-                    {
-                        if (!clientMap.TryGetValue(src.Clientid, out var newClientid))
-                            continue;
-
-                        string key = $"{src.Name?.Trim().ToLower()}|{newClientid}";
-
-                        if (!globalUniqueKeyToEntity.TryGetValue(key, out var existingEntity))
-                        {
-                            // New global entry, insert later
-                            var entity = new DownSellOffer
-                            {
-                                Clientid = newClientid,
-                                Formurl = src.Formurl,
-                                Priority = src.Priority,
-                                Dcap = src.Dcap,
-                                Active = src.Active,
-                                Dcapamt = src.Dcapamt,
-                                Mcap = src.Mcap,
-                                Mcapamt = src.Mcapamt,
-                                Wcap = src.Wcap,
-                                Wcapamt = src.Wcapamt,
-                                Type = src.Type,
-                                Transferphone = src.Transferphone,
-                                IncludeUscitizens = src.IncludeUscitizens,
-                                IncludePermanentResidents = src.IncludePermanentResidents,
-                                IncludeGreenCardHolders = src.IncludeGreenCardHolders,
-                                IncludeNonCitizens = src.IncludeNonCitizens,
-                                IncludeInternet = src.IncludeInternet,
-                                IncludeNoInternet = src.IncludeNoInternet,
-                                IncludeMilitary = src.IncludeMilitary,
-                                IncludeNonMilitary = src.IncludeNonMilitary,
-                                Name = src.Name,
-                                Description = src.Description,
-                                MondayActive = src.MondayActive,
-                                MondayStartTime = src.MondayStartTime,
-                                MondayEndTime = src.MondayEndTime,
-                                TuesdayActive = src.TuesdayActive,
-                                TuesdayStartTime = src.TuesdayStartTime,
-                                TuesdayEndTime = src.TuesdayEndTime,
-                                WednesdayActive = src.WednesdayActive,
-                                WednesdayStartTime = src.WednesdayStartTime,
-                                WednesdayEndTime = src.WednesdayEndTime,
-                                ThursdayActive = src.ThursdayActive,
-                                ThursdayStartTime = src.ThursdayStartTime,
-                                ThursdayEndTime = src.ThursdayEndTime,
-                                FridayActive = src.FridayActive,
-                                FridayStartTime = src.FridayStartTime,
-                                FridayEndTime = src.FridayEndTime,
-                                SaturdayActive = src.SaturdayActive,
-                                SaturdayStartTime = src.SaturdayStartTime,
-                                SaturdayEndTime = src.SaturdayEndTime,
-                                SundayActive = src.SundayActive,
-                                SundayStartTime = src.SundayStartTime,
-                                SundayEndTime = src.SundayEndTime,
-                                Identifier = src.Identifier,
-                                Maxage = src.Maxage,
-                                Minage = src.Minage,
-                                CompanyId = companyId,
-                                oldId = src.Id
-                            };
-
-                            newEntities.Add(entity);
-                            globalUniqueKeyToEntity[key] = entity; // Store reference
-                            pendingKeys.Add(key); // Remember to update ID later
-
-                            mapsForThisCompany.Add(new DownSellOffersIdMap
-                            {
-                                OldId = src.Id,
-                                NewId = -1, // placeholder
-                                CompanyId = companyId
-                            });
-                        }
-                        else
-                        {
-                            // Use existing mapped entity ID
-                            mapsForThisCompany.Add(new DownSellOffersIdMap
-                            {
-                                OldId = src.Id,
-                                NewId = existingEntity.Id,
-                                CompanyId = companyId
-                            });
-                        }
-                    }
-
-                    // Save only new ones
-                    _target.DownSellOffers.AddRange(newEntities);
-                    _target.SaveChanges();
-
-                    // Update NewId in global dict
-                    foreach (var key in pendingKeys)
-                    {
-                        var ent = globalUniqueKeyToEntity[key];
-                        if (ent.Id > 0)
-                        {
-                            // Backfill NewId into current batch maps
-                            var mapsToFix = mapsForThisCompany.Where(x => x.NewId == -1 && x.OldId == ent.oldId && x.CompanyId == companyId);
-                            foreach (var map in mapsToFix)
-                                map.NewId = ent.Id;
-                        }
-                    }
-
-                    allDownSellOffersIdMaps.AddRange(mapsForThisCompany);
-                    _target.ChangeTracker.Clear();
-                }
-
-                Console.WriteLine($"✅ Company {companyId} finished DownSellOffers.");
-            }
-
-            // Save all IdMap records
-            _target.DownSellOffersIdMap.AddRange(allDownSellOffersIdMaps);
-            _target.SaveChanges();
-
-            Console.WriteLine($"🎯 Inserted {allDownSellOffersIdMaps.Count} rows into DownSellOffersIdMap.");
-        }
-
-
-
-
-
-
-        public void MigrateDownSellOfferPostalCodes()
-        {
-            var companies = _target.Company.AsNoTracking().ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                    continue;
-
-                var companyId = company.Id;
-                using var source = new SourceDbContext(connectionString);
-
-                var sourceRows = source.DownSellOfferPostalCodes.AsNoTracking().ToList();
-                if (!sourceRows.Any())
-                    continue;
-
-                var offerMap = _target.DownSellOffersIdMap
-                    .Where(m => m.CompanyId == companyId)
-                    .ToDictionary(m => m.OldId, m => m.NewId);
-
-                var postalMap = _target.PostalCodeIdMap
-                    .Where(m => m.CompanyId == companyId)
-                    .ToDictionary(m => m.OldId, m => m.NewId);
-
-                var existingEntries = _target.DownSellOfferPostalCodes
-                    .Where(e => e.CompanyId == companyId)
-                    .Select(e => new { e.DownSellOfferId, e.Postalcodeid })
-                    .ToHashSet();
-
-                var newEntries = new List<DownSellOfferPostalCode>();
-                var newMaps = new List<DownSellOfferPostalCodesIdMap>();
-
-                foreach (var row in sourceRows)
-                {
-                    if (!offerMap.TryGetValue(row.DownSellOfferId, out var newOfferId) ||
-                        !postalMap.TryGetValue(row.Postalcodeid, out var newPostalId))
-                        continue;
-
-                    if (existingEntries.Contains(new { DownSellOfferId = newOfferId, Postalcodeid = newPostalId }))
-                        continue;
-
-                    var entry = new DownSellOfferPostalCode
-                    {
-                        DownSellOfferId = newOfferId,
-                        Postalcodeid = newPostalId,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-                    newEntries.Add(entry);
-                }
-
-                // Insert and generate ID map
-                _target.DownSellOfferPostalCodes.AddRange(newEntries);
-                _target.SaveChanges();
-
-                foreach (var e in newEntries)
-                {
-                    newMaps.Add(new DownSellOfferPostalCodesIdMap
-                    {
-                        OldId = e.oldId ?? 0,
-                        NewId = e.Id,
-                        CompanyId = companyId
-                    });
-                }
-
-                _target.DownSellOfferPostalCodesIdMap.AddRange(newMaps);
-                _target.SaveChanges();
-                _target.ChangeTracker.Clear();
-
-                Console.WriteLine($"✅ {dbName}: Migrated {newEntries.Count} DownSellOfferPostalCodes.");
-            }
-        }
-        public void MigrateMasterSchools()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.master_schools.AsNoTracking().ToList();
-
-                foreach (var sourceItem in sourceRows)
-                {
-                    var newItem = new MasterSchool
-                    {
-                        Name = sourceItem.Name,                        
-                        CompanyId = companyId,
-                        oldId = sourceItem.Id
-                    };
-
-                    _target.MasterSchools.Add(newItem);
-                    _target.SaveChanges();
-
-                    _target.Master_schoolsIdMap.Add(new Master_schoolsIdMap
-                    {
-                        OldId = sourceItem.Id,
-                        NewId = newItem.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateMasterSchoolMappings()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.master_school_mappings.AsNoTracking().ToList();
-
-                foreach (var sourceRow in sourceRows)
-                {
-                    var newMasterSchoolId = _target.Master_schoolsIdMap
-                        .FirstOrDefault(x => x.OldId == sourceRow.master_schools_id && x.CompanyId == companyId)?.NewId;
-
-                   
-
-                    if (newMasterSchoolId == null)
-                    {
-                        continue;
-                    }
-
-                    var newMapping = new MasterSchoolMapping
-                    {
-                        MasterSchoolsId = newMasterSchoolId.Value,
-                        Identifier = sourceRow.Identifier,
-                        CompanyId = companyId,
-                        oldId = sourceRow.Id
-                    };
-
-                    _target.MasterSchoolMappings.Add(newMapping);
-                    _target.SaveChanges();
-
-                    _target.Master_school_mappingsIdMap.Add(new Master_school_mappingsIdMap
-                    {
-                        OldId = sourceRow.Id,
-                        NewId = newMapping.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateAreas()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceAreas = source.Areas.AsNoTracking().ToList();
-
-                foreach (var sourceArea in sourceAreas)
-                {
-                    var newArea = new Area
-                    {
-                        Name = sourceArea.Name,                        
-                        Copy = sourceArea.Copy,
-                        CompanyId = companyId,
-                        oldId = sourceArea.Id
-                    };
-
-                    _target.Areas.Add(newArea);
-                    _target.SaveChanges();
-
-                    _target.AreasIdMap.Add(new AreasIdMap
-                    {
-                        OldId = sourceArea.Id,
-                        NewId = newArea.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateProgramAreas()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.programareas.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newProgramId = _target.ProgramsIdMap
-                        .FirstOrDefault(x => x.OldId == row.Programid)
-                        ?.NewId;
-
-                    var newAreaId = _target.AreasIdMap
-                        .FirstOrDefault(x => x.OldId == row.Areaid && x.CompanyId == companyId)
-                        ?.NewId;
-
-                    if (newProgramId == null || newAreaId == null)
-                    {
-                        continue;
-                    }
-
-                    var newEntry = new Programarea
-                    {
-                        Programid = newProgramId.Value,
-                        Areaid = newAreaId.Value,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Programareas.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.ProgramareasIdMap.Add(new ProgramareasIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-        public void MigrateInterests()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceInterests = source.interests.AsNoTracking().ToList();
-
-                foreach (var interest in sourceInterests)
-                {
-                    var newInterest = new Interest
-                    {
-                        Name = interest.Name,
-                        Copy = interest.Copy,
-                        CompanyId = companyId,
-                        oldId = interest.Id
-                    };
-
-                    _target.Interests.Add(newInterest);
-                    _target.SaveChanges();
-
-                    _target.InterestsIdMap.Add(new InterestsIdMap
-                    {
-                        OldId = interest.Id,
-                        NewId = newInterest.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateProgramInterests()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.programinterests.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newProgramId = _target.ProgramsIdMap
-                        .FirstOrDefault(x => x.OldId == row.Programid)
-                        ?.NewId;
-
-                    var newInterestId = _target.InterestsIdMap
-                        .FirstOrDefault(x => x.OldId == row.Interestid && x.CompanyId == companyId)
-                        ?.NewId;
-
-                    if (newProgramId == null || newInterestId == null)
-                    {
-                        continue;
-                    }
-
-                    var newEntry = new Programinterest
-                    {
-                        Programid = newProgramId.Value,
-                        Interestid = newInterestId.Value,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Programinterests.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.PrograminterestsIdMap.Add(new PrograminterestsIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateGroups()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-                using var source = new SourceDbContext(connectionString);
-                var sourceGroups = source.groups.AsNoTracking().ToList();
-
-                foreach (var group in sourceGroups)
-                {
-                    var newGroup = new Group
-                    {
-                        Name = group.Name,
-                        Copy = group.Copy,
-                        CompanyId = companyId,
-                        oldId = group.Id
-                    };
-
-                    _target.Groups.Add(newGroup);
-                    _target.SaveChanges();
-
-                    _target.GroupIdMap.Add(new GroupIdMap
-                    {
-                        OldId = group.Id,
-                        NewId = newGroup.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-        public void MigrateSchoolGroups()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.schoolgroups.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newSchoolId = _target.SchoolIdMap
-                        .FirstOrDefault(x => x.OldId == row.Schoolid && x.CompanyId == companyId)
-                        ?.NewId;
-
-                    var newGroupId = _target.GroupIdMap
-                        .FirstOrDefault(x => x.OldId == row.Groupid && x.CompanyId == companyId)
-                        ?.NewId;
-
-                    if (newSchoolId == null || newGroupId == null)
-                    {
-                        continue;
-                    }
-
-                    var newEntry = new Schoolgroup
-                    {
-                        Schoolid = newSchoolId.Value,
-                        Groupid = newGroupId.Value,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Schoolgroups.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.SchoolGroupsIdMap.Add(new SchoolGroupsIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigrateExtraRequiredEducation()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)//run only for one company becouse the data is same
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.extrarequirededucation.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    //var newDegreeId = _target.DegreeprogramsIdMap
-                    //    .FirstOrDefault(x => x.OldId == row.Degreeid && x.CompanyId == companyId)
-                    //    ?.NewId;
-
-                    //var newCampusId = _target.CampusIdMap
-                    //    .FirstOrDefault(x => x.OldId == row.Campusid && x.CompanyId == companyId)
-                    //    ?.NewId;                    
-
-
-
-                    var newEntry = new Extrarequirededucation
-                    {
-                        Degreeid = row.Degreeid,
-                        Campusid = row.Campusid,
-                        Value = row.Value,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Extrarequirededucations.Add(newEntry);
-                    _target.SaveChanges();
-
-
-                }
-                break;//run only for one company becouse the data is same
-
-            }
-
-        }
-
-        public void MigrateLeadPosts()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.leadposts.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newSchoolId = _target.SchoolIdMap
-                        .FirstOrDefault(x => x.OldId == row.Schoolid && x.CompanyId == companyId)
-                        ?.NewId ?? row.Schoolid;//add same when null only for this tbl
-
-                    var newSourceId = _target.SourceIdMap
-                        .FirstOrDefault(x => x.OldId == row.Sourceid && x.CompanyId == companyId)
-                        ?.NewId ?? row.Sourceid;//add same when null only for this tbl
-
-                    var newOfferId = _target.OfferIdMap
-                       .FirstOrDefault(x => x.OldId == row.Offerid && x.CompanyId == companyId)
-                       ?.NewId ?? row.Offerid;//add same when null only for this tbl
-
-                    var newProgramId = _target.ProgramsIdMap
-                       .FirstOrDefault(x => x.OldId == row.Programid)
-                       ?.NewId ?? row.Programid;//add same when null only for this tbl
-
-                    var newCampusId = _target.CampusIdMap
-                       .FirstOrDefault(x => x.OldId == row.Campusid && x.CompanyId == companyId)
-                       ?.NewId ?? row.Campusid;//add same when null only for this tbl
-
-
-                    if (newSchoolId == null || newSourceId == null)
-                    {
-                        continue;
-                    }
-
-                    var newEntry = new Leadpost
-                    {
-                        Schoolid = newSchoolId.Value,
-                        Sourceid = newSourceId.Value,
-                        Offerid = newOfferId.Value,
-                        Programid = newProgramId.Value,
-                        Campusid = newCampusId.Value,
-
-                        Parameterstring = row.Parameterstring,
-                        Serverresponse = row.Serverresponse,
-                        Testflag = row.Testflag,
-                        Testparameter = row.Testparameter,
-                        Success = row.Success,
-                        Ipaddress = row.Ipaddress,
-                        Date = row.Date,
-                        Vamidentifier = row.Vamidentifier,
-                        Zip = row.Zip,
-                        Campusname = row.Campusname,
-                        Programname = row.Programname,
-                        Clientname = row.Clientname,
-                        Offername = row.Offername,
-                        Agent = row.Agent,
-
-
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Leadposts.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.LeadpostsIdMap.Add(new LeadpostsIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-        public void MigrateOfferTargeting()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.offertargeting.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newOfferId = _target.OfferIdMap
-                        .FirstOrDefault(x => x.OldId == row.Offerid && x.CompanyId == companyId)
-                        ?.NewId ?? row.Offerid; // fallback if mapping not found
-
-                    var newEntry = new Offertargeting
-                    {
-                        Offerid = newOfferId,
-                        CitizenIncludeUscitizens = row.Citizen_IncludeUscitizens,
-                        CitizenIncludePermanentResidents = row.Citizen_IncludePermanentResidents,
-                        CitizenIncludeGreenCardHolders = row.Citizen_IncludeGreenCardHolders,
-                        CitizenIncludeOther = row.Citizen_IncludeOther,
-                        InternetIncludeInternet = row.Internet_IncludeInternet,
-                        InternetIncludeNoInternet = row.Internet_IncludeNoInternet,
-                        MilitaryIncludeMilitary = row.Military_IncludeMilitary,
-                        MilitaryIncludeNonMilitary = row.Military_IncludeNonMilitary,
-                        StudentMinHighSchoolGradYear = row.Student_MinHighSchoolGradYear,
-                        StudentMaxHighSchoolGradYear = row.Student_MaxHighSchoolGradYear,
-                        StudentMinAge = row.Student_MinAge,
-                        StudentMaxAge = row.Student_MaxAge,
-                        LeadIpAddressRequired = row.Lead_IpAddressRequired,
-                        MondayActive = row.Monday_Active,
-                        TuesdayActive = row.Tuesday_Active,
-                        WednesdayActive = row.Wednesday_Active,
-                        ThursdayActive = row.Thursday_Active,
-                        FridayActive = row.Friday_Active,
-                        SaturdayActive = row.Saturday_Active,
-                        SundayActive = row.Sunday_Active,
-                        MondayStart = row.Monday_Start,
-                        TuesdayStart = row.Tuesday_Start,
-                        WednesdayStart = row.Wednesday_Start,
-                        ThursdayStart = row.Thursday_Start,
-                        FridayStart = row.Friday_Start,
-                        SaturdayStart = row.Saturday_Start,
-                        SundayStart = row.Sunday_Start,
-                        MondayEnd = row.Monday_End,
-                        TuesdayEnd = row.Tuesday_End,
-                        WednesdayEnd = row.Wednesday_End,
-                        ThursdayEnd = row.Thursday_End,
-                        FridayEnd = row.Friday_End,
-                        SaturdayEnd = row.Saturday_End,
-                        SundayEnd = row.Sunday_End,
-                        CecIncludeA = row.Cec_IncludeA,
-                        CecIncludeB = row.Cec_IncludeB,
-                        CecIncludeC = row.Cec_IncludeC,
-                        CecIncludeD = row.Cec_IncludeD,
-                        CecIncludeE = row.Cec_IncludeE,
-                        CecIncludeF = row.Cec_IncludeF,
-                        CecIncludeG = row.Cec_IncludeG,
-                        CecCplA = row.Cec_CplA,
-                        CecCplB = row.Cec_CplB,
-                        CecCplC = row.Cec_CplC,
-                        CecCplD = row.Cec_CplD,
-                        CecCplE = row.Cec_CplE,
-                        CecCplF = row.Cec_CplF,
-                        CecCplG = row.Cec_CplG,
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.Offertargetings.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.OffertargetingIdMap.Add(new OffertargetingIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigratePingCache()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.ping_cache.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newOfferId = _target.SourceIdMap
-                        .FirstOrDefault(x => x.OldId == row.Source_Id && x.CompanyId == companyId)
-                        ?.NewId;
-
-                    if (newOfferId == null)
-                    {
-                        continue;
-                    }
-
-                    var newEntry = new PingCache
-                    {
-                        SourceId = newOfferId.Value,
-                        PingSignature = row.Ping_Signature,
-                        PingResponse = row.Ping_Response,
-                        Allowed = row.Allowed,
-                        Date = row.Date,
-                        Email = row.Email,
-                        Phone = row.Phone,
-
-                        CompanyId = companyId,
-                        oldId = row.Id
-                    };
-
-                    _target.PingCaches.Add(newEntry);
-                    _target.SaveChanges();
-
-                    _target.Ping_cacheIdMap.Add(new Ping_cacheIdMap
-                    {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-
-            }
-
-        }
-
-        public void MigratePortalTargeting()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.portaltargeting.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-
-
-                    var newEntry = new Portaltargeting
-                    {
-                        Portalid = row.Portalid,
-                        CitizenIncludeUscitizens = row.Citizen_IncludeUscitizens,
-                        CitizenIncludePermanentResidents = row.Citizen_IncludePermanentResidents,
-                        CitizenIncludeGreenCardHolders = row.Citizen_IncludeGreenCardHolders,
-                        CitizenIncludeOther = row.Citizen_IncludeOther,
-                        InternetIncludeInternet = row.Internet_IncludeInternet,
-                        InternetIncludeNoInternet = row.Internet_IncludeNoInternet,
-                        MilitaryIncludeMilitary = row.Military_IncludeMilitary,
-                        MilitaryIncludeNonMilitary = row.Military_IncludeNonMilitary,
-                        StudentMinHighSchoolGradYear = row.Student_MinHighSchoolGradYear,
-                        StudentMaxHighSchoolGradYear = row.Student_MaxHighSchoolGradYear,
-                        StudentMinAge = row.Student_MinAge,
-                        StudentMaxAge = row.Student_MaxAge,
-                        LeadIpAddressRequired = row.Lead_IpAddressRequired,
-                        MondayActive = row.Monday_Active,
-                        MondayStart = row.Monday_Start,
-                        MondayEnd = row.Monday_End,
-                        TuesdayActive = row.Tuesday_Active,
-                        TuesdayStart = row.Tuesday_Start,
-                        TuesdayEnd = row.Tuesday_End,
-                        WednesdayEnd = row.Wednesday_End,
-                        WednesdayActive = row.Wednesday_Active,
-                        WednesdayStart = row.Wednesday_Start,
-                        ThursdayActive = row.Thursday_Active,
-                        ThursdayEnd = row.Thursday_End,
-                        ThursdayStart = row.Thursday_Start,
-                        FridayActive = row.Friday_Active,
-                        FridayStart = row.Friday_Start,
-                        FridayEnd = row.Friday_End,
-                        SaturdayActive = row.Saturday_Active,
-                        SaturdayStart = row.Saturday_Start,
-                        SaturdayEnd = row.Saturday_End,
-                        SundayActive = row.Sunday_Active,
-                        SundayStart = row.Sunday_Start,
-                        SundayEnd = row.Sunday_End
-                    };
-
-                    _target.Portaltargetings.Add(newEntry);
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-                break;//run only for one company becouse the data is same
-            }
-
-        }
-        public void MigrateSearchPortals()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.searchportals.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newEntry = new Searchportal
-                    {
-                        Name = row.Name,
-                        Url = row.Url,
-                        Active = row.Active,
-                        Transfers = row.Transfers,
-                        Leads = row.Leads,
-                        Rank = row.Rank,
-
-                    };
-
-                    _target.Searchportals.Add(newEntry);
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-
-                }
-                break;//run only for one company becouse the data is same
-
-            }
-
-        }
-
-        public void MigrateConfigEducationLevels()
-        {
-            var companies = _target.Company.ToList();
-
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .Where(cs => cs.Key != "TargetDb")
-                .ToDictionary(cs => cs.Key, cs => cs.Value);
-
-            foreach (var kvp in sourceConnections)
-            {
-                var dbName = kvp.Key;
-                var connectionString = kvp.Value;
-
-                var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
-
-                var companyId = company.Id;
-
-                using var source = new SourceDbContext(connectionString);
-                var sourceRows = source.tblConfigEducationLevels.AsNoTracking().ToList();
-
-                foreach (var row in sourceRows)
-                {
-                    var newEntry = new TblConfigEducationLevel
-                    {
-                        Identifier = row.Identifier,
-                        Value = row.Value,
-                        Label = row.Label,
-                    };
-
-                    _target.TblConfigEducationLevels.Add(newEntry);
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-                    _target.SaveChanges();
-                }
-                break;//run only for one company becouse the data is same
-            }
-
-
-        }
 
     }
 
 }
+
+

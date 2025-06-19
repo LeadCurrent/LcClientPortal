@@ -16,8 +16,4 @@ public partial class Programinterest
     public virtual Program Program { get; set; }
     public int? oldId { get; set; }
 
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
-
-
 }

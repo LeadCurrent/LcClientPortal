@@ -18,7 +18,5 @@ public partial class Interest
     public bool IsChecked { get; set; }
     public int? oldId { get; set; }
 
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
     
 }

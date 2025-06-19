@@ -13,8 +13,6 @@ public partial class Area
     public string Copy { get; set; }
     public int? oldId { get; set; }
 
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
     public virtual ICollection<Programarea> Programareas { get; set; } = new List<Programarea>();
 
     [NotMapped]
