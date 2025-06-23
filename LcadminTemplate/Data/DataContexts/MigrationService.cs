@@ -1,5 +1,6 @@
 ﻿// MigrationService
 
+using Data.DataContexts.ModelForSourceDB;
 using Data.EntityModelsAndLibraries.Allocation.Models;
 using Data.EntityModelsAndLibraries.Area.Models;
 using Data.EntityModelsAndLibraries.Campus.Models;
@@ -65,6 +66,10 @@ namespace Data.DataContexts
             var globalClients = new Dictionary<string, Client>();
             var globalSchools = new Dictionary<string, Scholls>();
             var globalGroups = new Dictionary<string, Group>();
+            //MigrateClients();
+            MigrateSchools2();
+            //MigrateStates();
+            //MigratePostalCodes();
 
             Parallel.ForEach(sourceConnections, kvp =>
             {
@@ -97,7 +102,7 @@ namespace Data.DataContexts
 
                     //localMigrationService.MigrateClients(source, companyId, globalClients); // Don't Use this method created a new one below
                     //localMigrationService.MigrateSchools(source, companyId, globalSchools);  // Completed
-                    localMigrationService.MigrateOffers(source, companyId);  // Completed
+                    //localMigrationService.MigrateOffers(source, companyId);  // Completed
                     //localMigrationService.MigrateGroups(source, companyId, globalGroups); // Completed
                     //localMigrationService.MigrateSchoolGroups(source, companyId); // Completed
                     //localMigrationService.MigrateCampuses(source, companyId); // Completed
@@ -113,31 +118,28 @@ namespace Data.DataContexts
             // Run once after all parallel tasks
 
             #region Validated Tables
-            //MigrateStates();
-            //MigratePostalCodes();
-            //MigrateSources();
-            //MigrateClients();
             //MigrateLevelsProgramsAndDegreePrograms();
             //MigrateCampusDegrees();
+            //MigrateSources();
             //MigrateAllocations();
             //MigrateCampusPostalCodes();
-            //MigrateDownSellOffers();
-            //MigrateDownSellOfferPostalCodes();
-            //MigrateMasterSchools();
-            //MigrateMasterSchoolMappings();
-            //MigrateAreas();
-            //MigrateProgramAreas();
-            //MigrateInterests();
-            //MigrateProgramInterests();
-            //MigrateGroups();
-            //MigrateSchoolGroups();
-            //MigrateExtraRequiredEducation();
-            //MigrateLeadPosts();
-            //MigrateOfferTargeting();
-            //MigratePingCache();
-            //MigratePortalTargeting();
-            //MigrateSearchPortals();
-            //MigrateConfigEducationLevels();
+            MigrateDownSellOffers();
+            MigrateDownSellOfferPostalCodes();
+            MigrateMasterSchools();
+            MigrateMasterSchoolMappings();
+            MigrateAreas();
+            MigrateProgramAreas();
+            MigrateInterests();
+            MigrateProgramInterests();
+            MigrateGroups();
+            MigrateSchoolGroups();
+            MigrateExtraRequiredEducation();
+            MigrateLeadPosts();
+            MigrateOfferTargeting();
+            MigratePingCache();
+            MigratePortalTargeting();
+            MigrateSearchPortals();
+            MigrateConfigEducationLevels();
 
             #endregion
 
@@ -220,6 +222,109 @@ namespace Data.DataContexts
                         {
                             OldId = src.Id,
                             NewId = matchedClient.Id,
+                            CompanyId = companyId
+                        });
+                    }
+                }
+
+                _target.SaveChanges();
+            }
+
+            Console.WriteLine("✅ Client migration completed from all sources.");
+        }
+
+        public void MigrateSchools2()
+        {
+            var companies = _target.Company.ToList();
+
+            var sourceConnections = _configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .Where(cs => cs.Key != "TargetDb")
+                .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            // Step 1: Track unique clients by name (lowercased)
+            var globalSchools = new Dictionary<string, Scholls>();
+
+            // Step 2: Index existing clients from target DB
+            var existingSchoolsByName = _target.Schools
+                .AsNoTracking()
+                .Where(c => !string.IsNullOrEmpty(c.Name))
+                .ToList()
+                .GroupBy(c => c.Name.Trim().ToLower())
+                .ToDictionary(g => g.Key, g => g.First());
+
+            foreach (var kvp in sourceConnections)
+            {
+                var dbName = kvp.Key;
+                var connectionString = kvp.Value;
+
+                var company = companies.FirstOrDefault(c => c.Name == dbName);
+                if (company == null) continue;
+
+                var companyId = company.Id;
+
+                using var source = new SourceDbContext(connectionString);
+                var sourceSchools = source.Schools.ToList(); // SchoolsNew class
+
+                foreach (var src in sourceSchools)
+                {
+                    var key = src.Name?.Trim().ToLower();
+                    if (string.IsNullOrWhiteSpace(key)) continue;
+
+                    Scholls matchedSchool;
+
+                    // Step 3: Check in global memory first
+                    if (!globalSchools.TryGetValue(key, out matchedSchool))
+                    {
+                        // Step 4: Check in DB-level map
+                        if (!existingSchoolsByName.TryGetValue(key, out matchedSchool))
+                        {
+                            // Step 5: Create and save new Client
+                            matchedSchool = new Scholls
+                            {
+                                Name = src.Name,
+                                Abbr = src.Abbr,
+                                Website = src.Website,
+                                Logo100 = src.Logo100,
+                                Maxage = src.Maxage,
+                                Minage = src.Minage,
+                                Minhs = src.Minhs,
+                                Maxhs = src.Maxhs,
+                                Notes = src.Notes,
+                                Shortcopy = src.Shortcopy,
+                                Targeting = src.Targeting,
+                                Accreditation = src.Accreditation,
+                                Highlights = src.Highlights,
+                                Alert = src.Alert,
+                                Startdate = src.Startdate,
+                                Scoreadjustment = src.Scoreadjustment,
+                                Militaryfriendly = src.Militaryfriendly,
+                                Disclosure = src.Disclosure,
+                                Schoolgroup = src.Schoolgroup,
+                                TcpaText = src.Tcpa_Text,
+                                oldId = src.Id
+                            };
+
+                            _target.Schools.Add(matchedSchool);
+                            _target.SaveChanges();
+
+                            existingSchoolsByName[key] = matchedSchool;
+                        }
+
+                        globalSchools[key] = matchedSchool;
+                    }
+
+                    // Step 6: Add ClientIdMap if not already mapped
+                    bool alreadyMapped = _target.SchoolIdMap
+                        .Any(m => m.OldId == src.Id && m.CompanyId == companyId);
+
+                    if (!alreadyMapped)
+                    {
+                        _target.ClientIdMap.Add(new ClientIdMap
+                        {
+                            OldId = src.Id,
+                            NewId = matchedSchool.Id,
                             CompanyId = companyId
                         });
                     }
