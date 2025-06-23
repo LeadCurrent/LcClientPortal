@@ -38,7 +38,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adminips");
+                    b.ToTable("Adminips", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocation", b =>
@@ -141,7 +141,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Sourceid");
 
-                    b.ToTable("Allocations");
+                    b.ToTable("Allocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocationcampus", b =>
@@ -183,7 +183,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Allocationid");
 
-                    b.ToTable("Allocationcampuses");
+                    b.ToTable("Allocationcampuses", (string)null);
                 });
 
             modelBuilder.Entity("Data.Allocationcampusdegree", b =>
@@ -227,7 +227,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Campusdegreeid");
 
-                    b.ToTable("Allocationcampusdegrees");
+                    b.ToTable("Allocationcampusdegrees", (string)null);
                 });
 
             modelBuilder.Entity("Data.Apilog", b =>
@@ -246,7 +246,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Apilogs");
+                    b.ToTable("Apilogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Area", b =>
@@ -268,7 +268,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Areas");
+                    b.ToTable("Areas", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campus", b =>
@@ -325,7 +325,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Campuses");
+                    b.ToTable("Campuses", (string)null);
                 });
 
             modelBuilder.Entity("Data.CampusIdMap", b =>
@@ -349,7 +349,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CampusIdMap");
+                    b.ToTable("CampusIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campusdegree", b =>
@@ -390,7 +390,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Degreeid");
 
-                    b.ToTable("Campusdegrees");
+                    b.ToTable("Campusdegrees", (string)null);
                 });
 
             modelBuilder.Entity("Data.Campuspostalcode", b =>
@@ -421,7 +421,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Postalcodeid");
 
-                    b.ToTable("Campuspostalcodes");
+                    b.ToTable("Campuspostalcodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.Client", b =>
@@ -446,7 +446,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Data.ClientIdMap", b =>
@@ -470,7 +470,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("ClientIdMap");
+                    b.ToTable("ClientIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Company", b =>
@@ -531,7 +531,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyContact", b =>
@@ -572,7 +572,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyContact");
+                    b.ToTable("CompanyContact", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyEmailAccount", b =>
@@ -614,7 +614,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyEmailAccount");
+                    b.ToTable("CompanyEmailAccount", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyFolder", b =>
@@ -662,7 +662,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyFolder");
+                    b.ToTable("CompanyFolder", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyNote", b =>
@@ -701,7 +701,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyNote");
+                    b.ToTable("CompanyNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUser", b =>
@@ -736,7 +736,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CompanyUser");
+                    b.ToTable("CompanyUser", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUserEmail", b =>
@@ -762,7 +762,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyUserEmail");
+                    b.ToTable("CompanyUserEmail", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompanyUserNote", b =>
@@ -801,7 +801,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("CompanyUserNote");
+                    b.ToTable("CompanyUserNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CompayUserRole", b =>
@@ -824,7 +824,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("CompayUserRole");
+                    b.ToTable("CompayUserRole", (string)null);
                 });
 
             modelBuilder.Entity("Data.ContactUs", b =>
@@ -867,7 +867,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUs");
+                    b.ToTable("ContactUs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Customer", b =>
@@ -939,7 +939,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Data.CustomerNote", b =>
@@ -978,7 +978,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerNote");
+                    b.ToTable("CustomerNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.CustomerUpload", b =>
@@ -1033,7 +1033,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerUpload");
+                    b.ToTable("CustomerUpload", (string)null);
                 });
 
             modelBuilder.Entity("Data.Degreeprogram", b =>
@@ -1067,7 +1067,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Programid");
 
-                    b.ToTable("Degreeprograms");
+                    b.ToTable("Degreeprograms", (string)null);
                 });
 
             modelBuilder.Entity("Data.Document", b =>
@@ -1143,7 +1143,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Document", (string)null);
                 });
 
             modelBuilder.Entity("Data.DocumentVersion", b =>
@@ -1191,7 +1191,7 @@ namespace Data.Migrations
 
                     b.HasIndex("DocumentId");
 
-                    b.ToTable("DocumentVersion");
+                    b.ToTable("DocumentVersion", (string)null);
                 });
 
             modelBuilder.Entity("Data.DownSellOffer", b =>
@@ -1350,7 +1350,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("DownSellOffers");
+                    b.ToTable("DownSellOffers", (string)null);
                 });
 
             modelBuilder.Entity("Data.DownSellOfferPostalCode", b =>
@@ -1372,7 +1372,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DownSellOfferPostalCodes");
+                    b.ToTable("DownSellOfferPostalCodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.Eduapi", b =>
@@ -1420,7 +1420,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Clientid");
 
-                    b.ToTable("Eduapis");
+                    b.ToTable("Eduapis", (string)null);
                 });
 
             modelBuilder.Entity("Data.Eduapitargeting", b =>
@@ -1540,7 +1540,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Eduapiid");
 
-                    b.ToTable("Eduapitargetings");
+                    b.ToTable("Eduapitargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.EduspotsEduapiLog", b =>
@@ -1565,7 +1565,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EduspotsEduapiLogs");
+                    b.ToTable("EduspotsEduapiLogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailMessage", b =>
@@ -1625,7 +1625,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyEmailAccountId");
 
-                    b.ToTable("EmailMessage");
+                    b.ToTable("EmailMessage", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailNotifications", b =>
@@ -1644,7 +1644,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailNotifications");
+                    b.ToTable("EmailNotifications", (string)null);
                 });
 
             modelBuilder.Entity("Data.EmailRecipient", b =>
@@ -1671,7 +1671,7 @@ namespace Data.Migrations
 
                     b.HasIndex("EmailMessageId");
 
-                    b.ToTable("EmailRecipient");
+                    b.ToTable("EmailRecipient", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Allocation.Models.AllocationsIdMap", b =>
@@ -1695,7 +1695,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("AllocationsIdMap");
+                    b.ToTable("AllocationsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Area.Models.AreasIdMap", b =>
@@ -1714,7 +1714,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AreasIdMap");
+                    b.ToTable("AreasIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampusdegreeIdMap", b =>
@@ -1738,7 +1738,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CampusdegreeIdMap");
+                    b.ToTable("CampusdegreeIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Campus.Models.CampuspostalcodesIdMap", b =>
@@ -1762,7 +1762,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CampuspostalcodesIdMap");
+                    b.ToTable("CampuspostalcodesIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Degreeprogram.Models.DegreeprogramsIdMap", b =>
@@ -1786,7 +1786,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("DegreeprogramsIdMap");
+                    b.ToTable("DegreeprogramsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOfferPostalCodesIdMap", b =>
@@ -1805,7 +1805,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DownSellOfferPostalCodesIdMap");
+                    b.ToTable("DownSellOfferPostalCodesIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.DownSellOffer.Models.DownSellOffersIdMap", b =>
@@ -1824,7 +1824,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DownSellOffersIdMap");
+                    b.ToTable("DownSellOffersIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Group.Models.GroupIdMap", b =>
@@ -1848,7 +1848,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("GroupIdMap");
+                    b.ToTable("GroupIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Interest.Models.InterestsIdMap", b =>
@@ -1867,7 +1867,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InterestsIdMap");
+                    b.ToTable("InterestsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Leadpost.Models.LeadpostsIdMap", b =>
@@ -1891,7 +1891,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("LeadpostsIdMap");
+                    b.ToTable("LeadpostsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Level.Models.LevelsIdMap", b =>
@@ -1910,7 +1910,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LevelsIdMap");
+                    b.ToTable("LevelsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_school_mappingsIdMap", b =>
@@ -1929,7 +1929,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Master_school_mappingsIdMap");
+                    b.ToTable("Master_school_mappingsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.MasterSchool.Models.Master_schoolsIdMap", b =>
@@ -1948,7 +1948,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Master_schoolsIdMap");
+                    b.ToTable("Master_schoolsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Offer.Models.OffertargetingIdMap", b =>
@@ -1972,7 +1972,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("OffertargetingIdMap");
+                    b.ToTable("OffertargetingIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.PrepingLog.Models.Ping_cacheIdMap", b =>
@@ -1996,7 +1996,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Ping_cacheIdMap");
+                    b.ToTable("Ping_cacheIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramareasIdMap", b =>
@@ -2015,7 +2015,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProgramareasIdMap");
+                    b.ToTable("ProgramareasIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.PrograminterestsIdMap", b =>
@@ -2034,7 +2034,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrograminterestsIdMap");
+                    b.ToTable("PrograminterestsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.Program.Models.ProgramsIdMap", b =>
@@ -2053,7 +2053,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProgramsIdMap");
+                    b.ToTable("ProgramsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.EntityModelsAndLibraries.School.Models.SchoolGroupsIdMap", b =>
@@ -2077,7 +2077,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("SchoolGroupsIdMap");
+                    b.ToTable("SchoolGroupsIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.ExceptionLog", b =>
@@ -2126,7 +2126,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExceptionLog");
+                    b.ToTable("ExceptionLog", (string)null);
                 });
 
             modelBuilder.Entity("Data.Extrarequirededucation", b =>
@@ -2156,7 +2156,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Extrarequirededucations");
+                    b.ToTable("Extrarequirededucations", (string)null);
                 });
 
             modelBuilder.Entity("Data.FolderAccess", b =>
@@ -2194,7 +2194,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("FolderAccess");
+                    b.ToTable("FolderAccess", (string)null);
                 });
 
             modelBuilder.Entity("Data.Group", b =>
@@ -2221,7 +2221,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Data.Interest", b =>
@@ -2243,7 +2243,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interests");
+                    b.ToTable("Interests", (string)null);
                 });
 
             modelBuilder.Entity("Data.Leadpost", b =>
@@ -2321,7 +2321,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Leadposts");
+                    b.ToTable("Leadposts", (string)null);
                 });
 
             modelBuilder.Entity("Data.Level", b =>
@@ -2343,7 +2343,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Levels");
+                    b.ToTable("Levels", (string)null);
                 });
 
             modelBuilder.Entity("Data.Log", b =>
@@ -2371,7 +2371,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Data.MasterSchool", b =>
@@ -2390,7 +2390,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MasterSchools");
+                    b.ToTable("MasterSchools", (string)null);
                 });
 
             modelBuilder.Entity("Data.MasterSchoolMapping", b =>
@@ -2414,7 +2414,7 @@ namespace Data.Migrations
 
                     b.HasIndex("MasterSchoolsId");
 
-                    b.ToTable("MasterSchoolMappings");
+                    b.ToTable("MasterSchoolMappings", (string)null);
                 });
 
             modelBuilder.Entity("Data.Offer", b =>
@@ -2520,7 +2520,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Data.OfferIdMap", b =>
@@ -2544,7 +2544,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("OfferIdMap");
+                    b.ToTable("OfferIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Offertargeting", b =>
@@ -2714,7 +2714,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Offerid");
 
-                    b.ToTable("Offertargetings");
+                    b.ToTable("Offertargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.PingCache", b =>
@@ -2758,7 +2758,7 @@ namespace Data.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("PingCaches");
+                    b.ToTable("PingCaches", (string)null);
                 });
 
             modelBuilder.Entity("Data.PortalStates", b =>
@@ -2786,7 +2786,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PortalStates");
+                    b.ToTable("PortalStates", (string)null);
                 });
 
             modelBuilder.Entity("Data.Portalclick", b =>
@@ -2826,7 +2826,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portalclicks");
+                    b.ToTable("Portalclicks", (string)null);
                 });
 
             modelBuilder.Entity("Data.Portaltargeting", b =>
@@ -2949,7 +2949,7 @@ namespace Data.Migrations
 
                     b.HasIndex("SearchportalId");
 
-                    b.ToTable("Portaltargetings");
+                    b.ToTable("Portaltargetings", (string)null);
                 });
 
             modelBuilder.Entity("Data.PostalCodeIdMap", b =>
@@ -2973,7 +2973,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("PostalCodeIdMap");
+                    b.ToTable("PostalCodeIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Postalcode", b =>
@@ -3004,7 +3004,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Postalcodes");
+                    b.ToTable("Postalcodes", (string)null);
                 });
 
             modelBuilder.Entity("Data.PrepingLog", b =>
@@ -3032,7 +3032,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrepingLogs");
+                    b.ToTable("PrepingLogs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Program", b =>
@@ -3054,7 +3054,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs");
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("Data.Programarea", b =>
@@ -3080,7 +3080,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Programid");
 
-                    b.ToTable("Programareas");
+                    b.ToTable("Programareas", (string)null);
                 });
 
             modelBuilder.Entity("Data.Programinterest", b =>
@@ -3106,7 +3106,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Programid");
 
-                    b.ToTable("Programinterests");
+                    b.ToTable("Programinterests", (string)null);
                 });
 
             modelBuilder.Entity("Data.Role", b =>
@@ -3130,7 +3130,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("Data.RolePermission", b =>
@@ -3157,7 +3157,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermission");
+                    b.ToTable("RolePermission", (string)null);
                 });
 
             modelBuilder.Entity("Data.Scholls", b =>
@@ -3233,7 +3233,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Schools");
+                    b.ToTable("Schools", (string)null);
                 });
 
             modelBuilder.Entity("Data.SchoolIdMap", b =>
@@ -3257,7 +3257,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("SchoolIdMap");
+                    b.ToTable("SchoolIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolgroup", b =>
@@ -3288,7 +3288,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolgroups");
+                    b.ToTable("Schoolgroups", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolhighlight", b =>
@@ -3312,7 +3312,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolhighlights");
+                    b.ToTable("Schoolhighlights", (string)null);
                 });
 
             modelBuilder.Entity("Data.Schoolstart", b =>
@@ -3336,7 +3336,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Schoolid");
 
-                    b.ToTable("Schoolstarts");
+                    b.ToTable("Schoolstarts", (string)null);
                 });
 
             modelBuilder.Entity("Data.Searchportal", b =>
@@ -3367,7 +3367,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Searchportals");
+                    b.ToTable("Searchportals", (string)null);
                 });
 
             modelBuilder.Entity("Data.SendEmail", b =>
@@ -3397,7 +3397,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyEmailAccountId");
 
-                    b.ToTable("SendEmail");
+                    b.ToTable("SendEmail", (string)null);
                 });
 
             modelBuilder.Entity("Data.SendEmailRecipient", b =>
@@ -3421,7 +3421,7 @@ namespace Data.Migrations
 
                     b.HasIndex("SendEmailId");
 
-                    b.ToTable("SendEmailRecipient");
+                    b.ToTable("SendEmailRecipient", (string)null);
                 });
 
             modelBuilder.Entity("Data.Source", b =>
@@ -3460,7 +3460,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Sources");
+                    b.ToTable("Sources", (string)null);
                 });
 
             modelBuilder.Entity("Data.SourceIdMap", b =>
@@ -3484,7 +3484,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("SourceIdMap");
+                    b.ToTable("SourceIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Sourceip", b =>
@@ -3505,7 +3505,7 @@ namespace Data.Migrations
 
                     b.HasIndex("Sourceid");
 
-                    b.ToTable("Sourceips");
+                    b.ToTable("Sourceips", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroup", b =>
@@ -3544,7 +3544,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("StaffGroup");
+                    b.ToTable("StaffGroup", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroupDivision", b =>
@@ -3577,7 +3577,7 @@ namespace Data.Migrations
 
                     b.HasIndex("StaffGroupId");
 
-                    b.ToTable("StaffGroupDivision");
+                    b.ToTable("StaffGroupDivision", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffGroupUser", b =>
@@ -3615,7 +3615,7 @@ namespace Data.Migrations
 
                     b.HasIndex("StaffGroupId");
 
-                    b.ToTable("StaffGroupUser");
+                    b.ToTable("StaffGroupUser", (string)null);
                 });
 
             modelBuilder.Entity("Data.StaffNote", b =>
@@ -3654,7 +3654,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("StaffNote");
+                    b.ToTable("StaffNote", (string)null);
                 });
 
             modelBuilder.Entity("Data.StateIdMap", b =>
@@ -3678,7 +3678,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("StateIdMap");
+                    b.ToTable("StateIdMap", (string)null);
                 });
 
             modelBuilder.Entity("Data.Submission", b =>
@@ -3721,7 +3721,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Submissions");
+                    b.ToTable("Submissions", (string)null);
                 });
 
             modelBuilder.Entity("Data.TblConfigEducationLevel", b =>
@@ -3743,7 +3743,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TblConfigEducationLevels");
+                    b.ToTable("TblConfigEducationLevels", (string)null);
                 });
 
             modelBuilder.Entity("Data.Template", b =>
@@ -3819,7 +3819,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Template");
+                    b.ToTable("Template", (string)null);
                 });
 
             modelBuilder.Entity("Data.TemplateMultiSelect", b =>
@@ -3840,7 +3840,7 @@ namespace Data.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("TemplateMultiSelect");
+                    b.ToTable("TemplateMultiSelect", (string)null);
                 });
 
             modelBuilder.Entity("Data.UnreadEmailSummaryView", b =>
@@ -3882,7 +3882,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyUserId");
 
-                    b.ToTable("UnreadEmailSummaryView");
+                    b.ToTable("UnreadEmailSummaryView", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserEmailAutoDelete", b =>
@@ -3901,7 +3901,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserEmailAutoDelete");
+                    b.ToTable("UserEmailAutoDelete", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserLoginHistory", b =>
@@ -3925,7 +3925,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLoginHistory");
+                    b.ToTable("UserLoginHistory", (string)null);
                 });
 
             modelBuilder.Entity("Data.UserSignatures", b =>
@@ -3947,7 +3947,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserSignatures");
+                    b.ToTable("UserSignatures", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllSubmission", b =>
@@ -3972,7 +3972,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllSubmissions");
+                    b.ToTable("VwAllSubmissions", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllocation", b =>
@@ -4012,7 +4012,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllocations");
+                    b.ToTable("VwAllocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwAllocationsApi", b =>
@@ -4079,7 +4079,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwAllocationsApis");
+                    b.ToTable("VwAllocationsApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwFullOfferDetailsApi", b =>
@@ -4200,7 +4200,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwFullOfferDetailsApis");
+                    b.ToTable("VwFullOfferDetailsApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwOffer", b =>
@@ -4243,7 +4243,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwOffers");
+                    b.ToTable("VwOffers", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwOffersApi", b =>
@@ -4319,7 +4319,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwOffersApis");
+                    b.ToTable("VwOffersApis", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwPingsCacheDetail", b =>
@@ -4362,7 +4362,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwPingsCacheDetails");
+                    b.ToTable("VwPingsCacheDetails", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwSchoolGroup", b =>
@@ -4390,7 +4390,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwSchoolGroups");
+                    b.ToTable("VwSchoolGroups", (string)null);
                 });
 
             modelBuilder.Entity("Data.VwVendorAllocation", b =>
@@ -4607,7 +4607,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VwVendorAllocations");
+                    b.ToTable("VwVendorAllocations", (string)null);
                 });
 
             modelBuilder.Entity("Data.VxFulfillmentApiv1", b =>
@@ -4671,7 +4671,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VxFulfillmentApiv1s");
+                    b.ToTable("VxFulfillmentApiv1s", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
