@@ -23,7 +23,6 @@ namespace Data
                 return new List<Campus>();
 
             return await context.Campuses
-                .Where(x => x.CompanyId == companyId)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

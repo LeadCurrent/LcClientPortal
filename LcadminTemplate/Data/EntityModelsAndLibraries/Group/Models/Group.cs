@@ -15,9 +15,6 @@ public partial class Group
     public virtual ICollection<Schoolgroup> Schoolgroups { get; set; } = new List<Schoolgroup>();
     public int? oldId { get; set; }
 
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
-
     [NotMapped]
     public bool IsChecked { get; set; }
 }

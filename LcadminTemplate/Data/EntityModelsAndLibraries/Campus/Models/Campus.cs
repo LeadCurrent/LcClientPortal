@@ -28,9 +28,6 @@ public partial class Campus
     public string Clientid { get; set; }
 
     public int? oldId { get; set; }
-    public int? CompanyId { get; set; }
-    public Company Company { get; set; }
-
     public virtual ICollection<Campuspostalcode> Campuspostalcodes { get; set; } = new List<Campuspostalcode>();
 
     public virtual Postalcode Postalcode { get; set; }
