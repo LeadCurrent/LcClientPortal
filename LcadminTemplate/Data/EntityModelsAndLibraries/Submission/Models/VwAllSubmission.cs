@@ -12,5 +12,5 @@ public partial class VwAllSubmission
 
     public int Sourceid { get; set; }
 
-    public DateOnly? Submisiondate { get; set; }
+    public DateOnly? Submissiondate { get; set; }
 }

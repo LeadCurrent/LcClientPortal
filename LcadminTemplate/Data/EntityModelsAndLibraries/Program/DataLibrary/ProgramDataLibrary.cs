@@ -5,16 +5,14 @@ using System.Threading.Tasks;
 using Web;
 
 namespace Data
-{ 
+{
     public class ProgramDataLibrary
     {
         public DataContext context { get; }
-
         public ProgramDataLibrary(DataContext Context)
         {
             context = Context;
         }
-
         public async Task<Program> GetProgramById(int Id)
         {
             return await context.Programs
@@ -24,7 +22,6 @@ namespace Data
                 .Where(x => x.Id == Id)
                 .FirstOrDefaultAsync();
         }
-
         public async Task<bool> CreateProgram(Program Program)
         {
             await context.Programs.AddAsync(Program);
@@ -146,13 +143,11 @@ namespace Data
             var result = await context.SaveChangesAsync();
             return result > 0;
         }
-
-        public async Task<List<Program>>                                                                                                                    GetPrograms()
+        public async Task<List<Program>> GetPrograms()
         {
             return await context.Programs
                 .ToListAsync();
         }
-
         public async Task<bool> DeleteProgram(int id)
         {
             var program = await context.Programs
@@ -177,6 +172,12 @@ namespace Data
             return result > 0;
         }
 
+        public async Task<List<Campusdegree>> GetProgramsByCampusId(int CampusId)
+        {
+             var Campusdegree = await context.Campusdegrees.Where(x => x.Campusid == CampusId)
+                .ToListAsync();
 
+            return Campusdegree;
+        }
     }
 }

@@ -1,0 +1,24 @@
+﻿@model OfferVM
+@using Data
+@using Web
+
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditOffersAllocation", "Offers", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/EditOffersAllocation_Partial.cshtml");
+        }
+    </div>
+}
+
+<script>
+    highlightcurrentpage('nav_Offers');
+</script>
+

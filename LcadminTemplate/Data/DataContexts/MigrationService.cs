@@ -62,7 +62,7 @@ namespace Data.DataContexts
                 .ToDictionary(cs => cs.Key, cs => cs.Value);
 
             var companies = _target.Company.AsNoTracking().ToList();
-
+            
             var globalClients = new Dictionary<string, Client>();
             var globalSchools = new Dictionary<string, Scholls>();
             var globalGroups = new Dictionary<string, Group>();
@@ -1049,68 +1049,98 @@ namespace Data.DataContexts
         {
             var companies = _target.Company.ToList();
 
-            var sourceConnections = _configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
+            var allConnections = _configuration.GetSection("ConnectionStrings").GetChildren().ToList();
+            var sourceConnections = allConnections
                 .Where(cs => cs.Key != "TargetDb")
                 .ToDictionary(cs => cs.Key, cs => cs.Value);
+
+            Console.WriteLine($"🔍 Found {sourceConnections.Count} source databases to process.");
 
             foreach (var kvp in sourceConnections)
             {
                 var dbName = kvp.Key;
                 var connectionString = kvp.Value;
 
+                Console.WriteLine($"\n🔁 Starting migration for: {dbName}");
+
                 var company = companies.FirstOrDefault(c => c.Name == dbName);
                 if (company == null)
                 {
+                    Console.WriteLine($"⏭️ Skipping: No matching company found for {dbName}");
                     continue;
                 }
 
                 var companyId = company.Id;
 
-                using var source = new SourceDbContext(connectionString);
-                var sourceCampusDegrees = source.campusdegrees.AsNoTracking().ToList();
-
-                foreach (var sourceCD in sourceCampusDegrees)
+                try
                 {
-                    // FK remapping
-                    var newCampusId = _target.CampusIdMap.FirstOrDefault(x => x.OldId == sourceCD.Campusid && x.CompanyId == companyId)?.NewId;
+                    using var source = new SourceDbContext(connectionString);
+                    var sourceCampusDegrees = source.campusdegrees.AsNoTracking().ToList();
 
-                    var newDegreeProgramId = _target.DegreeprogramsIdMap.FirstOrDefault(x => x.OldId == sourceCD.Degreeid && x.CompanyId == companyId)?.NewId;
+                    Console.WriteLine($"📦 {sourceCampusDegrees.Count} campusdegree records found in {dbName}");
 
-                    if (newCampusId == null || newDegreeProgramId == null)
+                    foreach (var sourceCD in sourceCampusDegrees)
                     {
-                        continue;
+                        // Remap Degreeid
+                        var newDegreeProgramId = _target.DegreeprogramsIdMap
+                            .FirstOrDefault(x => x.OldId == sourceCD.Degreeid)?.NewId;
+
+                        if (newDegreeProgramId == null)
+                        {
+                            Console.WriteLine($"⚠️ Skipped: DegreeId={sourceCD.Degreeid} not mapped for CompanyId={companyId}");
+                            continue;
+                        }
+
+                        // Remap Campusid or fallback
+                        var newCampusId = _target.CampusIdMap
+                            .FirstOrDefault(x => x.OldId == sourceCD.Campusid && x.CompanyId == companyId)?.NewId
+                            ?? sourceCD.Campusid;
+
+                        var newCampusDegree = new Campusdegree
+                        {
+                            Campusid = newCampusId,
+                            Name = sourceCD.Name,
+                            Copy = sourceCD.Copy,
+                            Active = sourceCD.Active,
+                            Clientid = sourceCD.Clientid,
+                            Degreeid = newDegreeProgramId.Value,
+                            CompanyId = companyId,
+                            oldId = sourceCD.Id
+                        };
+
+                        try
+                        {
+                            _target.Campusdegrees.Add(newCampusDegree);
+                            _target.SaveChanges();
+
+                            _target.CampusdegreeIdMap.Add(new CampusdegreeIdMap
+                            {
+                                OldId = sourceCD.Id,
+                                NewId = newCampusDegree.Id,
+                                CompanyId = companyId
+                            });
+
+                            _target.SaveChanges();
+                            _target.ChangeTracker.Clear();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"❌ Error saving campusdegree Id={sourceCD.Id}: {ex.Message}");
+                            _target.ChangeTracker.Clear();
+                            continue;
+                        }
                     }
 
-                    var newCampusDegree = new Campusdegree
-                    {
-                        Campusid = newCampusId.Value,
-                        Name = sourceCD.Name,
-                        Copy = sourceCD.Copy,
-                        Active = sourceCD.Active,
-                        Clientid = sourceCD.Clientid,
-                        Degreeid = newDegreeProgramId.Value,
-                        CompanyId = companyId,
-                        oldId = sourceCD.Id
-                    };
-
-                    _target.Campusdegrees.Add(newCampusDegree);
-                    _target.SaveChanges();
-
-                    _target.CampusdegreeIdMap.Add(new CampusdegreeIdMap
-                    {
-                        OldId = sourceCD.Id,
-                        NewId = newCampusDegree.Id,
-                        CompanyId = companyId
-                    });
-
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
-
-                    _target.SaveChanges();
+                    Console.WriteLine($"✅ Completed migration for: {dbName}");
+                }
+                catch (Exception outerEx)
+                {
+                    Console.WriteLine($"❌ Fatal error with {dbName}: {outerEx.Message}");
+                    continue;
                 }
             }
+
+            Console.WriteLine("\n🎉 All source databases processed.");
         }
         public void MigrateSources()
         {
@@ -2313,51 +2343,37 @@ namespace Data.DataContexts
                 var connectionString = kvp.Value;
 
                 var company = companies.FirstOrDefault(c => c.Name == dbName);
-                if (company == null)
-                {
-                    continue;
-                }
+                if (company == null) continue;
 
                 var companyId = company.Id;
 
                 using var source = new SourceDbContext(connectionString);
                 var sourceRows = source.leadposts.AsNoTracking().ToList();
 
+                var schoolMap = _target.SchoolIdMap.Where(x => x.CompanyId == companyId).ToList();
+                var sourceMap = _target.SourceIdMap.Where(x => x.CompanyId == companyId).ToList();
+                var offerMap = _target.OfferIdMap.Where(x => x.CompanyId == companyId).ToList();
+                var programMap = _target.ProgramsIdMap.ToList(); // global
+                var campusMap = _target.CampusIdMap.Where(x => x.CompanyId == companyId).ToList();
+
+                var leadpostsToInsert = new List<Leadpost>();
+                var idMapsToInsert = new List<LeadpostsIdMap>();
+
                 foreach (var row in sourceRows)
                 {
-                    var newSchoolId = _target.SchoolIdMap
-                        .FirstOrDefault(x => x.OldId == row.Schoolid && x.CompanyId == companyId)
-                        ?.NewId ?? row.Schoolid;//add same when null only for this tbl
-
-                    var newSourceId = _target.SourceIdMap
-                        .FirstOrDefault(x => x.OldId == row.Sourceid && x.CompanyId == companyId)
-                        ?.NewId ?? row.Sourceid;//add same when null only for this tbl
-
-                    var newOfferId = _target.OfferIdMap
-                       .FirstOrDefault(x => x.OldId == row.Offerid && x.CompanyId == companyId)
-                       ?.NewId ?? row.Offerid;//add same when null only for this tbl
-
-                    var newProgramId = _target.ProgramsIdMap
-                       .FirstOrDefault(x => x.OldId == row.Programid)
-                       ?.NewId ?? row.Programid;//add same when null only for this tbl
-
-                    var newCampusId = _target.CampusIdMap
-                       .FirstOrDefault(x => x.OldId == row.Campusid && x.CompanyId == companyId)
-                       ?.NewId ?? row.Campusid;//add same when null only for this tbl
-
-
-                    if (newSchoolId == null || newSourceId == null)
-                    {
-                        continue;
-                    }
+                    var newSchoolId = schoolMap.FirstOrDefault(x => x.OldId == row.Schoolid)?.NewId ?? row.Schoolid;
+                    var newSourceId = sourceMap.FirstOrDefault(x => x.OldId == row.Sourceid)?.NewId ?? row.Sourceid;
+                    var newOfferId = offerMap.FirstOrDefault(x => x.OldId == row.Offerid)?.NewId ?? row.Offerid;
+                    var newProgramId = programMap.FirstOrDefault(x => x.OldId == row.Programid)?.NewId ?? row.Programid;
+                    var newCampusId = campusMap.FirstOrDefault(x => x.OldId == row.Campusid)?.NewId ?? row.Campusid;
 
                     var newEntry = new Leadpost
                     {
-                        Schoolid = newSchoolId.Value,
-                        Sourceid = newSourceId.Value,
-                        Offerid = newOfferId.Value,
-                        Programid = newProgramId.Value,
-                        Campusid = newCampusId.Value,
+                        Schoolid = newSchoolId,
+                        Sourceid = newSourceId,
+                        Offerid = newOfferId,
+                        Programid = newProgramId,
+                        Campusid = newCampusId,
 
                         Parameterstring = row.Parameterstring,
                         Serverresponse = row.Serverresponse,
@@ -2374,29 +2390,37 @@ namespace Data.DataContexts
                         Offername = row.Offername,
                         Agent = row.Agent,
 
-
                         CompanyId = companyId,
                         oldId = row.Id
                     };
 
-                    _target.Leadposts.Add(newEntry);
+                    leadpostsToInsert.Add(newEntry);
+                }
+
+                // Bulk insert leadposts
+                if (leadpostsToInsert.Any())
+                {
+                    _target.Leadposts.AddRange(leadpostsToInsert);
                     _target.SaveChanges();
 
-                    _target.LeadpostsIdMap.Add(new LeadpostsIdMap
+                    idMapsToInsert.AddRange(leadpostsToInsert.Select(p => new LeadpostsIdMap
                     {
-                        OldId = row.Id,
-                        NewId = newEntry.Id,
+                        OldId = p.oldId ?? 0,
+                        NewId = p.Id,
                         CompanyId = companyId
-                    });
+                    }));
 
-                    _target.SaveChanges();
-                    _target.ChangeTracker.Clear();
+                    _target.LeadpostsIdMap.AddRange(idMapsToInsert);
                     _target.SaveChanges();
                 }
 
+                _target.ChangeTracker.Clear();
+                Console.WriteLine($"✅ Migrated {leadpostsToInsert.Count} leadposts for {dbName}");
             }
 
+            Console.WriteLine("🎉 Leadpost migration completed from all sources.");
         }
+
         public void MigrateOfferTargeting()
         {
             var companies = _target.Company.ToList();

@@ -1,0 +1,175 @@
+﻿@using Data
+@using Web
+@model Web.VendorDashboardVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">
+    <span>Allocation Details for @Model.School.Name</span>
+</div>
+
+<div class="form-1600">
+    <div class="card white-bg p-4 shadow-sm">
+
+        <!-- Offer Details -->
+        <h4 class="text-primary text-center mb-3">Offer Details</h4>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Offer Name</th>
+                    <td>@Model.School.Name</td>
+                </tr>
+                <tr>
+                    <th>Client ID</th>
+                    <td>@Model.Offer.Clientid</td>
+                </tr>
+                <tr>
+                    <th>Offer Type</th>
+                    <td>@(Model.Offer.Type == "HT" ? "WARM TRANSFER" : "DATA LEAD")</td>
+                </tr>
+                <tr>
+                    <th>Warm Transfer Phone</th>
+                    <td>@Model.Offer.Transferphone</td>
+                </tr>
+                <tr>
+                    <th>Hours of Operation<br /><small>*All times in Eastern</small></th>
+                    <td>@Html.Raw(Model.TransferHours)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Targeting Details -->
+        <h4 class="text-primary text-center mt-5 mb-3">Targeting Details</h4>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Military Targeting</th>
+                    <td>
+                        @if (Model.Offer.Militaryonly)
+                        {
+                            <span>MILITARY ONLY</span>
+                        }
+                        else if (Model.Offer.Nomilitary)
+                        {
+                            <span>NON-MILITARY ONLY</span>
+                        }
+                        else
+                        {
+                            <span>ANY</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Age Targeting</th>
+                    <td>
+                        Minimum Age: @(Model.School.Minage > 0 ? Model.School.Minage.ToString() : "ANY")<br />
+                        Maximum Age: @(Model.School.Maxage > 0 ? Model.School.Maxage.ToString() : "ANY")
+                    </td>
+                </tr>
+                <tr>
+                    <th>HS Grad Year Targeting</th>
+                    <td>
+                        Minimum: @(Model.School.Minhs > 0 ? Model.School.Minhs.ToString() : "ANY")<br />
+                        Maximum: @(Model.School.Maxhs > 0 ? Model.School.Maxhs.ToString() : "ANY")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- School Details -->
+        <h4 class="text-primary text-center mt-5 mb-3">School Details</h4>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>School Name</th>
+                    <td>@Model.School.Name</td>
+                </tr>
+                <tr>
+                    <th>School Logo</th>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.School.Logo100))
+                        {
+                            <img src="@Model.School.Logo100" alt="Logo" style="max-height: 60px;" />
+                        }
+                        else
+                        {
+                            <span>No logo available</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Short Copy</th>
+                    <td>@Model.School.Shortcopy</td>
+                </tr>
+                <tr>
+                    <th>Call Center Highlights</th>
+                    <td>@Model.School.Highlights</td>
+                </tr>
+                <tr>
+                    <th>Targeting Notes</th>
+                    <td>@($"{Model.School.StandardTargetingNotes} {Model.School.CustomTargetingNotes}")</td>
+                </tr>
+                <tr>
+                    <th>Custom TCPA</th>
+                    <td>@Model.School.TcpaText</td>
+                </tr>
+                <tr>
+                    <th>Accreditation Notes</th>
+                    <td>@Model.School.Accreditation</td>
+                </tr>
+                <tr>
+                    <th>Disclosure URL</th>
+                    <td><a href="@Model.School.Disclosure" target="_blank">@Model.School.Disclosure</a></td>
+                </tr>
+                <tr>
+                    <th>School Groups</th>
+                    <td>@Model.SchoolGroups</td>
+                </tr>
+                <tr>
+                    <th>Campuses</th>
+                    <td>
+                        @if (Model.CampusList != null && Model.CampusList.Any())
+                        {
+                            <table class="table table-sm table-striped">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Campus</th>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th class="text-end">Zips Targeted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var campus in Model.CampusList)
+                                    {
+                                        <tr>
+                                            <td>@campus.Name</td>
+                                            <td>@campus.Campustype</td>
+                                            @if (campus.Campustype == "Online")
+                                            {
+                                                <td colspan="2">ONLINE</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@campus.City, @campus.PortalStates.Abbr</td>
+                                                <td class="text-end">@campus.ZipCount</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>No campuses found</span>
+                        }
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

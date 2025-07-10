@@ -6,7 +6,22 @@
 @Html.HiddenFor(m => m.Param)
 @Html.HiddenFor(m => m.Action)
 
-<div class="input-form">
+
+<style>
+    .cec-section label {
+        font-weight: 500;
+    }
+
+    .cec-section .cec-block {
+        margin-top: 1rem;
+    }
+
+    .cec-section .cec-row label {
+        min-width: 30px;
+    }
+
+</style>
+<div class="day-targeting container pt-3">
     <table>
         <tr>
             <td>Client</td>
@@ -49,8 +64,7 @@
         <tr>
             <td>OneSearch Delivery Profile</td>
             <td>
-                @Html.DropDownListFor(x => x.SelectedOfferType, Model.DeliveryDropDownList, new { @class = "form-control" })
-
+                @Html.DropDownListFor(x => x.SelectedDeliveryIdentifier, Model.DeliveryDropDownList, new { @class = "form-control" })
             </td>
         </tr>
         <tr>
@@ -103,7 +117,7 @@
         Time and Date Targeting
     </div>
 
-    <div class="day-targeting container mt-3">
+    <div class="mt-3">
         <div class="row mb-3">
             <div class="col-md-3">
                 <div class="form-check">
@@ -238,11 +252,91 @@
         </div>
     </div>
 
+    @if (Model.Offer.Id > 0)
+    {
+        <div class="pt-4" style="max-width:900px; ">
+            <table class="">
+                <tr>
+                    <td>CEC Scores</td>
+                    <td class="text-center">A</td>
+                    <td class="text-center">B</td>
+                    <td class="text-center">C</td>
+                    <td class="text-center">D</td>
+                    <td class="text-center">E</td>
+                    <td class="text-center">F</td>
+                    <td class="text-center">G</td>
+                </tr>
+                <tr>
+                    <td class="text-end"></td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeA)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeB)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeC)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeD)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeE)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeF)</td>
+                    <td class="text-center">@Html.CheckBoxFor(x => x.Offer.Targeting.CecIncludeG)</td>
+                </tr>
 
-    <div class="buttons">
-        <button type="submit">Save</button>
-        <button type="button">Save And Add Another</button>
-        <button type="button">Cancel</button>
-    </div>
 
+                <tr class="pt-3">
+                    <td class="text-end">CEC RPLs:</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplA, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplB, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplC, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplD, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplE, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplF, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.CecRplG, new { @class = "form-control", style = "width:70px;" })</td>
+                </tr>
+
+                <tr>
+                    <td class="text-end">CEC Default CPLs:</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplA, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplB, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplC, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplD, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplE, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplF, new { @class = "form-control", style = "width:70px;" })</td>
+                    <td>@Html.TextBoxFor(x => x.Offer.Targeting.CecCplG, new { @class = "form-control", style = "width:70px;" })</td>
+                </tr>
+            </table>
+            @if (Model.Offer.Allocations != null && Model.Offer.Allocations.Any())
+            {
+                <div class="tablestyle pt-4">
+                    <table class="table table-bordered table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Identifier</th>
+                                <th class="text-center">Active</th>
+                                <th class="text-center">Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var index = 0;
+                                foreach (var allocation in Model.Offer.Allocations)
+                                {
+                                    var rowClass = index % 2 == 1 ? "altlistrow" : "";
+                                    <tr class="@rowClass">
+                                        <td>@allocation.Source?.Name</td>
+                                        <td>@allocation.Identifier</td>
+                                        <td class="text-center">@allocation.Active</td>
+                                        <td class="text-center">
+                                            <button class="buttonaslink" style="color:black !important;" onclick="NonAjaxWithParam('EditOffersAllocation',@Model.Offer.Id)">Edit</button>
+                                        </td>
+                                    </tr>
+                                    ;
+                                    index++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            }
+
+        </div>
+    }
 </div>
+

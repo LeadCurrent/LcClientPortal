@@ -73,7 +73,7 @@ namespace Scheduler.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var ViewModel = new MigrateDataVM();
             return View("MigrateDataList", ViewModel);

@@ -18,13 +18,9 @@ namespace Data
             context = Context;
         }
 
-        public async Task<List<Group>> GroupByCompanyId(int? companyId)
+        public async Task<List<Group>> GetGroups()
         {
-            if (companyId <= 0)
-                return new List<Group>();
-
             return await context.Groups
-                .Where(x => x.CompanyId == companyId)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

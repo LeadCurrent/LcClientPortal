@@ -38,7 +38,7 @@ namespace Scheduler.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> CreateUserFirstTime()
+        public IActionResult CreateUserFirstTime()
         {
             var Model = new UserVM();
             Model.User = new User();

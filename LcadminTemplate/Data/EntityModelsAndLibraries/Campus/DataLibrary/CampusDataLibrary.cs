@@ -42,6 +42,26 @@ namespace Data
                 .ToListAsync();
         }
 
+
+        public async Task<List<Campus>> GetCampusWithZIPCountBySchoolId(int schoolsId)
+        {
+            var campuses = await context.Campuses
+                .Where(x => x.Schoolid == schoolsId)
+                .Include(x => x.PortalStates)
+                .Include(x => x.Postalcode)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+
+            // Calculate ZipCount for each campus
+            foreach (var campus in campuses)
+            {
+                campus.ZipCount = await context.Campuspostalcodes.CountAsync(z => z.Campusid == campus.Id);
+            }
+
+            return campuses;
+        }
+
+
         public async Task<int> CreateCampus(Campus campus)
         {
             context.ChangeTracker.Clear();

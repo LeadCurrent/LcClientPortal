@@ -49,7 +49,7 @@ namespace Web
             //ProductsDL = ProductsDataLibrary;
         }
 
-        public async Task<CompanyAccountVM> getModel()
+        public CompanyAccountVM getModel()
         {
             var CompanyId = Int32.Parse(User.Claims.Where(x => x.Type == "CompanyId").FirstOrDefault().Value);
             var Model = new CompanyAccountVM();
@@ -65,7 +65,7 @@ namespace Web
         {
             try
             {
-                var Model = await getModel();
+                var Model =  getModel();
                 if (ChangePlan > 0)
                     Model.ShowChangePlan = true;
                 if (HttpContext.Session.GetString("MobileApp") != null)
@@ -91,7 +91,7 @@ namespace Web
         {
             try
             {
-                var Model = await getModel();
+                var Model = getModel();
 
                 if (HttpContext.Session.GetString("MobileApp") != null)
                     Model.MobileApp = true;

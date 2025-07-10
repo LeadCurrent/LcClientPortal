@@ -113,93 +113,94 @@ public partial class Offertargeting
 
     // --- Monday ---
     [NotMapped]
-    public int MondayStartHour => MondayStart.Hour;
+    public int MondayStartHour { get; set; }
 
     [NotMapped]
-    public int MondayStartMinute => MondayStart.Minute;
+    public int MondayStartMinute { get; set; }
 
     [NotMapped]
-    public int MondayEndHour => MondayEnd.Hour;
+    public int MondayEndHour { get; set; }
 
     [NotMapped]
-    public int MondayEndMinute => MondayEnd.Minute;
+    public int MondayEndMinute { get; set; }
 
     // --- Tuesday ---
     [NotMapped]
-    public int TuesdayStartHour => TuesdayStart.Hour;
+    public int TuesdayStartHour { get; set; }
 
     [NotMapped]
-    public int TuesdayStartMinute => TuesdayStart.Minute;
+    public int TuesdayStartMinute { get; set; }
 
     [NotMapped]
-    public int TuesdayEndHour => TuesdayEnd.Hour;
+    public int TuesdayEndHour { get; set; }
 
     [NotMapped]
-    public int TuesdayEndMinute => TuesdayEnd.Minute;
+    public int TuesdayEndMinute { get; set; }
 
     // --- Wednesday ---
     [NotMapped]
-    public int WednesdayStartHour => WednesdayStart.Hour;
+    public int WednesdayStartHour { get; set; }
 
     [NotMapped]
-    public int WednesdayStartMinute => WednesdayStart.Minute;
+    public int WednesdayStartMinute { get; set; }
 
     [NotMapped]
-    public int WednesdayEndHour => WednesdayEnd.Hour;
+    public int WednesdayEndHour { get; set; }
 
     [NotMapped]
-    public int WednesdayEndMinute => WednesdayEnd.Minute;
+    public int WednesdayEndMinute { get; set; }
 
     // --- Thursday ---
     [NotMapped]
-    public int ThursdayStartHour => ThursdayStart.Hour;
+    public int ThursdayStartHour { get; set; }
 
     [NotMapped]
-    public int ThursdayStartMinute => ThursdayStart.Minute;
+    public int ThursdayStartMinute { get; set; }
 
     [NotMapped]
-    public int ThursdayEndHour => ThursdayEnd.Hour;
+    public int ThursdayEndHour { get; set; }
 
     [NotMapped]
-    public int ThursdayEndMinute => ThursdayEnd.Minute;
+    public int ThursdayEndMinute { get; set; }
 
     // --- Friday ---
     [NotMapped]
-    public int FridayStartHour => FridayStart.Hour;
+    public int FridayStartHour { get; set; }
 
     [NotMapped]
-    public int FridayStartMinute => FridayStart.Minute;
+    public int FridayStartMinute { get; set; }
 
     [NotMapped]
-    public int FridayEndHour => FridayEnd.Hour;
+    public int FridayEndHour { get; set; }
 
     [NotMapped]
-    public int FridayEndMinute => FridayEnd.Minute;
+    public int FridayEndMinute { get; set; }
 
     // --- Saturday ---
     [NotMapped]
-    public int SaturdayStartHour => SaturdayStart.Hour;
+    public int SaturdayStartHour { get; set; }
 
     [NotMapped]
-    public int SaturdayStartMinute => SaturdayStart.Minute;
+    public int SaturdayStartMinute { get; set; }
 
     [NotMapped]
-    public int SaturdayEndHour => SaturdayEnd.Hour;
+    public int SaturdayEndHour { get; set; }
 
     [NotMapped]
-    public int SaturdayEndMinute => SaturdayEnd.Minute;
+    public int SaturdayEndMinute { get; set; }
 
     // --- Sunday ---
     [NotMapped]
-    public int SundayStartHour => SundayStart.Hour;
+    public int SundayStartHour { get; set; }
 
     [NotMapped]
-    public int SundayStartMinute => SundayStart.Minute;
+    public int SundayStartMinute { get; set; }
 
     [NotMapped]
-    public int SundayEndHour => SundayEnd.Hour;
+    public int SundayEndHour { get; set; }
 
     [NotMapped]
-    public int SundayEndMinute => SundayEnd.Minute;
+    public int SundayEndMinute { get; set; }
+
 
 }

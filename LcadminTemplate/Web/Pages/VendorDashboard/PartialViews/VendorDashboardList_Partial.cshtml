@@ -1,0 +1,97 @@
+﻿@using Data
+@using Web
+@model Web.VendorDashboardVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div class="pagetitle"> Sources</div>
+<div class="form-1400">
+    <div class="white-bg">
+        <div style="text-align:center;">
+            <table class="tablestyle">
+                <thead class="headerlistrow">
+                    <tr>
+                        <th style="width: 100px; text-align: left;">Offer</th>
+                        <th style="width: 20px; text-align: center;">Type</th>
+                        <th style="width: 7px; text-align: center;">Client</th>
+                        <th style="width: 5px; text-align: center;">CPL</th>
+                        <th style="width: 50px; text-align: center;">Caps</th>
+                        <th style="width: 5px; text-align: right;">MTD Leads</th>
+                        <th style="width: 10px; text-align: center;">Posting Docs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.VendorAllocations != null && Model.VendorAllocations.Any())
+                    {
+                        var alt = false;
+                        foreach (var item in Model.VendorAllocations)
+                        {
+                            <tr class="@(alt ? "altlistrow" : "")">
+                                <td style="vertical-align: top;">
+                                    <a href="@Url.Action("OfferDetails", "Offers", new { id = item.Offerid })"
+                                       onclick="event.preventDefault(); document.getElementById('hiddenBtn_@item.Id').click();">
+                                        @item.Name
+                                    </a>
+
+                                    <button id="hiddenBtn_@item.Id" class="button" style="display:none;" onclick="AjaxWithParam('View Details', @item.Id)"></button>
+
+                                </td>
+                                <td style="vertical-align: top; text-align: center;">
+                                    @(@item.Type == "HT" ? "WARM TRANSFER" : "DATA LEAD")
+                                </td>
+                                <td style="vertical-align: top; text-align: center;">
+                                    @item.Clientid
+                                </td>
+                                <td style="vertical-align: top; text-align: center;">
+                                    @if (item.CecCplA > 0)
+                                    {
+                                        <text>
+                                            A Score: @item.CecCplA<br />
+                                            B Score: @item.CecCplB<br />
+                                            C Score: @item.CecCplC<br />
+                                            D Score: @item.CecCplD<br />
+                                            E Score: @item.CecCplE<br />
+                                            F Score: @item.CecCplF
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        @item.Cpl.ToString("C")
+                                    }
+                                </td>
+                                <td style="vertical-align: top; text-align: center;">
+                                    @if (item.Mcap)
+                                    {
+                                        <div>Monthly Cap: @item.Mcapamt</div>
+                                    }
+                                    @if (item.Wcap)
+                                    {
+                                        <div>Weekly Cap: @item.Wcapamt</div>
+                                    }
+                                    @if (item.Dcap)
+                                    {
+                                        <div>Daily Cap: @item.Dcapamt</div>
+                                    }
+                                </td>
+                                <td style="vertical-align: top; text-align: right;">
+                                    @*    @item.MtdLeads *@
+                                </td>
+                                <td style="vertical-align: top; text-align: center;">
+                                    <a href="@Url.Action("Docs", "Posting", new { offerId = item.Offerid })">Posting Docs</a>
+                                </td>
+                            </tr>
+                            alt = !alt;
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="7" style="text-align: center;">No direct offers available.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

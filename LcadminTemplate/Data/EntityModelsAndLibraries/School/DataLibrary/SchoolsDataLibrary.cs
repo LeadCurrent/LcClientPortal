@@ -12,23 +12,24 @@ namespace Data
     public class SchoolsDataLibrary
     {
         public DataContext context { get; }
-
         public SchoolsDataLibrary(DataContext Context)
         {
             context = Context;
         }
-
-        public async Task<List<Scholls>> SchoolsByCompanyId(int? companyId)
+        public async Task<List<Scholls>> GetSchools()
         {
-            if (companyId <= 0)
-                return new List<Scholls>();
-
             return await context.Schools
                 .Include(s => s.Schoolgroups)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
-
+        public async Task<List<Campus>> GetCampusesBySchoolId(int schoolId)
+        {
+            return await context.Campuses
+                .Where(c => c.Schoolid == schoolId)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
         public async Task<Scholls> GetSchool(int SchollsId)
         {
             return await context.Schools
@@ -37,7 +38,12 @@ namespace Data
                 .ThenInclude(s => s.Group)
                 .FirstOrDefaultAsync();
         }
-
+        public async Task<Scholls> GetSchoolById(int SchollsId)
+        {
+            return await context.Schools
+                .Where(x => x.Id == SchollsId)
+                .FirstOrDefaultAsync();
+        }
         public async Task<int> CreateSchool(Scholls scholls)
         {
             context.ChangeTracker.Clear();
@@ -45,7 +51,6 @@ namespace Data
             await context.SaveChangesAsync();
             return scholls.Id;
         }
-
         public async Task<bool> UpdateSchool(Scholls updatedScholls)
         {
             var existingScholl = await context.Schools.FindAsync(updatedScholls.Id);
@@ -82,7 +87,6 @@ namespace Data
                 return false;
             }
         }
-
         public async Task UpdateSchoolGroups(int schoolId, List<Group> groupIds, int? oldSchoolId , int? companyId)
         {
           

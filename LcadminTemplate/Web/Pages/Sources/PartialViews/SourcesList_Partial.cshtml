@@ -27,7 +27,7 @@
                         APIKey
                     </th>
                     <th>
-                        OSAccessKey
+                        OS AccessKey
                     </th>
                     <th>
                         Status
@@ -58,11 +58,10 @@
                                         @(!string.IsNullOrEmpty(Source.Apikey) ? Source.Apikey : "-")
                                     </div>
 
-                                    <div><b class="secondary-text">OSAccessKey:</b></div>
+                                    <div><b class="secondary-text">OS AccessKey:</b></div>
                                     <div>
-                                        @(!string.IsNullOrEmpty(Source.Accesskey) ? Source.Accesskey : "-")
+                                        @Html.ActionLink(Source.Accesskey, "Index", "VendorDashboard", new { OSAccessKey = Source.Accesskey }, null)
                                     </div>
-
                                     <div><b class="secondary-text">Status:</b></div>
                                     <div>
                                         @(Source.Active ? "Active" : "Not Active")
@@ -88,7 +87,8 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(Source.Accesskey))
                                     {
-                                        <b class="secondary-text">AccessKey:</b> @Source.Accesskey
+                                        <b class="secondary-text">AccessKey:</b>
+                                        @Html.ActionLink(Source.Accesskey, "Index", "VendorDashboard", new { OSAccessKey = Source.Accesskey }, null)
                                     }
                                 </td>
                                 <td>
