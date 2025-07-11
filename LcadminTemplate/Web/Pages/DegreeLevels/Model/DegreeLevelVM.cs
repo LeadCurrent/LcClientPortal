@@ -15,6 +15,7 @@ namespace Web
 
         /* Properties */
         public int CompanyId { get; set; }
+        public string DegreeLevelSearch { get; set; }
 
         //Model
         public Level DegreeLevel { get; set; }

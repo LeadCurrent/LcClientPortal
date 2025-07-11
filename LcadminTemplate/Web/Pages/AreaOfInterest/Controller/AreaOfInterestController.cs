@@ -26,12 +26,22 @@ namespace Web
         }
 
 
-        public async Task<AreaOfInterestVM> getAreaOfInterestList()
+        public async Task<AreaOfInterestVM> getAreaOfInterestList(string Search = null)
         {
             var Model = new AreaOfInterestVM();
             Model.AreaOfInterests = await AreaOfInterestDL.GetAreaOfInterestList();
+
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                Model.AreaOfInterestSearch = Search;
+                Model.AreaOfInterests = Model.AreaOfInterests
+                    .Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains(Search, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             return Model;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -46,6 +56,13 @@ namespace Web
             try
             {
                 var Model = new AreaOfInterestVM();
+
+                if (Action == "Search")
+                {
+                    Model = await getAreaOfInterestList(ViewModel.AreaOfInterestSearch);
+                    var _HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("AreaOfInterest/PartialViews/AreaOfInterestList_Partial", Model)).Result;
+                    return Json(new { isValid = true, html = _HTML });
+                }
 
                 if (Action == "Update")
                 {

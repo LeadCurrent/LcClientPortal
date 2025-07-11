@@ -109,10 +109,73 @@ namespace Web
 
                     // (Optional) Get School Group Names as string
                     VM.SchoolGroups = string.Join(", ", VM.School.Schoolgroups.Select(g => g.Group.Name));
+
+                    var html = await viewRenderer.RenderViewToStringAsync("VendorDashboard/PartialViews/AllocationDetail_Partial", VM);
+                    return Json(new { isValid = true, html = html });
                 }
 
-                var html = await viewRenderer.RenderViewToStringAsync("VendorDashboard/PartialViews/AllocationDetail_Partial", VM);
-                return Json(new { isValid = true, html = html });
+
+                //if (Action == "View Posting Docs")
+                //{
+                //    VM.VendorAllocation = await VendorDashboardDL.GetVendorAllocationById(ViewModel.Param);
+                //    VM.Source = await SourcesDL.GetSource(VM.VendorAllocation.Sourceid);
+                //    VM.Offer = await OffersDL.GetOfferById(VM.VendorAllocation.Offerid);
+                //    VM.School = await SchoolsDL.GetSchool(VM.Offer.Schoolid);
+                //    VM.CampusList = await CampusDL.GetCampusWithZIPCountBySchoolId(VM.School.Id);
+
+                //    // Optional: Load targeting
+                //    var targeting = VM.Offer.Offertargetings.FirstOrDefault();
+
+                //    // School Group Names (optional display)
+                //    VM.SchoolGroups = string.Join(", ", VM.School.Schoolgroups.Select(g => g.Group.Name));
+
+                //    // ↓↓↓ New additions to match Web Forms logic ↓↓↓
+                //    string softwareInstance = ccportallib.V2_Tools.GetSoftwareInstance();
+                //    VM.SoftwareInstance = softwareInstance;
+
+                //    // School and Offer display label
+                //    VM.PostingHeader = (softwareInstance == "COREEDU")
+                //        ? $"Posting Docs for {VM.School.Name} ({VM.Offer.Clientid})"
+                //        : $"Posting Docs for {VM.School.Rawname} ({VM.Offer.Clientid})";
+
+                //    // Access Key display
+                //    VM.AccessKey = VM.Source.Onesearchaccesskey?.ToLower();
+
+                //    // OfferId for display
+                //    VM.OfferIdText = VM.Offer.Id.ToString();
+
+                //    // TCPA Text
+                //    VM.TCPAText = VM.School.TcpaText;
+
+                //    // Age Targeting Text
+                //    var ageText = "";
+                //    if (VM.School.Minimumage > 0)
+                //        ageText += $"<br>Minimum Age: {VM.School.Minimumage}";
+                //    if (VM.School.Maximumage > 0)
+                //        ageText += $"<br>Maximum Age: {VM.School.Maximumage}";
+                //    VM.AgeTargetingText = ageText;
+
+                //    // High School Graduation Year Targeting
+                //    var gradText = "";
+                //    if (VM.School.Minimumhsgradyear > 0)
+                //        gradText += $"<br>Minimum Grad Year: {VM.School.Minimumhsgradyear}";
+                //    if (VM.School.Maximumhsgradyear > 0)
+                //        gradText += $"<br>Maximum Grad Year: {VM.School.Maximumhsgradyear}";
+                //    VM.HSGradTargetingText = gradText;
+
+                //    // Posting URLs
+                //    var host = HttpContext.Request.Host.Value;
+                //    VM.PostingURL = $"http://{host}/onesubmit";
+                //    VM.PrepingURL = $"http://{host}/preping";
+
+                //    // ↓↓↓ Render Partial View ↓↓↓
+                //    var html = await viewRenderer.RenderViewToStringAsync("VendorDashboard/PartialViews/AllocationDetail_Partial", VM);
+                //    return Json(new { isValid = true, html = html });
+                //}
+
+
+                var Html = await viewRenderer.RenderViewToStringAsync("VendorDashboard/PartialViews/AllocationDetail_Partial", VM);
+                return Json(new { isValid = true, html = Html });
             }
             catch (Exception ex)
             {

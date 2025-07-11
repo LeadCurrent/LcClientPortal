@@ -1,0 +1,125 @@
+﻿@using Data
+@using Web
+@model Web.VendorDashboardVM
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+
+<div class="pagetitle">
+    <span>Posting Documentation</span>
+</div>
+
+<div class="form-1600">
+    <div class="card white-bg p-4 shadow-sm">
+
+        <!-- Posting URL Section -->
+        <h4 class="text-primary text-center mb-3">Posting Details</h4>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Posting URL</th>
+                    <td>@Model.PostingURL</td>
+                </tr>
+                <tr>
+                    <th>Access Key</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Offer ID</th>
+                    <td>@Model.Offer.Id</td>
+                </tr>
+                <tr>
+                    <th>TCPA Text</th>
+                    <td>@Model.School?.TcpaText</td>
+                </tr>
+                <tr>
+                    <th>Targeting Age Range</th>
+                    <td>
+                        Min Age: @(Model.School?.Minage ?? 0)<br />
+                        Max Age: @(Model.School?.Maxage ?? 0)
+                    </td>
+                </tr>
+                <tr>
+                    <th>HS Grad Year Range</th>
+                    <td>
+                        Min Year: @(Model.School?.Minhs ?? 0)<br />
+                        Max Year: @(Model.School?.Maxhs ?? 0)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Sample JSON -->
+        <h4 class="text-primary text-center mt-5 mb-3">Sample Posting Response</h4>
+        <pre class="bg-light p-3" style="overflow-x:auto;">
+@* @Model.SampleJsonResponse *@
+        </pre>
+
+        <!-- Campus Table -->
+        <h4 class="text-primary text-center mt-5 mb-3">Campuses, Programs, and Zip Codes</h4>
+
+        @if (Model.CampusList != null && Model.CampusList.Any())
+        {
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Campus Name</th>
+                        <th>Campus ID</th>
+                        <th>Type</th>
+                        <th>Active</th>
+                        <th>Programs</th>
+                        <th>Zip Codes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var campus in Model.CampusList)
+                    {
+                        <tr>
+                            <td>@campus.Name</td>
+                            <td>@campus.Clientid</td>
+                            <td>@campus.Campustype</td>
+                            <td>@(campus.Active ? "Yes" : "No")</td>
+                            <td>
+                                <a href="/downloadPI.aspx?type=p&campusid=@campus.Id" target="_blank">Download</a>
+                            </td>
+                            <td>
+                                <a href="/downloadPI.aspx?type=z&campusid=@campus.Id" target="_blank">Download</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div>No campus data available.</div>
+        }
+
+        <!-- Preping URL Section -->
+        <h4 class="text-primary text-center mt-5 mb-3">Pre-Ping Details</h4>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Preping URL</th>
+                    <td>@* @Model.PrepingURL *@</td>
+                </tr>
+                <tr>
+                    <th>Access Key</th>
+                    <td>@* @Model.AccessKey *@</td>
+                </tr>
+                <tr>
+                    <th>Offer ID</th>
+                    <td>@* @Model.Offer?.Offerid *@</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pre-Ping JSON -->
+        <h4 class="text-primary text-center mt-5 mb-3">Sample Pre-Ping Response</h4>
+        <pre class="bg-light p-3" style="overflow-x:auto;">
+@* @Model.SamplePrepingResponse
+ *@        </pre>
+    </div>
+</div>

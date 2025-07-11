@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using Project.Utilities;
 using System;
 using System.Linq;
@@ -33,10 +34,20 @@ namespace Web
             exceptionLogger = ExceptionLogger;
         }
 
-        public async Task<ProgramVM> getProgramList()
+        public async Task<ProgramVM> getProgramList(string Search = null)
         {
             var Model = new ProgramVM();
             Model.Programs = await ProgramDL.GetPrograms();
+
+            if (Search != null)
+            {
+                Model.ProgramSearch = Search;
+                Model.Programs = Model.Programs
+                    .Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains(Search, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+
             return Model;
         }
 
@@ -54,6 +65,14 @@ namespace Web
             try
             {
                 var Model = new ProgramVM();
+
+                if (Action == "Search")
+                {
+                    Model = await getProgramList(ViewModel.ProgramSearch);
+
+                    var _HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("Programs/PartialViews/Programs_Partial", Model)).Result;
+                    return Json(new { isValid = true, html = _HTML });
+                }
 
                 if (Action == "Create")
                 {

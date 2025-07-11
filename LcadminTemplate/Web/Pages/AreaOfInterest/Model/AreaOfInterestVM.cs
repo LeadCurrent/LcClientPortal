@@ -13,6 +13,7 @@ namespace Web
 
         /* Properties */
         public int CompanyId { get; set; }
+        public string AreaOfInterestSearch { get; set; }
         public bool ShowEditAreaOfInterest { get; set; }
 
         //Model

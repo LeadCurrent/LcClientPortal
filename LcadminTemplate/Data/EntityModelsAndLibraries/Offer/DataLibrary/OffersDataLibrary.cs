@@ -96,7 +96,7 @@ namespace Data
                 .Include(x => x.Client)
                 .Where(x => x.CompanyId == companyId);
 
-            if (!string.IsNullOrEmpty(schoolName))
+            if (!string.IsNullOrWhiteSpace(schoolName))
             {
                 string upperSchoolName = schoolName.ToUpper();
                 query = query.Where(x => x.School != null &&
@@ -105,21 +105,25 @@ namespace Data
             }
 
             if (status.HasValue)
+            {
                 query = query.Where(x => x.Active == (status == 1));
+            }
 
-            query = query.OrderBy(x => x.Id);
+            // ✅ Active offers first, then sort by Id
+            query = query.OrderByDescending(x => x.Active)
+                         .ThenBy(x => x.Id);
 
             if (recordPerPage != -1)
+            {
                 query = query.Skip((page - 1) * recordPerPage).Take(recordPerPage);
+            }
 
             var offers = await query.ToListAsync();
 
             if (!offers.Any())
                 return offers;
 
-            // =====================
-            // === Date Ranges ====
-            // =====================
+            // === Date Ranges ===
             DateTime todayStart = DateOnly.FromDateTime(DateTime.Today).ToDateTime(TimeOnly.MinValue);
             DateTime yesterdayStart = todayStart.AddDays(-1);
             DateTime tomorrowStart = todayStart.AddDays(1);
@@ -135,15 +139,17 @@ namespace Data
                 .Select(s => new { s.Offerid, s.Submissiontype, s.Submissiondate })
                 .ToListAsync();
 
-            // Group by offerId + range
             foreach (var offer in offers)
             {
-                string GetHtml(DateTime start, DateTime end, string urlScope)
+                string GetHtml(DateTime start, DateTime end, string scope)
                 {
                     var startDate = DateOnly.FromDateTime(start);
                     var endDate = DateOnly.FromDateTime(end);
+
                     var rangeSubs = submissions
-                        .Where(s => s.Offerid == offer.Id && s.Submissiondate >= startDate && s.Submissiondate < endDate)
+                        .Where(s => s.Offerid == offer.Id &&
+                                    s.Submissiondate >= startDate &&
+                                    s.Submissiondate < endDate)
                         .GroupBy(s => s.Submissiontype)
                         .Select(g => new { Type = g.Key, Count = g.Count() })
                         .ToList();
@@ -157,19 +163,13 @@ namespace Data
                             postcnt = g.Count;
                     }
 
-                    return $"<a href='/admin/viewreport.aspx?type=sub&scope={urlScope}&offerid={offer.Id}&clientid=-1&sourceid=-1&schoolid=-1' target='_blank'>{Math.Max(cnt, postcnt)}</a>";
+                    return $"<a href='/admin/viewreport.aspx?type=sub&scope={scope}&offerid={offer.Id}&clientid=-1&sourceid=-1&schoolid=-1' target='_blank'>{Math.Max(cnt, postcnt)}</a>";
                 }
 
-                // === DayHtml: Yesterday / Today ===
                 offer.DayHtml = $"{GetHtml(yesterdayStart, todayStart, "yest")} / {GetHtml(todayStart, tomorrowStart, "today")}";
-
-                // === WeekHtml: Last Week / This Week ===
                 offer.WeekHtml = $"{GetHtml(lastWeekStart, thisWeekStart, "lastw")} / {GetHtml(thisWeekStart, DateTime.Now, "wtd")}";
-
-                // === MonthHtml: Last Month / This Month ===
                 offer.MonthHtml = $"{GetHtml(lastMonthStart, thisMonthStart, "lastm")} / {GetHtml(thisMonthStart, DateTime.Now, "mtd")}";
             }
-
 
             var allocationsMap = await GetAllocationsForOfferIds(offerIds);
 
@@ -183,6 +183,7 @@ namespace Data
 
             return offers;
         }
+
         public async Task<int> GetOffersCount(int? companyId, string schoolName, int? status)
         {
             var query = context.Offers.Where(x => x.CompanyId == companyId);

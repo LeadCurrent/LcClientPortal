@@ -6,15 +6,44 @@
 @Html.HiddenFor(m => m.Param)
 @Html.HiddenFor(m => m.Action)
 
+<style>
+    .table td,
+    .table th {
+        padding: 5px;
+        font-size: 13px;
+    }
+
+    .pagetitle span {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .form-1600 {
+        padding: 8px;
+    }
+
+    h4 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    } 
+
+    .card {
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+</style>
+
 <div class="pagetitle">
     <span>Allocation Details for @Model.School.Name</span>
 </div>
 
-<div class="form-1600">
-    <div class="card white-bg p-4 shadow-sm">
+<div class="form-1600 small">
+    <div class=" white-bg p-2 shadow-sm">
 
         <!-- Offer Details -->
-        <h4 class="text-primary text-center mb-3">Offer Details</h4>
+        <h4 class="text-primary text-center">Offer Details</h4>
         <table class="table table-bordered">
             <tbody>
                 <tr>
@@ -41,7 +70,7 @@
         </table>
 
         <!-- Targeting Details -->
-        <h4 class="text-primary text-center mt-5 mb-3">Targeting Details</h4>
+        <h4 class="text-primary text-center">Targeting Details</h4>
         <table class="table table-bordered">
             <tbody>
                 <tr>
@@ -79,7 +108,7 @@
         </table>
 
         <!-- School Details -->
-        <h4 class="text-primary text-center mt-5 mb-3">School Details</h4>
+        <h4 class="text-primary text-center">School Details</h4>
         <table class="table table-bordered">
             <tbody>
                 <tr>
@@ -132,41 +161,45 @@
                     <td>
                         @if (Model.CampusList != null && Model.CampusList.Any())
                         {
-                            <table class="table table-sm table-striped">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Campus</th>
-                                        <th>Type</th>
-                                        <th>Location</th>
-                                        <th class="text-end">Zips Targeted</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var campus in Model.CampusList)
-                                    {
-                                        <tr>
-                                            <td>@campus.Name</td>
-                                            <td>@campus.Campustype</td>
-                                            @if (campus.Campustype == "Online")
+                            <details>
+                                <summary class="text-primary">View Campuses (@Model.CampusList.Count)</summary>
+                                <div style="max-height: 200px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Campus</th>
+                                                <th>Type</th>
+                                                <th>Location</th>
+                                                <th class="text-end">Zips Targeted</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var campus in Model.CampusList)
                                             {
-                                                <td colspan="2">ONLINE</td>
+                                                <tr>
+                                                    <td>@campus.Name</td>
+                                                    <td>@campus.Campustype</td>
+                                                    @if (campus.Campustype == "Online")
+                                                    {
+                                                        <td colspan="2">ONLINE</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@campus.City, @campus.PortalStates.Abbr</td>
+                                                        <td class="text-end">@campus.ZipCount</td>
+                                                    }
+                                                </tr>
                                             }
-                                            else
-                                            {
-                                                <td>@campus.City, @campus.PortalStates.Abbr</td>
-                                                <td class="text-end">@campus.ZipCount</td>
-                                            }
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </details>
                         }
                         else
                         {
                             <span>No campuses found</span>
                         }
                     </td>
-
                 </tr>
             </tbody>
         </table>

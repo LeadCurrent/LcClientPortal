@@ -80,7 +80,12 @@
                                     @*    @item.MtdLeads *@
                                 </td>
                                 <td style="vertical-align: top; text-align: center;">
-                                    <a href="@Url.Action("Docs", "Posting", new { offerId = item.Offerid })">Posting Docs</a>
+                                    <a href="@Url.Action("OfferDetails", "Offers", new { id = item.Offerid })"
+                                       onclick="event.preventDefault(); document.getElementById('Posting_Docs_hiddenBtn_@item.Id').click();">
+                                        Posting Docs
+                                    </a>
+
+                                    <button id="Posting_Docs_hiddenBtn_@item.Id" class="button" style="display:none;" onclick="AjaxWithParam('View Posting Docs', @item.Id)"></button>
                                 </td>
                             </tr>
                             alt = !alt;

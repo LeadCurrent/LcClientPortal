@@ -16,6 +16,7 @@ namespace Web
         public bool MobileApp { get; set; }
 
         /* Prop */
+        public string PostingURL { get; set; }
         public string OfferName { get; set; }
         public string ClientID { get; set; }
         public string OfferType { get; set; }
