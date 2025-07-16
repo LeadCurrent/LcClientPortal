@@ -9,18 +9,33 @@
 <div class="pagetitle"> Schools</div>
 <div>
     <div class="form-1400">
+            
+        <!-- Search Filter -->
+        <div class="mb-2 mt-2">
+            <div class="white-bg p-3">
+                <div class="card-body p-0">
+                    <div class="row align-items-end g-2">
+                        <!-- Search input -->
+                        <div class="col-md-6">
+                            <label for=" School Search" class="form-label">Schools:</label>
+                            @Html.TextBoxFor(model => model.SelectedSchoolName, new { @class = "form-control", placeholder = "School Search", id = "SelectedSchoolName" })
+                        </div>
 
-        <div class="buttons">
-            <button class="button" onclick="NonAjax('Create')">Create New School</button>
+                        <div class="col-auto">
+                            <!-- Buttons -->
+                            <button class="button" onclick="NonAjax('Search')">Search</button>
+                            <button class="button" onclick="NonAjax('Clear Search')">Clear</button>
+                            <button class="button" onclick="NonAjax('Create')">Create New School</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <div class="white-bg">
             <table class="tablestyle">
                 <tr class="desktop roundheader">
                     <th>Name</th>                   
-                  
                     <th>Website</th>
-                   
                     <th>SchoolsGroup</th>
                     <th>Campuses</th>
                     <th></th>
@@ -36,14 +51,8 @@
                                 <td>
                                     <div><b class="secondary-text">School:</b></div>
                                     <div>@Html.ActionLink(school?.Name ?? "No Name", "EditSchools", "Schools", new { SchoolId = school.Id })</div>
-
-                                   
-
                                     <div><b class="secondary-text">Website:</b></div>
                                     <div>@school.Website</div>
-
-                                   
-
                                     <div><b class="secondary-text">SchoolsGroup:</b></div>
                                     <div>
                                         @{
@@ -54,22 +63,20 @@
                                         @string.Join("~", groupNames)
                                     </div>
                                     <div><b class="secondary-text">Campuses:</b></div>
-                                    <div>@Html.ActionLink(school?.Name ?? "No Name", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</div>
-
+                                    <div>@Html.ActionLink("Campuses", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</div>
                                     <div>
                                         <button class="gridbutton" onclick="NonAjaxWithParam('Edit', @school.Id)">View</button>
                                     </div>
                                 </td>
                             </tr>
-
                             <tr class="desktop">
                                 <td>@Html.ActionLink(school?.Name ?? "No Name", "EditSchools", "Schools", new { SchoolId = school.Id })</td>
                                
                               
                                 <td>@school.Website</td>
                                 
-                                <td>@school.Schoolgroup</td>                                
-                                <td>@Html.ActionLink(school?.Name ?? "No Name", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</td>
+                                <td>@school.Schoolgroup</td>
+                                <td>@Html.ActionLink("Campuses", "CampusesBySchool", "Schools", new { SchoolId = school.Id })</td>
                                 <td>
                                     <button class="gridbutton" onclick="NonAjaxWithParam('Edit', @school.Id)">View</button>
                                 </td>
@@ -90,7 +97,6 @@
                                 }
                             </td>
                         </tr>
-
                         <tr class="desktop">
                             <td colspan="6">
                                 @if (!string.IsNullOrEmpty(Model.Company?.Name))
@@ -105,7 +111,6 @@
                         </tr>
                     }
                 }
-
             </table>
         </div>
     </div>

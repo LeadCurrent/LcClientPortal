@@ -1,0 +1,106 @@
+﻿@using Data
+@using Web
+@model SchoolsViewModel
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.Scholl.Id)
+
+<div>
+    <div class="pagetitle"> Campuses for @Model.School?.Name</div>
+    <div class="form-1400">
+
+        <div class="white-bg">
+            <table class="tablestyle">
+                <tr>
+                    <th>Name</th>
+                    <th>Clientid</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Campus Type</th>
+                    <th>Manage</th>
+                    <th>Postal Codes</th>
+                    <th>Zip Count</th>
+                    <th>Degrees</th>
+                </tr>
+
+                @if (Model.School != null)
+                {
+                    if (Model.Campuses != null && Model.Campuses.Any())
+                    {
+                        @foreach (var c in Model.Campuses)
+                        {
+                            <tr class="mobileportrait-mobilewide">
+
+                                <td>@c.Name</td>
+                                <td>@c.Clientid</td>
+                                <td>@c.City</td>
+                                <td>@c.PortalStates.Name</td>
+                                <td>@c.Campustype</td>
+                                <td>
+                                    <a class="gridbutton" href="javascript:void(0);" onclick="document.getElementById('EditCampuses').click();">Edit</a>
+                                    <button id="EditCampuses" style="display:none;" onclick="AjaxWithParam('EditCampuses', @c.Id)"></button>
+                                </td>
+                                <td>
+                                    <a class="gridbutton" href="javascript:void(0);" onclick="document.getElementById('EditCampuses').click();">Target</a>
+                                    <button id="EditCampuses" style="display:none;" onclick="AjaxWithParam('EditCampuses', @c.Id)"></button>
+                                </td>
+                                <td>@c.ZipCount</td>
+                                <td>Degree</td>
+
+                            </tr>
+                            <tr class="desktop">
+                                <td>@c.Name</td>
+                                <td>@c.Clientid</td>
+                                <td>@c.City</td>
+                                <td>@c.PortalStates.Name</td>
+                                <td>@c.Campustype</td>
+                                <td>
+                                    <a class="gridbutton" href="javascript:void(0);" onclick="document.getElementById('EditCampuses').click();">Edit</a>
+                                    <button id="EditCampuses" style="display:none;" onclick="AjaxWithParam('EditCampuses', @c.Id)"></button>
+                                </td>
+                                <td>
+                                    <a class="gridbutton" href="javascript:void(0);" onclick="document.getElementById('EditCampuses').click();">Target</a>
+                                    <button id="EditCampuses" style="display:none;" onclick="AjaxWithParam('EditCampuses', @c.Id)"></button>
+                                </td>
+                                <td>@c.ZipCount</td>
+                                <td>Degree</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="mobileportrait-mobilewide">
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.School?.Name))
+                                {
+                                    <span>Campuses are not available for @Model.School.Name </span>
+                                }
+                                else
+                                {
+                                    <span>Campuses are not available</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr class="desktop">
+                            <td colspan="6">
+                                @if (!string.IsNullOrEmpty(Model.School?.Name))
+                                {
+                                    <span>Campuses are not available for @Model.School.Name </span>
+                                }
+                                else
+                                {
+                                    <span>Campuses are not available</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>

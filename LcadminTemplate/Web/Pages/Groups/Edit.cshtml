@@ -1,0 +1,24 @@
+﻿@model GroupsVM
+@using Data
+@using Web
+
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "Groups", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/Edit_Partial.cshtml");
+        }
+    </div>
+}
+
+<script>
+    highlightcurrentpage('nav_Groups');
+</script>
+

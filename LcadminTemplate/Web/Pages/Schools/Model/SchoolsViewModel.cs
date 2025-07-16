@@ -12,15 +12,19 @@ namespace Web
         public int Param { get; set; }
         public int Param2 { get; set; }
         public int NewProductCategoryId { get; set; }
+        public string SelectedCampusType { get; set; }
         public bool AjaxUpdate { get; set; }
         public bool MobileApp { get; set; }
 
         /* Models */
         public User User { get; set; }
         public Scholls Scholl { get; set; }
+        public Campus Campus { get; set; }
+        public Client Client { get; set; }
         public Company Company { get; set; }
         public List<Scholls> Schools { get; set; }
 
+        public Scholls School { get; set; }
         public string Name { get; set; }
 
         public string Abbr { get; set; }

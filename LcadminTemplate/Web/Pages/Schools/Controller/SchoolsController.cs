@@ -8,6 +8,7 @@ using Project.Utilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 
 namespace Web
@@ -34,70 +35,73 @@ namespace Web
             viewRenderer = RazorViewToStringRenderer;
             exceptionLogger = ExceptionLogger;
         }
-        public async Task<SchoolsViewModel> GetSchoolListModel()
+        public async Task<SchoolsViewModel> GetSchoolListModel(string selectedSchoolName = null)
         {
             var model = new SchoolsViewModel();
-            
-            
+
+            try
+            {
                 model.Schools = await SchoolDL.GetSchools();
                 model.Groups = await GroupDL.GetGroups();
 
-                if (model.Schools != null && model.Schools.Count > 0)
+                if (!string.IsNullOrEmpty(selectedSchoolName))
                 {
-                    foreach (var school in model.Schools)
-                    {
+                    model.SelectedSchoolName = selectedSchoolName;
 
-                    }
-
+                    model.Schools = model.Schools?
+                        .Where(s => s.Name.Contains(selectedSchoolName, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
                 }
-                else
-                    model.ShowNoListAvailable = true;
 
-            
-           
+                model.ShowNoListAvailable = model.Schools == null || model.Schools.Count == 0;
+            }
+            catch (Exception ex)
+            {
+                // Optional: Log exception here (e.g., to a logger or DB)
+                // _logger.LogError(ex, "Error fetching school list");
+
+                model.ShowNoListAvailable = true;
+                //model.ErrorMessage = "An error occurred while loading the school list.";
+            }
+
             return model;
         }
+
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = await GetSchoolListModel();
-            //return View("~/Pages/Sources/SourcesList.cshtml", model);
+            var selectedSchoolName = HttpContext.Session.GetString("FilterSchoolsName");
+            var model = await GetSchoolListModel(selectedSchoolName);
             return View("~/Pages/Schools/SchoolsList.cshtml", model);
         }
+
         [HttpPost]
         public async Task<IActionResult> SchoolsList(SchoolsViewModel ViewModel, string Action)
         {
             try
             {
+                if (Action == "Search")
+                {
+                    if (ViewModel.SelectedSchoolName != null)
+                        HttpContext.Session.SetString("FilterSchoolsName", ViewModel.SelectedSchoolName);
+
+                    return RedirectToAction("Index");
+                }
+
+                if (Action == "Clear Search")
+                {
+                    HttpContext.Session.Remove("FilterSchoolsName");
+                    return RedirectToAction("Index");
+                }
+
                 if (Action == "Create")
                     return RedirectToAction("Create");
 
                 if (Action == "Edit")
                     return RedirectToAction("EditSchools", new { SchoolId = ViewModel.Param });
 
-                #region for Apply Filters
-                SchoolsViewModel SourceVM = new SchoolsViewModel();
-                if (ViewModel.SelectedSchoolName != null)
-                    HttpContext.Session.SetString("FilterSchoolsName", ViewModel.SelectedSchoolName);
-                else
-                    HttpContext.Session.Remove("FilterSchoolsName");
-
-
-
-                if (Action == "Apply Filters")
-                {
-                    return RedirectToAction("Index");
-                }
-                #endregion for Apply Filters
-
-                if (Action == "Clear Filters")
-                {
-                    HttpContext.Session.Clear();
-                    return RedirectToAction("Index");
-                }
-                var VM = await GetSchoolListModel();
-
-                var HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("Schools/PartialViews/SchoolsList_Partial", VM)).Result;
-                return Json(new { isValid = true, html = HTML });
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -129,7 +133,7 @@ namespace Web
             try
             {
                 if (Action == "Create")
-                {                 
+                {
                     var SchoolsId = await SchoolDL.CreateSchool(ViewModel.Scholl);
                     return RedirectToAction("EditSchools", new { SchoolId = SchoolsId });
                 }
@@ -228,16 +232,47 @@ namespace Web
         [HttpGet]
         public async Task<IActionResult> CampusesBySchool(int schoolId)
         {
-            var campuses = await CampusDL.GetCampusBYSchooldId(schoolId);
-            var school = await SchoolDL.GetSchool(schoolId);
-
-            var model = new SchoolCampusesViewModel
+            try
             {
-                School = school,
-                Campuses = campuses
-            };
+                var campuses = await CampusDL.GetCampusBYSchooldId(schoolId);
+                var school = await SchoolDL.GetSchool(schoolId);
+                var model = new SchoolsViewModel
+                {
+                    
+                    Campuses = campuses,
+                    School = school
+                };
 
-            return View("SchoolCampuses", model); // Razor view name
+                return View("SchoolCampuses", model);
+            }
+            catch (Exception ex)
+            {
+                // Optional: log the exception (e.g., using ILogger)
+                // _logger.LogError(ex, "Error fetching campuses for school ID: {SchoolId}", schoolId);
+
+                TempData["ErrorMessage"] = "An error occurred while loading campuses for the selected school.";
+                return RedirectToAction("Index"); // Redirect to a fallback action (like the school list)
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CampusesBySchool(SchoolsViewModel ViewModel, string Action)
+        {
+            try
+            {
+                if (Action == "EditCampuses")
+                {
+                    var Model = new SchoolsViewModel();
+                    Model.Campus = await CampusDL.GetCampus(ViewModel.Param);
+                }
+
+                var HTML = await viewRenderer.RenderViewToStringAsync("Schools/PartialViews/EditCampus_Partial", ViewModel);
+                return Json(new { isValid = true, html = HTML });
+            }
+            catch (Exception ex)
+            {
+                return await exceptionLogger.LogException(ex, User.Identity.Name, ViewModel.AjaxUpdate, ViewModel.Action, System.Text.Json.JsonSerializer.Serialize(ViewModel), HttpContext.Request.GetDisplayUrl(), HttpContext.Request.GetDisplayUrl());
+            }
         }
     }
 }

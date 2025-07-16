@@ -1,0 +1,51 @@
+﻿@using Data
+@using Web
+@model SchoolsViewModel
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.DivToUpdate)
+@Html.HiddenFor(m => m.Scholl.Id)
+
+<div class="form-600">
+    <div class="input-form white-bg">
+        <table>
+            <tr>
+                <td>ID</td>
+                <td>@Html.EditorFor(v =>v.Campus.Id)</td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td>@Html.EditorFor(v => v.Campus.Name)</td>
+            </tr>
+            <tr>
+                <td>Address	</td>
+                <td>@Html.EditorFor(v => v.Campus.Address)</td>
+            </tr>
+            <tr>
+                <td>Postal Code	</td>
+                <td>@Html.EditorFor(v => v.Campus.Postalcode.Code)</td>
+            </tr>
+            <tr>
+                <td>City</td>
+                <td>@Html.EditorFor(v => v.Campus.City)</td>
+            </tr>
+@*             <tr>
+                <td>State</td>
+                <td>@Html.DropDownListFor(v => v.SelectedCampusId,)</td>
+            </tr>
+            <tr>
+                <td>Campuse Type</td>
+                <td>@Html.DropDownListFor(v => v.SelectedCampusId,)</td>
+            </tr> *@
+            <tr>
+                <td>Client Id</td>
+                <td>@Html.EditorFor(v => v.Campus.Clientid)</td>
+            </tr>
+            <tr>
+                <td>Short Copy</td>
+                <td>@Html.EditorFor(v => v.Campus.Copy)</td>
+            </tr>
+        </table>
+    </div>
+</div>

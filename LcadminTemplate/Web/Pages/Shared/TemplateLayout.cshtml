@@ -97,50 +97,74 @@
                     }
                     @* @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("DegreeLevels")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     { *@
-                       
-                          <li class="sidebar-dropdown">
-                            <a class="space-between-sec">
-                                <span>
-                                    <span class="title">Degree Programs</span>
-                                </span>
-                                <span class="arrow-func"></span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                   
-                                    <li>
-                            <a href="~/DegreeLevel" id="nav_DegreeLevel">
-                                <span class="title">Degree Level</span>
-                            </a>
-                        </li>
-                         <li>
-                            <a href="~/AreaOfInterest" id="nav_AreaOfInterest">
-                                <span class="title">Area Of Interest</span>
-                            </a>
-                        </li>
-                         <li>
-                            <a href="~/Program" id="nav_Programs">
-                                <span class="title">Programs</span>
-                            </a>
-                        </li>
+
+                    <li class="sidebar-dropdown">
+                        <a class="space-between-sec">
+                            <span>
+                                <span class="title">Degree Programs</span>
+                            </span>
+                            <span class="arrow-func"></span>
+                        </a>
+                        <div class="sidebar-submenu">
+                            <ul>
+
+                                <li>
+                                    <a href="~/DegreeLevel" id="nav_DegreeLevel">
+                                        <span class="title">Degree Level</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="~/AreaOfInterest" id="nav_AreaOfInterest">
+                                        <span class="title">Area Of Interest</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="~/Program" id="nav_Programs">
+                                        <span class="title">Programs</span>
+                                    </a>
+                                </li>
                                 <li>
                                     <a href="~/StudentInterest" id="nav_StudentInterest">
                                         <span class="title">Student Interest</span>
                                     </a>
                                 </li>
-                                </ul>
-                            </div>
-                        </li>
+                            </ul>
+                        </div>
+                    </li>
 
                     @* } *@
 
                     @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
-                        <li>
-                            <a href="~/Schools" id="nav_Schools">
-                                <span class="title">Schools</span>
+                        <li class="sidebar-dropdown">
+                            <a class="space-between-sec">
+                                <span>
+                                    <span class="title">Schools</span>
+                                </span>
+                                <span class="arrow-func"></span>
                             </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a href="~/Schools" id="nav_Schools">
+                                            <span class="title">Manage Schools</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/InactiveCampus" id="nav_InactiveCampus">
+                                            <span class="title">Inactive Campuses</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/Groups" id="nav_Groups">
+                                            <span class="title">Manage  Groups</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
+
+
                     }
                     @if (CommonClasses.Environment.Schools && (User.Claims.Where(c => c.Type.Contains("Schools")).FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
@@ -169,10 +193,10 @@
                     }
 
                     @if ((CommonClasses.Environment.CompanyProfile || CommonClasses.Environment.Users)
-                   && (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
-                   || User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
-                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null
-                   || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Company").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
+                                    && (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
+                                    || User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
+                                    || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null
+                                    || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "Company").FirstOrDefault() != null) && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null)
                     {
                         <li class="sidebar-dropdown">
                             <a class="space-between-sec">
@@ -184,8 +208,8 @@
                             <div class="sidebar-submenu">
                                 <ul>
                                     @if (CommonClasses.Environment.CompanyProfile &&
-                                   (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
-                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                                                (User.Claims.Where(c => c.Type.Contains("CompanyProfile")).FirstOrDefault() != null
+                                                                || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
                                     {
                                         <li>
                                             <a href="~/CompanyProfile" id="nav_CompanyProfile">
@@ -199,8 +223,8 @@
                                         </a>
                                     </li>
                                     @if (CommonClasses.Environment.CompanyProfile &&
-                                   (User.Claims.Where(c => c.Type.Contains("CompanyRoles")).FirstOrDefault() != null
-                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                                                (User.Claims.Where(c => c.Type.Contains("CompanyRoles")).FirstOrDefault() != null
+                                                                || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
                                     {
                                         <li>
                                             <a href="~/CompanyRoles" id="nav_CompanyRoles">
@@ -209,8 +233,8 @@
                                         </li>
                                     }
                                     @if (CommonClasses.Environment.CompanyProfile &&
-                                   (User.Claims.Where(c => c.Type.Contains("CompanyAccount")).FirstOrDefault() != null
-                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                                                (User.Claims.Where(c => c.Type.Contains("CompanyAccount")).FirstOrDefault() != null
+                                                                || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
                                     {
                                         <li>
                                             <a href="~/CompanyAccount" id="nav_CompanyAccount">
@@ -219,8 +243,8 @@
                                         </li>
                                     }
                                     @if (CommonClasses.Environment.Users
-                                   && (User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
-                                   || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
+                                                                && (User.Claims.Where(c => c.Type.Contains("Users")).FirstOrDefault() != null
+                                                                || User.Claims.Where(c => c.Type == "Admin").FirstOrDefault() != null || User.Claims.Where(c => c.Type == "SystemAdmin").FirstOrDefault() != null))
                                     {
                                         <li>
                                             <a href="~/user" id="nav_User">
@@ -234,8 +258,8 @@
                     }
 
                     @if (CommonClasses.Environment.Templates
-                   && (User.Claims.Where(c => c.Type.Contains("Templates")).FirstOrDefault() != null
-                   || User.Claims.Where(c => c.Type == "Developer").FirstOrDefault() != null && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null))
+                                    && (User.Claims.Where(c => c.Type.Contains("Templates")).FirstOrDefault() != null
+                                    || User.Claims.Where(c => c.Type == "Developer").FirstOrDefault() != null && User.Claims.Where(c => c.Type == "CompanyId").FirstOrDefault() != null))
                     {
                         <li class="sidebar-dropdown">
                             <a class="space-between-sec">

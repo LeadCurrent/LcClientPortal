@@ -1,6 +1,6 @@
 ﻿@using Data
 @using Web
-@model Web.SchoolsViewModel
+@model SchoolsViewModel
 @{
     if (Model.MobileApp)
         Layout = "~/Pages/Shared/NoNavLayout.cshtml";
@@ -11,7 +11,7 @@
 {
     <div id="partialview">
         @{
-            await Html.RenderPartialAsync("PartialViews/SchoolCampuses_Partial.cshtml");
+            await Html.RenderPartialAsync("PartialViews/EditCampus_Partial.cshtml");
         }
     </div>
 }

@@ -14,56 +14,56 @@
         <div class="input-form">
             <table class="form-table">
                 <tr>
-                    <td><strong>Active:</strong></td>
+                    <td>Active:</td>
                     <td>@Html.CheckBoxFor(x => x.Allocation.Active)</td>
                 </tr>
                 <tr>
-                    <td><strong>Id:</strong></td>
+                    <td>Id:</td>
                     <td>@Model.Allocation.Id</td>
                 </tr>
                 <tr>
-                    <td><strong>Offer Id:</strong></td>
+                    <td>Offer Id:</td>
                     <td>@Model.Allocation.Offerid</td>
                 </tr>
                 <tr>
-                    <td><strong>Source:</strong></td>
+                    <td>Source:</td>
                     <td>@Html.DropDownListFor(x => x.SelectedSourceId, Model.SourceDropdown, new { @class = "form-control w-100" })</td>
                 </tr>
                 <tr>
-                    <td><strong>Identifier:</strong></td>
+                    <td>Identifier:</td>
                     <td>@Html.TextBoxFor(x => x.Allocation.Identifier, new { @class = "form-control w-100" })</td>
                 </tr>
                 <tr>
-                    <td><strong>Warm Transfer Phone:</strong></td>
+                    <td>Warm Transfer Phone:</td>
                     <td>@Html.TextBoxFor(x => x.Allocation.Transferphone, new { @class = "form-control w-100" })</td>
                 </tr>
                 <tr>
-                    <td><strong>Cost per Lead (CPL):</strong></td>
+                    <td>Cost per Lead (CPL):</td>
                     <td>@Html.TextBoxFor(x => x.Allocation.Cpl, new { @class = "form-control w-100" })</td>
                 </tr>
                 <tr>
                     
-                    <td><strong>Daily Cap:</strong>&nbsp; @Html.CheckBoxFor(x => x.Allocation.Dcap) </td>
+                    <td>Daily Cap:&nbsp; @Html.CheckBoxFor(x => x.Allocation.Dcap) </td>
                     <td >
                         @Html.TextBoxFor(x => x.Allocation.Dcapamt, new { @class = "form-control" })
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>Weekly Cap (Sun-Sat):</strong>&nbsp; @Html.CheckBoxFor(x => x.Allocation.Wcap)</td>
+                    <td>Weekly Cap (Sun-Sat):&nbsp; @Html.CheckBoxFor(x => x.Allocation.Wcap)</td>
                     <td >
                        
                         @Html.TextBoxFor(x => x.Allocation.Wcapamt, new { @class = "form-control" })
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>Monthly Cap:</strong>&nbsp;  @Html.CheckBoxFor(x => x.Allocation.Mcap)</td>
+                    <td>Monthly Cap:&nbsp;  @Html.CheckBoxFor(x => x.Allocation.Mcap)</td>
                     <td >
                       
                         @Html.TextBoxFor(x => x.Allocation.Mcapamt, new { @class = "form-control" })
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>CEC Scores:</strong></td>
+                    <td>CEC Scores:</td>
                     <td colspan="7">
                         <div class="cec-inline-group d-flex space-between-sec">
                             <div><label>A</label> &nbsp;@Html.CheckBoxFor(x => x.Allocation.CecIncludeA)</div>
@@ -78,7 +78,7 @@
                 </tr>
 
                 <tr>
-                    <td><strong>CEC CPL's</strong></td>
+                    <td>CEC CPL's</td>
                     <td colspan="7">
                         <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                             <div style="display: flex; align-items: center;">

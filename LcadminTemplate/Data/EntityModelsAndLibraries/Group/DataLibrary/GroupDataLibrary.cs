@@ -25,22 +25,22 @@ namespace Data
                 .ToListAsync();
         }
 
-        public async Task<Group> GetGroups(int GroupID)
+        public async Task<Group> GetGroupById(int GroupID)
         {
             return await context.Groups
                 .Where(x => x.Id == GroupID)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<int> CreateGroups(Group Groups)
+        public async Task<int> CreateGroups(Group Group)
         {
             context.ChangeTracker.Clear();
-            context.Groups.Add(Groups);
+            context.Groups.Add(Group);
             await context.SaveChangesAsync();
-            return Groups.Id;
+            return Group.Id;
         }
 
-        public async Task<bool> UpdateGroups(Group updatedGroups)
+        public async Task<bool> UpdateGroup(Group updatedGroups)
         {
             var existingScholl = await context.Groups.FindAsync(updatedGroups.Id);
 
@@ -48,16 +48,25 @@ namespace Data
             {
                 existingScholl.Name = updatedGroups.Name;
                 existingScholl.Copy = updatedGroups.Copy;
-                              
 
-
-                 await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 return true;
             }
             else
             {
                 return false;
             }
+        }
+
+        public async Task<bool> DeleteGroupById(int groupId)
+        {
+            var group = await context.Groups.FindAsync(groupId);
+            if (group == null)
+                return false;
+
+            context.Groups.Remove(group);
+            await context.SaveChangesAsync();
+            return true;
         }
 
     }
