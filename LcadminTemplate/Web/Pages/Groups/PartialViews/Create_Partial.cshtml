@@ -1,0 +1,30 @@
+﻿@model GroupsVM
+@using Data
+@using Web
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">
+    Create Groups
+</div>
+
+<div class="form-600">
+    <div class="white-bg input-form">
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td>@Html.EditorFor(x => x.Group.Name)</td>
+            </tr>
+            <tr>
+                <td>Short Copy:</td>
+                <td>@Html.TextAreaFor(x => x.Group.Copy)</td>
+            </tr>
+        </table>
+        <div class="center">
+            <button class="button" onclick="NonAjax('Create')">Create</button>
+            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+</div>

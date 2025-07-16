@@ -6,14 +6,19 @@
 @Html.HiddenFor(m => m.Param)
 @Html.HiddenFor(m => m.Action)
 
+<div class="pagetitle">
+    Add Offer
+</div>
 <div class="form-1600">
-    <div class="pagetitle">
-        Add Offer
-    </div>
+
     <div class="white-bg">
         @{
             await Html.RenderPartialAsync("Sections/OfferFields.cshtml");
         }
-
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Create')">Save</button>
+            <button class="button">Save And Add Another</button>
+            <button class="button" onclick="NonAjax('Go back')">Cancel</button>
+        </div>
     </div>
 </div>

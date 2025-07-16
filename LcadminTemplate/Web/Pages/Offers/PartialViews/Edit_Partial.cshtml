@@ -5,14 +5,20 @@
 @Html.HiddenFor(m => m.AjaxUpdate)
 @Html.HiddenFor(m => m.Param)
 @Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Offer.Id)
 
+
+<div class="pagetitle">
+    Edit Offer
+</div>
 <div class="form-1600">
-    <div class="pagetitle">
-        Edit Offer
-    </div>
     <div class="white-bg">
         @{
             await Html.RenderPartialAsync("Sections/OfferFields.cshtml");
         }
+        <div class="buttons">
+            <button class="button" onclick="NonAjax('Update')">Update</button>
+            <button class="button" onclick="NonAjax('Go back')">Cancel</button>
+        </div>
     </div>
 </div>

@@ -23,37 +23,70 @@
         var interests = Model.Program.Interests.ToList();
     }
 
-    <div class="formlabel font-weight-bold">Degree Levels:</div>
-    <div class="checkbox-group">
+    <div class="formlabel">Degree Levels:</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         @for (int i = 0; i < levels.Count; i++)
         {
-            <label>
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 12px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background-color: #f9f9f9;
+                min-width: 180px;
+                font-size: inherit;
+            ">
                 <input type="hidden" name="Program.Levels[@i].Id" value="@levels[i].Id" />
                 <input type="checkbox" name="Program.Levels[@i].IsChecked" value="true" @(levels[i].IsChecked ? "checked" : "") />
                 <span>@levels[i].Name</span>
             </label>
         }
-
     </div>
 
-    <div class="formlabel font-weight-bold">Areas of Interest:</div>
-    @for (int i = 0; i < areas.Count; i++)
-    {
-        <label>
-            <input type="hidden" name="Program.Areas[@i].Id" value="@areas[i].Id" />
-            <input type="checkbox" name="Program.Areas[@i].IsChecked" value="true" @(areas[i].IsChecked ? "checked" : "") />
-            <span>@areas[i].Name</span>
-        </label>
-    }
-    <div class="formlabel font-weight-bold">Student Interest:</div>
-    <div class="checkbox-group">
+
+
+    <div class="formlabel">Areas of Interest:</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        @for (int i = 0; i < areas.Count; i++)
+        {
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 12px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background-color: #f9f9f9;
+                min-width: 140px;
+            ">
+                <input type="hidden" name="Program.Areas[@i].Id" value="@areas[i].Id" />
+                <input type="checkbox" name="Program.Areas[@i].IsChecked" value="true" @(areas[i].IsChecked ? "checked" : "") />
+                <span>@areas[i].Name</span>
+            </label>
+        }
+    </div>
+
+    <div class="formlabel">Student Interest:</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         @for (int i = 0; i < interests.Count; i++)
         {
-            <label>
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 12px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background-color: #f9f9f9;
+                min-width: 180px;
+            ">
                 <input type="hidden" name="Program.Interests[@i].Id" value="@interests[i].Id" />
                 <input type="checkbox" name="Program.Interests[@i].IsChecked" value="true" @(interests[i].IsChecked ? "checked" : "") />
                 <span>@interests[i].Name</span>
             </label>
         }
     </div>
+
 </div>

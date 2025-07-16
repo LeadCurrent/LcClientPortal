@@ -1,0 +1,36 @@
+﻿@model GroupsVM
+@using Data
+@using Web
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Group.Id)
+
+<div class="pagetitle">
+    Edit Groups
+</div>
+
+<div class="form-600">
+    <div class="white-bg input-form">
+        <table>
+            <tr>
+                <td>Id </td>
+                <td> @Model.Group.Id</td>
+            </tr>
+            <tr>
+                <td class="formlabel">Name:</td>
+                <td>@Html.EditorFor(x => x.Group.Name)</td>
+            </tr>
+            <tr>
+                <td class="formlabel">Short Copy:</td>
+                <td>@Html.TextAreaFor(x => x.Group.Copy)</td>
+            </tr>
+        </table>
+        <div class="center">
+            <button class="button" onclick="NonAjax('Update')">Update</button>
+            <button class="button" onclick="NonAjaxWithParam('Delete',@Model.Group.Id)">Delete</button>
+            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+        </div>
+    </div>
+</div>

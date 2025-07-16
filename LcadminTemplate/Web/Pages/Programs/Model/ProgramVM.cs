@@ -13,6 +13,7 @@ namespace Web
 
         /* Properties */
         public int CompanyId { get; set; }
+        public string ProgramSearch { get; set; }
         public bool ShowEdit { get; set; }
 
         //Model

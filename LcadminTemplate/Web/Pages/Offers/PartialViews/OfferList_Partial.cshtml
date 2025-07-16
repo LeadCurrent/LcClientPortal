@@ -160,6 +160,10 @@
     </div>
     </div>
 
+    <div class="center">
+        <button class="button" onclick="NonAjax('Create')">New Offer</button>
+    </div>
+
     <!-- Pagination -->
     @if (Model.TotalPages > 1)
     {
@@ -219,6 +223,7 @@
     <!-- Hidden Filter Trigger -->
     <button id="Filter" onclick="Ajax('Filter')" style="display:none;"></button>
 
+
     <!-- Table -->
     <div class="tablestyle">
         <table class="table table-bordered table-striped w-100">
@@ -251,25 +256,33 @@
                             <td style="@tdStyle">@Model.Offers[i].School?.Name</td>
                             <td style="@tdStyle">@Model.Offers[i].Client?.Name</td>
                             <td style="@tdStyle">@Model.Offers[i].Type</td>
-                            <td style="@tdStyle"></td>
+                            <td style="@tdStyle">
+                                <ul style="padding: 0; margin: 0; list-style-type: none;">
+                                    @foreach (var alloc in Model.Offers[i].Allocations.Where(a => a.Active))
+                                    {
+                                        <li style="color: green;">@alloc.Source.Name</li>
+                                    }
+                                </ul>
+                            </td>
                             <td style="@tdStyle">@Model.Offers[i].DeliveryName</td>
-                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].DayHtml)</td> <!-- This renders the HTML -->
-                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].WeekHtml)</td> <!-- This renders the HTML -->
-                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].MonthHtml)</td> <!-- This renders the HTML -->
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].DayHtml)</td>
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].WeekHtml)</td> 
+                            <td style="@tdStyle">@Html.Raw(Model.Offers[i].MonthHtml)</td>
                             <td style="@tdStyle">
-                                <button class="buttonaslink" onclick="NonAjaxWithParam('Edit', @Model.Offers[i].Id)">Edit</button>
+                                <button class="buttonaslink" style="color: black !important;" onclick="NonAjaxWithParam('Edit', @Model.Offers[i].Id)">Edit</button>
                             </td>
                             <td style="@tdStyle">
-                                <button class="buttonaslink" onclick="NonAjaxWithParam('Send Test Lead', @Model.Offers[i].Id)">Send Test Lead</button>
+                                <button class="buttonaslink" style="color: black !important;" onclick="NonAjaxWithParam('Send Test Lead', @Model.Offers[i].Id)">Send Test Lead</button>
                             </td>
                             <td style="@tdStyle">
-                                <button class="button" onclick="AjaxWithParam('Filter', @Model.Offers[i].Id)">
+                                <button class="button"
+                                        onclick="AjaxWithParam('@(Model.Offers[i].Active ? "Deactivate Single Offer" : "Activate Single Offer")', @Model.Offers[i].Id)">
                                     @(Model.Offers[i].Active ? "Deactivate Offer" : "Activate Offer")
                                 </button>
+
                             </td>
                         </tr>
                     }
-
                 }
                 else
                 {
@@ -336,6 +349,4 @@
             </ul>
         </nav>
     }
-
-
 </div>

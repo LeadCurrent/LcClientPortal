@@ -12,22 +12,21 @@
 
     <div class="form-800 input-form">
         <div class="white-bg">
-        @Html.HiddenFor(x => x.DegreeLevel.Id)
+            @Html.HiddenFor(x => x.DegreeLevel.Id)
+            <table>
+                <tr>
+                    <td class="formlabel">Name:</td>
+                </tr>
+                <tr>
+                    <td>@Html.EditorFor(x => x.DegreeLevel.Name)</td>
+                </tr>
+            </table>
 
-        <table>
-            <tr>
-                <td class="formlabel">Name:</td>
-            </tr>
-            <tr>
-                <td>@Html.EditorFor(x => x.DegreeLevel.Name)</td>
-            </tr>
-        </table>
-
-        <div class="buttons">
-            <button class="button" onclick="NonAjax('Update Degree Level')">Edit Degree Level</button>
-            <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+            <div class="buttons">
+                <button class="button" onclick="NonAjax('Update Degree Level')">Edit Degree Level</button>
+                <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+            </div>
         </div>
-    </div>
     </div>
 }
 else
@@ -35,8 +34,32 @@ else
     <div class="pagetitle">Degree Level</div>
 
     <div class="form-800">
-        <div class="buttons">
-            <button class="button" onclick="NonAjax('Create New Degree Level')">Create New Degree Level</button>
+        <!-- Search Filter -->
+        <div class="mb-4 mt-3">
+            <div class="white-bg p-3">
+                <div class="card-body p-0">
+                    <div class="row align-items-end g-2">
+                        <!-- Search input -->
+                        <div class="col-md-6">
+                            <label for="DegreeLevelSearch" class="form-label">Degree Level:</label>
+                            @Html.TextBoxFor(model => model.DegreeLevelSearch, new { @class = "form-control", placeholder = "Search by Degree Level", id = "DegreeLevelSearch" })
+                        </div>
+
+                        <div class="col-auto">
+                            <!-- Buttons -->
+                                <button class="button" onclick="Ajax('Search')">Search</button>
+                                <button class="button" onclick="NonAjax('Clear Search')">Clear</button>
+                                <button class="button" onclick="NonAjax('Create New Degree Level')">Create New Degree Level</button>
+                        </div>             
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create New -->
+        <div class=" mb-3">
+            <div class="d-flex justify-content-end">
+            </div>
         </div>
 
         <div class="white-bg">

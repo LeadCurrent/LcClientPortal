@@ -10,9 +10,29 @@
     <div class="pagetitle">Programs</div>
 
     <div class="form-800">
-        <div class="buttons">
-            <button class="button" onclick="NonAjax('Create')">Create New Program</button>
+
+    <!-- Search Filter -->
+    <div class="mb-4 mt-3">
+        <div class="white-bg p-3">
+            <div class="card-body p-0">
+                <div class="row align-items-end g-2">
+                    <!-- Search input -->
+                    <div class="col-md-6">
+                        <label for="ProgramSearch" class="form-label">Program:</label>
+                        @Html.TextBoxFor(model => model.ProgramSearch, new { @class = "form-control", placeholder = "Search by Program", id = "ProgramSearch" })
+
+                    </div>
+
+                    <div class="col-auto">
+                        <!-- Buttons -->
+                        <button class="button" onclick="Ajax('Search')">Search</button>
+                        <button class="button" onclick="NonAjax('Clear Search')">Clear</button>
+                        <button class="button" onclick="NonAjax('Create')">Create New Program</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
         <div class="white-bg">
             <table class="tablestyle">

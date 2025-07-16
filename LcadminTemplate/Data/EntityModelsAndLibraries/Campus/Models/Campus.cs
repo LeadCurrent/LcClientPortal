@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data;
 
@@ -26,6 +27,9 @@ public partial class Campus
     public string Copy { get; set; }
 
     public string Clientid { get; set; }
+
+    [NotMapped]
+    public int ZipCount { get; set; }
 
     public int? oldId { get; set; }
     public virtual ICollection<Campuspostalcode> Campuspostalcodes { get; set; } = new List<Campuspostalcode>();

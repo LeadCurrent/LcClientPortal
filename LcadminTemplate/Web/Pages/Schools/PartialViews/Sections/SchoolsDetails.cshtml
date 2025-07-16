@@ -3,6 +3,15 @@
 @using Web
 @using static Data.GeneralEnums
 @using static Web.GeneralEnumDDLs
+
+
+<script>
+    function toggleAllGroups(source) {
+        const checkboxes = document.querySelectorAll('.group-checkbox');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+</script>
+
 <div class="white-bg">
     <div class="sectionheader">School Details</div>
 
@@ -64,10 +73,8 @@
                     </td>
                     <td>
                         <div class="formlabel">
-                            
                         </div>
                         <div>
-                            
                         </div>
                     </td>
                 </tr>
@@ -158,52 +165,60 @@
                         </div>
                         <div>
                             @Html.DropDownListFor(m => m.Scholl.Scoreadjustment,
-                                              new SelectList(Enumerable.Range(-6, 17).Select(i => i * 5), Model.Scholl.Scoreadjustment),
-                                              "-- Select --",
-                                              new { @class = "form-control" })
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="formlabel">
-                            Disclosure:
-                        </div>
-                        <div>
-                            @Html.EditorFor(m => m.Scholl.Disclosure)
-                        </div>
-                    </td>
-                    <td class="col-6">
-                        <div class="formlabel">
-                            Startdate:
-                        </div>
-                        <div>
-                            @Html.EditorFor(m => m.Scholl.Startdate)
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td >
-                        <div class="formlabel">
-                            Militaryfriendly:
-                        </div>
-                        <div>
-                            @Html.CheckBoxFor(m => m.Scholl.Militaryfriendly)
-                        </div>
-                    </td>
-                    <td class="col-12">
-                        <div class="formlabel">Select Groups:</div>
-                        <div class="container-fluid">
-                            @for (int i = 0; i < Model.Groups.Count; i++)
+                            new SelectList(Enumerable.Range(-6, 17).Select(i => i * 5), Model.Scholl.Scoreadjustment),
+                                                "-- Select --",
+                                                new { @class = "form-control" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="formlabel">
+                        Disclosure:
+                    </div>
+                    <div>
+                        @Html.EditorFor(m => m.Scholl.Disclosure)
+                    </div>
+                </td>
+                <td class="col-6">
+                    <div class="formlabel">
+                        Startdate:
+                    </div>
+                    <div>
+                        @Html.EditorFor(m => m.Scholl.Startdate)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="formlabel">
+                        Militaryfriendly:
+                    </div>
+                    <div>
+                        @Html.CheckBoxFor(m => m.Scholl.Militaryfriendly)
+                    </div>
+                </td>
+
+                <td>
+                    <div class="formlabel mb-1">Select Groups:</div>
+
+                    <!-- Select All Checkbox -->
+                    <div>
+                        <input type="checkbox" id="selectAll" onclick="toggleAllGroups(this)">
+                        <label for="selectAll" style="font-weight:normal;">Select All</label>
+                    </div>
+
+                    <!-- Scrollable checkbox list -->
+                    <div class="container-fluid mt-1" style="max-height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
+                        @for (int i = 0; i < Model.Groups.Count; i++)
                             {
                                 <label style="display:block;">
                                     @Html.HiddenFor(m => m.Groups[i].Id)
-                                    @Html.CheckBoxFor(m => m.Groups[i].IsChecked)
+                                    @Html.CheckBoxFor(m => m.Groups[i].IsChecked, new { @class = "group-checkbox" })
                                     @Model.Groups[i].Name
                                 </label>
                             }
                         </div>
-
                     </td>
                 </tr>
             </table>
@@ -245,7 +260,6 @@
                             @Model.Scholl.Abbr
                         </div>
                     </td>
-
                 </tr>
                 <tr>
                     <td>
@@ -264,18 +278,16 @@
                             @Model.Scholl.Militaryfriendly
                         </div>
                     </td>
-
                 </tr>
                 <tr>
                     <td>
                         <div class="formlabel">
                             Schoolgroup:
                         </div>
-                       
-                          <div>
-                                    @string.Join(" ~ ", Model.Scholl.Schoolgroups.Select(g => g.Group.Name))
-                          </div>
-                         
+
+                        <div>
+                            @string.Join(" ~ ", Model.Scholl.Schoolgroups.Select(g => g.Group.Name))
+                        </div>
                     </td>
                     <td>
                         <div class="formlabel">
@@ -376,7 +388,6 @@
                         </div>
                     </td>
                 </tr>
-
                 <tr>
                     <td>
                         <div class="formlabel">
@@ -413,8 +424,6 @@
                         </div>
                     </td>
                 </tr>
-
-
             </table>
 
             <div class="center">

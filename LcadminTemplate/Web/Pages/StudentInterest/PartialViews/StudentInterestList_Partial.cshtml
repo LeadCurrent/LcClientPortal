@@ -8,6 +8,8 @@
 
 @if (Model.ShowEditStudentInterest)
 {
+    @Html.HiddenFor(m => m.InterestSearch)
+
     <div class="pagetitle">Edit Student Interest</div>
 
     <div class="form-800 input-form">
@@ -30,8 +32,8 @@
             </table>
 
             <div class="buttons">
-                <button class="button" onclick="NonAjax('Update')">Update</button>
-                <button class="button" onclick="NonAjax('Cancel')">Cancel</button>
+                <button class="button" onclick="Ajax('Update')">Update</button>
+                <button class="button" onclick="Ajax('Cancel')">Cancel</button>
             </div>
         </div>
     </div>
@@ -41,10 +43,29 @@ else
     <div class="pagetitle">Manage Student Interest</div>
 
     <div class="form-800">
-        <div class="buttons">
-            <button class="button" onclick="NonAjax('Create')">Create New Interest</button>
-        </div>
 
+        <!-- Search Filter -->
+        <div class="mb-4 mt-3">
+            <div class="white-bg p-3">
+                <div class="card-body p-0">
+                    <div class="row align-items-end g-2">
+                        <!-- Search input -->
+                        <div class="col-md-6">
+                            <label for="InterestSearch" class="form-label">Interest:</label>
+                            @Html.TextBoxFor(model => model.InterestSearch, new { @class = "form-control", placeholder = "Search by Interest", id = "InterestSearch" })
+
+                        </div>
+
+                        <div class="col-auto">
+                            <!-- Buttons -->
+                            <button class="button" onclick="Ajax('Search')">Search</button>
+                            <button class="button" onclick="NonAjax('Clear Search')">Clear</button>
+                            <button class="button" onclick="NonAjax('Create')">Create New Interest</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="white-bg">
             <table class="tablestyle">
                 <tr class="desktop roundheader">

@@ -1,0 +1,75 @@
+﻿@model InactiveCampusVM
+@using Data
+@using Web
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">
+    Inactive Campuses
+</div>
+
+<div class="form-1200">
+
+    <!-- Search Filter -->
+    <div class="mb-2 mt-2">
+        <div class="white-bg p-3">
+            <div class="card-body p-0">
+                <div class="row align-items-end g-2">
+                    <!-- Search input -->
+                    <div class="col-md-6">
+                        <label for=" Campus Search" class="form-label">Campuses:</label>
+                        @Html.TextBoxFor(model => model.CampusSearch, new { @class = "form-control", placeholder = "Campus Search", id = "CampusSearch" })
+                    </div>
+
+                    <div class="col-auto">
+                        <!-- Buttons -->
+                        <button class="button" onclick="Ajax('Search')">Search</button>
+                        <button class="button" onclick="Ajax('Clear Search')">Clear</button>
+                       @*  <button class="button" onclick="Ajax('Delete Selected Campuses')">Delete Selected</button> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-1 mb-1">
+        <button class="button" onclick="Ajax('Update InActiveCampuses')">Save Selected</button>
+        <button class="button" onclick="Ajax('Cancel')">Cancel</button>
+
+    </div>
+    <table class="tablestyle" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>School</th>
+                <th>Campus</th>
+                <th>City</th>
+                <th>Type</th>
+                <th class="text-center">Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.InactiveCampuses.Count; i++)
+            {
+                var campus = Model.InactiveCampuses[i];
+                <tr>
+                    <td>@campus.School?.Name</td>
+                    <td>@campus.Name</td>
+                    <td>@campus.City</td>
+                    <td>@campus.Campustype</td>
+                    <td class="text-center">
+                        <input type="hidden" name="InactiveCampuses[@i].Id" value="@campus.Id" />
+                        <input type="checkbox" name="InactiveCampuses[@i].Active" value="true" @(campus.Active ? "checked" : "") />
+                        <input type="hidden" name="InactiveCampuses[@i].Active" value="false" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="text-center" style="margin-top: 20px;">
+        <button class="button" onclick="Ajax('Update InActiveCampuses')">Save Selected</button>
+        <button class="button" onclick="Ajax('Cancel')">Cancel</button>
+
+    </div>
+</div>

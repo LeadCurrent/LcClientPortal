@@ -1,0 +1,20 @@
+﻿@using Data
+@using Web
+@model SchoolsViewModel
+@{
+    if (Model.MobileApp)
+        Layout = "~/Pages/Shared/NoNavLayout.cshtml";
+    else
+        Layout = "~/Pages/Shared/TemplateLayout.cshtml";
+}
+@using (Html.BeginForm("CampusesBySchool", "Schools", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <div id="partialview">
+        @{
+            await Html.RenderPartialAsync("PartialViews/EditCampus_Partial.cshtml");
+        }
+    </div>
+}
+<script>
+    highlightcurrentpage('nav_Schools');
+</script>

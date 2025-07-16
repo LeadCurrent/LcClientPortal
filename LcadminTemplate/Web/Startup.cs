@@ -144,6 +144,7 @@ namespace DotNet5Template
             services.AddScoped<SchoolsDataLibrary, SchoolsDataLibrary>();
             services.AddScoped<CampusDataLibrary, CampusDataLibrary>();
             services.AddScoped<GroupDataLibrary, GroupDataLibrary>();
+            services.AddScoped<VendorDashboardDataLibrary, VendorDashboardDataLibrary>();
             services.AddHostedService<MigrationHostedService>();
 
             //NewDataLibrary

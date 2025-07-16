@@ -26,10 +26,19 @@ namespace Web
             exceptionLogger = ExceptionLogger;
         }
 
-        public async Task<DegreeLevelVM> getDegreeLevelList()
+        public async Task<DegreeLevelVM> getDegreeLevelList(string Search = null)
         {
             var Model = new DegreeLevelVM();
             Model.DegreeLevels = await DegreeLevelDL.GetDegreeLevels();
+
+            if (Search != null)
+            {
+                Model.DegreeLevelSearch = Search;
+                Model.DegreeLevels = Model.DegreeLevels
+                    .Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains(Search, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             return Model;
         }
 
@@ -46,6 +55,14 @@ namespace Web
             try
             {
                 var Model = new DegreeLevelVM();
+
+                if (Action == "Search")
+                {
+                    Model = await getDegreeLevelList(ViewModel.DegreeLevelSearch);
+
+                    var _HTML = Task.Run(() => viewRenderer.RenderViewToStringAsync("DegreeLevels/PartialViews/DegreeLevels_Partial", Model)).Result;
+                    return Json(new { isValid = true, html = _HTML });
+                }
 
                 if (Action == "Update Degree Level")
                 {

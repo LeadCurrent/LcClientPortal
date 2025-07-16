@@ -11,12 +11,10 @@ namespace Data
     public class SourcesDataLibrary
     {
         public DataContext context { get; }
-
         public SourcesDataLibrary(DataContext Context)
         {
             context = Context;
         }
-
         public async Task<List<Source>> GetSourcesByCompanyId(int companyId)
         {
             if (companyId <= 0)
@@ -28,14 +26,12 @@ namespace Data
                 .ThenBy(x => x.Name)
                 .ToListAsync();
         }
-
         public async Task<Source> GetSource(int sourceId)
         {
             return await context.Sources
                 .Where(x => x.Id == sourceId)
                 .FirstOrDefaultAsync();
         }
-
         public async Task<int> CreateSource(Source Source)
         {
             context.ChangeTracker.Clear();
@@ -43,7 +39,6 @@ namespace Data
             await context.SaveChangesAsync();
             return Source.Id;
         }
-
         public async Task<bool> UpdateSource(Source updatedSource)
         {
             var existingSource = await context.Sources.FindAsync(updatedSource.Id);

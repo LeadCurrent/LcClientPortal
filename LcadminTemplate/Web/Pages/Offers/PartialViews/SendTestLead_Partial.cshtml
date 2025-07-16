@@ -1,0 +1,163 @@
+﻿@model OfferVM
+@using Data
+@using Web
+@Html.HiddenFor(x => x.Offer.Id)
+@Html.HiddenFor(m => m.Action)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.StringParam)
+@Html.HiddenFor(m => m.AjaxUpdate)
+
+<div class="pagetitle">Send Test Lead</div>
+
+<div class="form-1600">
+    <div class="white-bg">
+        <div class="">
+            <table class="" style="max-width: 800px; min-width: 700px; margin: 0 auto;">
+                <tr>
+                    <td><label>swInstance:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadSwInstance, new { @readonly = "readonly" })</td>
+                </tr>
+                <tr>
+                    <td><label>Age:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadAge)</td>
+                </tr>
+                <tr>
+                    <td><label>Zip:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadZip)</td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadEmail)</td>
+                </tr>
+                <tr>
+                    <td><label>School Name:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadSelectedSchoolId, new { @readonly = "readonly" })</td>
+                </tr>
+                <tr>
+                    <td><label>Campus Name:</label></td>
+                    <td>
+                        @Html.DropDownListFor(m => m.TestLeadCampusId, Model.CampusDropdown, new { @class = "form-control", onchange = "$('#campusChangedBtn').click()" })
+                        <button style="display:none" id="campusChangedBtn" class="button" onclick="AjaxWithParam('Campus Changed', @Model.Offer.Id)">Add</button>
+                    </td>
+                </tr>
+
+                @if (Model.TestLeadCampusId > 0)
+                {
+                    <tr>
+                        <td><label>Program:</label></td>
+                        <td>@Html.DropDownListFor(m => m.TestLeadProgramId, Model.ProgramDropdown)</td>
+                    </tr>
+                }
+
+                <tr>
+                    <td><label>HS Grad Year:</label></td>
+                    <td>@Html.DropDownListFor(m => m.TestLeadHsGradYr, Model.HsGradYearDropdown)</td>
+                </tr>
+                <tr>
+                    <td><label>Education Level:</label></td>
+                    <td>@Html.DropDownListFor(m => m.TestLeadEduLevelId, Model.EduLevelDropdown)</td>
+                </tr>
+                <tr>
+                    <td><label>Transfer Recipient:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadTransferRecipient)</td>
+                </tr>
+                <tr>
+                    <td><label>Source URL:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadSourceUrl, new { @readonly = "readonly" })</td>
+                </tr>
+                <tr>
+                    <td><label>Delivery Identifier:</label></td>
+                    <td>@Html.TextBoxFor(m => m.TestLeadDeliveryIdentifier, new { @readonly = "readonly" })</td>
+                </tr>
+                <tr>
+                    <td><label>Is Call Center:</label></td>
+                    <td>
+                        @Html.RadioButtonFor(m => m.TestLeadIsCallCenter, true) Yes
+                        @Html.RadioButtonFor(m => m.TestLeadIsCallCenter, false) No
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>AdditionalFieldsJSON:</label></td>
+                    <td>  <button class="button" onclick="AjaxWithParam('Show Additional Field',@Model.Offer.Id)">Add</button></td>
+                </tr>
+            </table>
+
+            @if (Model.ShowAdditionalField)
+            {
+                <div>
+                    <table style="max-width: 800px; min-width: 700px; margin: 0 auto;">
+                        <tr class="pt-4">
+                            <td><label>Field Name:</label></td>
+                            <td>@Html.TextBoxFor(m => m.AdditionalFieldName, new { @class = "form-control" })</td>
+                            <td><label>Field Value:</label></td>
+                            <td>@Html.TextBoxFor(m => m.AdditionalFieldValue, new { @class = "form-control" })</td>
+                            <td colspan="2">
+                                <button onclick="AjaxWithParam('AddAdditionalField',@Model.Offer.Id)" class="button">Save</button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            }
+
+            @if (Model.AdditionalFields != null && Model.AdditionalFields.Count > 0)
+            {
+                <div>
+                    <table style="max-width: 800px; min-width: 700px; margin: 0 auto;">
+                        <tr class="sectiontitle">
+                            <td>
+                                Added Additional Fields JSON
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Field Name</th>
+                                            <th>Field Value</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.AdditionalFields)
+                                        {
+                                            <tr>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-danger" onclick="AjaxWithStringParam('RemoveAdditionalField','@item.Key')">Remove</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+
+            @if (Model.ResponseSuccess)
+            {
+                <div class="input-form">
+                    @if (Model.ResponseSuccess)
+                    {
+                        @Html.Raw(Model.ApiResponseHtml)
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            @Html.Raw(Model.ApiResponseHtml)
+                        </div>
+                    }
+
+                </div>
+            }
+            <div class="buttons pb-3">
+                <button class="btn btn-sm btn-success" onclick="Ajax('Send')">Send</button>
+                <button class="btn btn-sm btn-danger" onclick="NonAjax('Cancel Add SentTestLead')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

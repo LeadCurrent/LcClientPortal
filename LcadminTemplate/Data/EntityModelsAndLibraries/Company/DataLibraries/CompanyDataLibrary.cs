@@ -17,13 +17,13 @@ namespace Data
     public class CompanyDataLibrary
     {
         public DataContext context { get; }
+
         static readonly char[] padding = { '=' };
 
         public CompanyDataLibrary(DataContext Context)
         {
             context = Context;
         }
-
         public async Task<List<Company>> GetCompanys()
         {
             List<Company> Companys = await context.Company
@@ -51,7 +51,6 @@ namespace Data
 
             return Company;
         }
-
         public async Task<Company> GetCompanyFromAPIKey(string APIKey)
         {
             var Company = await context.Company
@@ -59,7 +58,6 @@ namespace Data
 
             return Company;
         }
-
         public async Task UpdateCompanyContact(CompanyContact CompanyContact, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -70,7 +68,6 @@ namespace Data
             context.Entry(UpdateCompanyContact).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
-
         public async Task CreateCompanyContact(CompanyContact CompanyContact, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -81,7 +78,6 @@ namespace Data
             context.CompanyContact.Add(CompanyContact);
             await context.SaveChangesAsync();
         }
-
         public async Task<List<UserLoginHistory>> GetUserLogin(string CompanyUser)
         {
             return await context.UserLoginHistory.Where(x => x.UserId == CompanyUser).ToListAsync();
@@ -98,7 +94,6 @@ namespace Data
 
             return Company;
         }
-
         public async Task<Company> GetCompanyWithContacts(int CompanyId)
         {
             var Company = await context.Company
@@ -109,7 +104,6 @@ namespace Data
 
             return Company;
         }
-
         public async Task<Company> GetCompanyProfile(int CompanyId)
         {
             var Company = await context.Company
@@ -123,7 +117,6 @@ namespace Data
 
             return Company;
         }
-
         public async Task<(Company company, int companyUserId)> CreateCompany(Company Company, User user)
         {
             context.ChangeTracker.Clear();
@@ -166,7 +159,6 @@ namespace Data
 
             return (CurrentCompany, companyUser.Id);
         }
-
         public async Task<CompanyEmailAccount> GetEmailAccount(string EmailAccount)
         {
             return await context.CompanyEmailAccount
@@ -189,7 +181,6 @@ namespace Data
             context.CompanyUser.Add(ccUser);
             await context.SaveChangesAsync();
         }
-
         public async Task<CompanyEmailAccount> GetDefaultOrFirstCompanyEmailAccount(int companyId)
         {
             // Fetch the default account, if none exists, fetch the first one
@@ -202,7 +193,6 @@ namespace Data
 
             return emailAccount;
         }
-
         public async Task<CompanyEmailAccount> GetFeedbackEmail()
         {
             // Fetch the default account, if none exists, fetch the first one
@@ -214,7 +204,6 @@ namespace Data
 
             return emailAccount;
         }
-
         public async Task UpdateCompanyFromSystemAdmin(Company Company, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -236,7 +225,6 @@ namespace Data
             context.Entry(CurrentCompany).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
-
         public async Task UpdateCompanyFromCompanyProfile(Company Company, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -258,14 +246,12 @@ namespace Data
             context.Entry(CurrentCompany).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
-
         public async Task DeleteCompany(int CompanyId)
         {
             var Company = await context.Company.Where(s => s.Id == CompanyId).FirstOrDefaultAsync();
             context.Company.Remove(Company);
             await context.SaveChangesAsync();
         }
-
         public async Task RemoveCompany(int CompanyId)
         {
             var Company = await context.Company.Where(s => s.Id == CompanyId).FirstOrDefaultAsync();
@@ -273,7 +259,6 @@ namespace Data
             context.Entry(Company).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
-
         public async Task UpdateCompanyForCompanyAccount(Company Company, string CurrentUser, int AccountHolderId, int BillingContactId, int SupportContactId)
         {
             context.ChangeTracker.Clear();
@@ -319,7 +304,6 @@ namespace Data
                 await context.SaveChangesAsync();
             }
         }
-
         public async Task<int> AddCompanyNote(string Note, NoteType NoteType, int CompanyId, string CurrentUser)
         {
             var user = await context.User.Where(u => u.UserName == CurrentUser).FirstOrDefaultAsync();
@@ -333,7 +317,6 @@ namespace Data
             await context.SaveChangesAsync();
             return CompanyNote.Id;
         }
-
         public async Task<List<CompanyNote>> GetCompanyNotes(int CompanyId)
         {
             var CompanyNotes = await context.CompanyNote
@@ -343,13 +326,11 @@ namespace Data
 
             return CompanyNotes;
         }
-
         public async Task<CompayUserRole> GetCompayUserRole(int CompayUserRoleID)
         {
             var CompayUserRole = await context.CompayUserRole.Where(s => s.Id == CompayUserRoleID).FirstOrDefaultAsync();
             return CompayUserRole;
         }
-
         public async Task RemoveCompanyNote(int CompanyNoteId)
         {
             var CompanyNote = await context.CompanyNote.Where(x => x.Id == CompanyNoteId).FirstOrDefaultAsync();
@@ -357,7 +338,6 @@ namespace Data
             context.CompanyNote.Remove(CompanyNote);
             await context.SaveChangesAsync();
         }
-
         public async Task SaveCompany(Company Company, string CurrentUser)
         {
             var user = await context.User.Where(u => u.UserName == CurrentUser).FirstOrDefaultAsync();
@@ -375,7 +355,6 @@ namespace Data
             context.CompanyUser.Add(ccUser);
             await context.SaveChangesAsync();
         }
-
         public async Task<CompanyUser> GetCompanyUser(int CompanyUser)
         {
             return await context.CompanyUser.Where(x => x.Id == CompanyUser).Include(x => x.User).Include(x => x.CompanyUserRoles).
@@ -393,7 +372,6 @@ namespace Data
         {
             return await context.CompanyUser.Include(x => x.User).Include(x => x.CompanyUserRoles).ThenInclude(x => x.Role).Where(x => x.CompanyId == CompanyId && !x.User.IsDeleted).ToListAsync();
         }
-       
         public async Task DeleteCompanyUser(int CompanyUserId)
         {
             var ccu = await context.CompanyUser.Where(x => x.Id == CompanyUserId).FirstOrDefaultAsync();
@@ -401,7 +379,6 @@ namespace Data
 
             await context.SaveChangesAsync();
         }
-
         public async Task<int> CreateCompanyUser(int CompanyId, string UserId,
              string CurrentUser)
         {
@@ -419,7 +396,6 @@ namespace Data
             return ccu.Id;
 
         }
-
         public async Task<int> AddCompanyUserNote(string Note, NoteType NoteType, int CompanyUserId, string CurrentUser)
         {
             var user = await context.User.Where(u => u.UserName == CurrentUser).FirstOrDefaultAsync();
@@ -433,7 +409,6 @@ namespace Data
             await context.SaveChangesAsync();
             return CompanyUserNote.Id;
         }
-
         public async Task<List<CompanyUserNote>> GetCompanyUserNotes(int JobId)
         {
             var CompanyUserNotes = await context.CompanyUserNote
@@ -443,7 +418,6 @@ namespace Data
 
             return CompanyUserNotes;
         }
-
         public async Task RemoveCompanyUserNote(int JobNoteId)
         {
             var JobNote = await context.CompanyUserNote.Where(x => x.Id == JobNoteId).FirstOrDefaultAsync();
@@ -451,7 +425,6 @@ namespace Data
             context.CompanyUserNote.Remove(JobNote);
             await context.SaveChangesAsync();
         }
-
         public async Task DeleteNote(int NoteId)
         {
             var note = await context.CompanyUserNote.Where(x => x.Id == NoteId).FirstOrDefaultAsync();
@@ -462,7 +435,6 @@ namespace Data
 
         /* Company User */
 
-    
         public async Task<CompanyUser> GetCompanyUserByUser(string CurrentUser)
         {
             var companyUser = await context.CompanyUser
@@ -481,7 +453,6 @@ namespace Data
 
             return CompanyUsers;
         }
-
         public async Task UpdateCompanyUser(CompanyUser CompanyUser, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -495,7 +466,6 @@ namespace Data
 
             var usr = await context.User.Where(u => u.Id == ccu.UserId).FirstOrDefaultAsync();
         }
-
         public async Task<int> CreateCompanyUser(int CompanyId, string UserId)
         {
             context.ChangeTracker.Clear();
@@ -511,7 +481,6 @@ namespace Data
 
             return ccu.Id;
         }
-
         public async Task<int> AddStaffNote(string Note, NoteType NoteType, int CompanyUserId, string CurrentUser)
         {
             context.ChangeTracker.Clear();
@@ -526,7 +495,6 @@ namespace Data
             await context.SaveChangesAsync();
             return StaffNote.Id;
         }
-
         public async Task<List<StaffNote>> GetStaffNotes(int JobId)
         {
             var StaffNotes = await context.StaffNote
@@ -536,7 +504,6 @@ namespace Data
 
             return StaffNotes;
         }
-
         public async Task RemoveStaffNote(int JobNoteId)
         {
             context.ChangeTracker.Clear();

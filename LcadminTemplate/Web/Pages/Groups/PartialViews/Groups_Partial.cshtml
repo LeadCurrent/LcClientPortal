@@ -1,0 +1,58 @@
+﻿@model GroupsVM
+@using Data
+@using Web
+
+@Html.HiddenFor(m => m.AjaxUpdate)
+@Html.HiddenFor(m => m.Param)
+@Html.HiddenFor(m => m.Action)
+
+<div class="pagetitle">
+    Manage Groups
+</div>
+
+<div class="form-800">
+
+    <!-- Search Filter -->
+    <div class="mb-2 mt-2">
+        <div class="white-bg p-3">
+            <div class="card-body p-0">
+                <div class="row align-items-end g-2">
+                    <!-- Search input -->
+                    <div class="col-md-6">
+                        <label for=" Campus Search" class="form-label">Groups:</label>
+                        @Html.TextBoxFor(model => model.GroupSearch, new { @class = "form-control", placeholder = "Group Search", id = "GroupSearch" })
+                    </div>
+
+                    <div class="col-auto">
+                        <!-- Buttons -->
+                        <button class="button" onclick="Ajax('Search')">Search</button>
+                        <button class="button" onclick="Ajax('Clear Search')">Clear</button>
+                        <button class="button" onclick="NonAjax('Create New Group')">Create New Group</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="tablestyle" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Groups.Count; i++)
+            {
+                var Group = Model.Groups[i];
+                <tr>
+                    <td>@Group.Name</td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="document.getElementById('EditGroup').click();">Edit</a>
+                        <button id="EditGroup" style="display:none;" onclick="NonAjaxWithParam('Edit', @Group.Id)"></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
